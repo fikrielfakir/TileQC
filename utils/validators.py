@@ -1,232 +1,172 @@
 def validate_clay_control(clay_control):
-    """Validate clay control measurements against specifications"""
+    """Validate clay control measurements against database specifications"""
+    from models import Specification
     issues = []
     
-    # Humidity before preparation: 2.5% ≤ H ≤ 4.1%
-    if clay_control.humidity_before_prep is not None:
-        if not (2.5 <= clay_control.humidity_before_prep <= 4.1):
-            issues.append("Humidity before prep out of spec (2.5-4.1%)")
+    # Check each parameter against database specifications
+    parameters = {
+        'humidity_before_prep': clay_control.humidity_before_prep,
+        'humidity_after_sieving': clay_control.humidity_after_sieving,
+        'humidity_after_prep': clay_control.humidity_after_prep,
+        'granulometry_refusal': clay_control.granulometry_refusal,
+        'calcium_carbonate': clay_control.calcium_carbonate
+    }
     
-    # Humidity after sieving: 2% ≤ H ≤ 3.5%
-    if clay_control.humidity_after_sieving is not None:
-        if not (2.0 <= clay_control.humidity_after_sieving <= 3.5):
-            issues.append("Humidity after sieving out of spec (2.0-3.5%)")
-    
-    # Humidity after preparation: 5.3% ≤ H ≤ 6.3%
-    if clay_control.humidity_after_prep is not None:
-        if not (5.3 <= clay_control.humidity_after_prep <= 6.3):
-            issues.append("Humidity after prep out of spec (5.3-6.3%)")
-    
-    # Granulometry refusal: 10% ≤ Refus ≤ 20%
-    if clay_control.granulometry_refusal is not None:
-        if not (10 <= clay_control.granulometry_refusal <= 20):
-            issues.append("Granulometry refusal out of spec (10-20%)")
-    
-    # Calcium carbonate: 15% ≤ CaCo3 ≤ 25%
-    if clay_control.calcium_carbonate is not None:
-        if not (15 <= clay_control.calcium_carbonate <= 25):
-            issues.append("Calcium carbonate out of spec (15-25%)")
+    for param_name, value in parameters.items():
+        if value is not None:
+            spec = Specification.get_spec('clay', param_name)
+            if spec and not _check_value_against_spec(value, spec):
+                range_str = f"{spec.min_value or ''}-{spec.max_value or ''} {spec.unit}"
+                issues.append(f"{param_name.replace('_', ' ').title()} out of spec ({range_str})")
     
     return "compliant" if not issues else "non_compliant"
 
 def validate_press_control(press_control):
-    """Validate press control measurements against format-specific specifications"""
+    """Validate press control measurements against database specifications"""
+    from models import Specification
     issues = []
     
-    format_specs = {
-        '20x20': {'thickness': (6.2, 7.2), 'weight': (480, 580)},
-        '25x40': {'thickness': (6.8, 7.4), 'weight': (1150, 1550)},
-        '25x50': {'thickness': (7.1, 7.7), 'weight': (1800, 2000)}
-    }
-    
-    if press_control.format_type in format_specs:
-        spec = format_specs[press_control.format_type]
-        
+    # Check thickness and weight with format-specific specs
+    if press_control.format_type:
         # Thickness validation
         if press_control.thickness is not None:
-            min_thick, max_thick = spec['thickness']
-            if not (min_thick <= press_control.thickness <= max_thick):
-                issues.append(f"Thickness out of spec for {press_control.format_type} ({min_thick}-{max_thick}mm)")
+            spec = Specification.get_spec('press', 'thickness', format_type=press_control.format_type)
+            if spec and not _check_value_against_spec(press_control.thickness, spec):
+                range_str = f"{spec.min_value}-{spec.max_value} {spec.unit}"
+                issues.append(f"Thickness out of spec for {press_control.format_type} ({range_str})")
         
         # Weight validation
         if press_control.wet_weight is not None:
-            min_weight, max_weight = spec['weight']
-            if not (min_weight <= press_control.wet_weight <= max_weight):
-                issues.append(f"Weight out of spec for {press_control.format_type} ({min_weight}-{max_weight}g)")
+            spec = Specification.get_spec('press', 'wet_weight', format_type=press_control.format_type)
+            if spec and not _check_value_against_spec(press_control.wet_weight, spec):
+                range_str = f"{spec.min_value}-{spec.max_value} {spec.unit}"
+                issues.append(f"Weight out of spec for {press_control.format_type} ({range_str})")
     
     # Surface defect validation
-    defect_limits = {
-        'grains': 15.0,
-        'cracks': 1.0,
-        'cleaning': 1.0,
-        'foliage': 1.0,
-        'chipping': 1.0
+    defect_parameters = {
+        'defect_grains': press_control.defect_grains,
+        'defect_cracks': press_control.defect_cracks,
+        'defect_cleaning': press_control.defect_cleaning,
+        'defect_foliage': press_control.defect_foliage,
+        'defect_chipping': press_control.defect_chipping
     }
     
-    defects = {
-        'grains': press_control.defect_grains,
-        'cracks': press_control.defect_cracks,
-        'cleaning': press_control.defect_cleaning,
-        'foliage': press_control.defect_foliage,
-        'chipping': press_control.defect_chipping
-    }
-    
-    for defect_type, value in defects.items():
-        if value is not None and value > defect_limits[defect_type]:
-            issues.append(f"{defect_type.title()} defects exceed limit ({defect_limits[defect_type]}%)")
+    for param_name, value in defect_parameters.items():
+        if value is not None:
+            spec = Specification.get_spec('press', param_name)
+            if spec and not _check_value_against_spec(value, spec):
+                issues.append(f"{param_name.replace('defect_', '').replace('_', ' ').title()} defects exceed limit ({spec.max_value}{spec.unit})")
     
     return "compliant" if not issues else "non_compliant"
 
 def validate_dryer_control(dryer_control):
-    """Validate dryer control measurements"""
+    """Validate dryer control measurements against database specifications"""
+    from models import Specification
     issues = []
     
-    # Residual humidity: 0.1% ≤ HR ≤ 1.5%
+    # Residual humidity validation
     if dryer_control.residual_humidity is not None:
-        if not (0.1 <= dryer_control.residual_humidity <= 1.5):
-            issues.append("Residual humidity out of spec (0.1-1.5%)")
+        spec = Specification.get_spec('dryer', 'residual_humidity')
+        if spec and not _check_value_against_spec(dryer_control.residual_humidity, spec):
+            range_str = f"{spec.min_value}-{spec.max_value} {spec.unit}"
+            issues.append(f"Residual humidity out of spec ({range_str})")
     
-    # Surface defects (same as press)
-    defect_limits = {
-        'grains': 15.0,
-        'cracks': 1.0,
-        'cleaning': 1.0,
-        'foliage': 1.0,
-        'chipping': 1.0
+    # Surface defect validation
+    defect_parameters = {
+        'defect_grains': dryer_control.defect_grains,
+        'defect_cracks': dryer_control.defect_cracks,
+        'defect_cleaning': dryer_control.defect_cleaning,
+        'defect_foliage': dryer_control.defect_foliage,
+        'defect_chipping': dryer_control.defect_chipping
     }
     
-    defects = {
-        'grains': dryer_control.defect_grains,
-        'cracks': dryer_control.defect_cracks,
-        'cleaning': dryer_control.defect_cleaning,
-        'foliage': dryer_control.defect_foliage,
-        'chipping': dryer_control.defect_chipping
-    }
-    
-    for defect_type, value in defects.items():
-        if value is not None and value > defect_limits[defect_type]:
-            issues.append(f"{defect_type.title()} defects exceed limit ({defect_limits[defect_type]}%)")
+    for param_name, value in defect_parameters.items():
+        if value is not None:
+            spec = Specification.get_spec('dryer', param_name)
+            if spec and not _check_value_against_spec(value, spec):
+                issues.append(f"{param_name.replace('defect_', '').replace('_', ' ').title()} defects exceed limit ({spec.max_value}{spec.unit})")
     
     return "compliant" if not issues else "non_compliant"
 
 def validate_biscuit_kiln_control(biscuit_control):
-    """Validate biscuit kiln control measurements"""
+    """Validate biscuit kiln control measurements against database specifications"""
+    from models import Specification
     issues = []
     
-    # Defect percentages
-    defect_limits = {
-        'cracks': 5.0,
-        'chipping': 5.0,
-        'cooking': 1.0,
-        'foliage': 1.0,
-        'flatness': 5.0
+    # Check all parameters against specifications
+    parameters = {
+        'defect_cracks': biscuit_control.defect_cracks,
+        'defect_chipping': biscuit_control.defect_chipping,
+        'defect_cooking': biscuit_control.defect_cooking,
+        'defect_foliage': biscuit_control.defect_foliage,
+        'defect_flatness': biscuit_control.defect_flatness,
+        'shrinkage_expansion': biscuit_control.shrinkage_expansion,
+        'fire_loss': biscuit_control.fire_loss
     }
     
-    defects = {
-        'cracks': biscuit_control.defect_cracks,
-        'chipping': biscuit_control.defect_chipping,
-        'cooking': biscuit_control.defect_cooking,
-        'foliage': biscuit_control.defect_foliage,
-        'flatness': biscuit_control.defect_flatness
-    }
-    
-    for defect_type, value in defects.items():
-        if value is not None and value > defect_limits[defect_type]:
-            issues.append(f"{defect_type.title()} defects exceed limit ({defect_limits[defect_type]}%)")
-    
-    # Shrinkage/expansion: -0.2% to +0.4%
-    if biscuit_control.shrinkage_expansion is not None:
-        if not (-0.2 <= biscuit_control.shrinkage_expansion <= 0.4):
-            issues.append("Shrinkage/expansion out of spec (-0.2% to +0.4%)")
-    
-    # Fire loss: 10%-19%
-    if biscuit_control.fire_loss is not None:
-        if not (10 <= biscuit_control.fire_loss <= 19):
-            issues.append("Fire loss out of spec (10-19%)")
+    for param_name, value in parameters.items():
+        if value is not None:
+            spec = Specification.get_spec('biscuit_kiln', param_name)
+            if spec and not _check_value_against_spec(value, spec):
+                if param_name.startswith('defect_'):
+                    display_name = param_name.replace('defect_', '').replace('_', ' ').title() + ' defects'
+                    issues.append(f"{display_name} exceed limit ({spec.max_value}{spec.unit})")
+                else:
+                    range_str = f"{spec.min_value or ''}-{spec.max_value or ''} {spec.unit}"
+                    issues.append(f"{param_name.replace('_', ' ').title()} out of spec ({range_str})")
     
     return "compliant" if not issues else "non_compliant"
 
 def validate_email_kiln_control(email_control):
-    """Validate email kiln control measurements"""
+    """Validate email kiln control measurements against database specifications"""
+    from models import Specification
     issues = []
     
-    # Thermal shock ≤ 5%
-    if email_control.thermal_shock is not None and email_control.thermal_shock > 5.0:
-        issues.append("Thermal shock exceeds limit (≤5%)")
-    
-    # Rupture resistance validation based on thickness
-    if (email_control.rupture_resistance is not None and 
-        email_control.thickness_for_resistance is not None):
-        
-        if email_control.thickness_for_resistance >= 7.5:
-            if email_control.rupture_resistance < 600:
-                issues.append("Rupture resistance below spec (≥600N for thickness ≥7.5mm)")
-        else:
-            if email_control.rupture_resistance < 200:
-                issues.append("Rupture resistance below spec (≥200N for thickness <7.5mm)")
-    
-    # Rupture module validation based on thickness
-    if (email_control.rupture_module is not None and 
-        email_control.thickness_for_resistance is not None):
-        
-        if email_control.thickness_for_resistance >= 7.5:
-            if email_control.rupture_module < 12:
-                issues.append("Rupture module below spec (≥12 N/mm² for thickness ≥7.5mm)")
-        else:
-            if email_control.rupture_module < 15:
-                issues.append("Rupture module below spec (≥15 N/mm² for thickness <7.5mm)")
-    
-    # Dimensional deviations
-    if email_control.length_deviation is not None:
-        if abs(email_control.length_deviation) > 0.5:
-            issues.append("Length deviation out of spec (±0.5%)")
-    
-    if email_control.width_deviation is not None:
-        if abs(email_control.width_deviation) > 0.5:
-            issues.append("Width deviation out of spec (±0.5%)")
-    
-    if email_control.thickness_deviation is not None:
-        if abs(email_control.thickness_deviation) > 10:
-            issues.append("Thickness deviation out of spec (±10%)")
-    
-    # Water absorption: E>10% (individual minimum 9%)
-    if email_control.water_absorption is not None:
-        if email_control.water_absorption < 9.0:
-            issues.append("Water absorption below minimum (individual min 9%)")
-    
-    # Quality parameters
-    quality_limits = {
-        'color_nuance': 1.0,
-        'cooking_defects': 1.0,
-        'flatness_defects': 5.0
-    }
-    
-    quality_params = {
+    # Standard parameters
+    standard_params = {
+        'thermal_shock': email_control.thermal_shock,
+        'length_deviation': email_control.length_deviation,
+        'width_deviation': email_control.width_deviation,
+        'thickness_deviation': email_control.thickness_deviation,
+        'water_absorption': email_control.water_absorption,
         'color_nuance': email_control.color_nuance,
         'cooking_defects': email_control.cooking_defects,
         'flatness_defects': email_control.flatness_defects
     }
     
-    for param, value in quality_params.items():
-        if value is not None and value > quality_limits[param]:
-            issues.append(f"{param.replace('_', ' ').title()} exceeds limit ({quality_limits[param]}%)")
+    for param_name, value in standard_params.items():
+        if value is not None:
+            spec = Specification.get_spec('email_kiln', param_name)
+            if spec and not _check_value_against_spec(value, spec):
+                range_str = f"{spec.min_value or ''}-{spec.max_value or ''} {spec.unit}"
+                issues.append(f"{param_name.replace('_', ' ').title()} out of spec ({range_str})")
+    
+    # Thickness-dependent rupture validation
+    if (email_control.rupture_resistance is not None and 
+        email_control.thickness_for_resistance is not None):
+        
+        thickness_category = 'thick' if email_control.thickness_for_resistance >= 7.5 else 'thin'
+        spec = Specification.get_spec('email_kiln', f'rupture_resistance_{thickness_category}')
+        if spec and not _check_value_against_spec(email_control.rupture_resistance, spec):
+            issues.append(f"Rupture resistance below spec (≥{spec.min_value} {spec.unit} for thickness {'≥7.5mm' if thickness_category == 'thick' else '<7.5mm'})")
+    
+    if (email_control.rupture_module is not None and 
+        email_control.thickness_for_resistance is not None):
+        
+        thickness_category = 'thick' if email_control.thickness_for_resistance >= 7.5 else 'thin'
+        spec = Specification.get_spec('email_kiln', f'rupture_module_{thickness_category}')
+        if spec and not _check_value_against_spec(email_control.rupture_module, spec):
+            issues.append(f"Rupture module below spec (≥{spec.min_value} {spec.unit} for thickness {'≥7.5mm' if thickness_category == 'thick' else '<7.5mm'})")
     
     return "compliant" if not issues else "non_compliant"
 
 def validate_dimensional_test(dimensional_test):
-    """Validate dimensional test measurements"""
+    """Validate dimensional test measurements against database specifications"""
+    from models import Specification
     issues = []
     
-    # Dimensional tolerances (±0.5% ±2mm except edge straightness)
-    dimensional_limits = {
-        'central_curvature': 2.0,
-        'veil': 2.0,
-        'angularity': 2.0,
-        'edge_straightness': 1.5,  # ±0.3% ±1.5mm
-        'lateral_curvature': 2.0
-    }
-    
-    dimensions = {
+    # Dimensional parameters
+    dimensional_params = {
         'central_curvature': dimensional_test.central_curvature,
         'veil': dimensional_test.veil,
         'angularity': dimensional_test.angularity,
@@ -234,93 +174,72 @@ def validate_dimensional_test(dimensional_test):
         'lateral_curvature': dimensional_test.lateral_curvature
     }
     
-    for dim, value in dimensions.items():
-        if value is not None and abs(value) > dimensional_limits[dim]:
-            issues.append(f"{dim.replace('_', ' ').title()} out of tolerance (±{dimensional_limits[dim]}mm)")
+    for param_name, value in dimensional_params.items():
+        if value is not None:
+            spec = Specification.get_spec('dimensional', param_name)
+            if spec and not _check_value_against_spec(abs(value), spec):  # Use absolute value for tolerance check
+                issues.append(f"{param_name.replace('_', ' ').title()} out of tolerance (±{spec.max_value}{spec.unit})")
     
-    # Surface quality: 95% tiles defect-free
+    # Surface quality validation
     if (dimensional_test.tiles_tested is not None and 
         dimensional_test.defect_free_tiles is not None):
         
         defect_free_percentage = (dimensional_test.defect_free_tiles / dimensional_test.tiles_tested) * 100
-        if defect_free_percentage < 95.0:
-            issues.append("Surface quality below requirement (95% defect-free)")
+        spec = Specification.get_spec('dimensional', 'surface_quality')
+        if spec and defect_free_percentage < spec.min_value:
+            issues.append(f"Surface quality below requirement ({spec.min_value}% defect-free)")
     
-    # Minimum testing requirements
-    if dimensional_test.tiles_tested is not None and dimensional_test.tiles_tested < 30:
-        issues.append("Insufficient tiles tested (minimum 30)")
+    # Minimum requirement validations
+    min_requirements = {
+        'tiles_tested': dimensional_test.tiles_tested,
+        'surface_area_tested': dimensional_test.surface_area_tested,
+        'lighting_level': dimensional_test.lighting_level
+    }
     
-    if dimensional_test.surface_area_tested is not None and dimensional_test.surface_area_tested < 1.0:
-        issues.append("Insufficient surface area tested (minimum 1m²)")
-    
-    if dimensional_test.lighting_level is not None and dimensional_test.lighting_level < 300:
-        issues.append("Insufficient lighting level (minimum 300 lux)")
+    for param_name, value in min_requirements.items():
+        if value is not None:
+            spec = Specification.get_spec('dimensional', param_name)
+            if spec and value < spec.min_value:
+                issues.append(f"Insufficient {param_name.replace('_', ' ')} (minimum {spec.min_value} {spec.unit})")
     
     return "compliant" if not issues else "non_compliant"
 
 def validate_enamel_control(enamel_control):
-    """Validate enamel control measurements"""
+    """Validate enamel control measurements against database specifications"""
+    from models import Specification
     issues = []
     
-    # Density specifications by enamel type
-    density_specs = {
-        'engobe': (1780, 1830),
-        'email': (1730, 1780),
-        'mate': (1780, 1830)
-    }
+    # Density validation (enamel-type specific)
+    if enamel_control.density is not None and enamel_control.enamel_type:
+        spec = Specification.get_spec('enamel', 'density', enamel_type=enamel_control.enamel_type)
+        if spec and not _check_value_against_spec(enamel_control.density, spec):
+            range_str = f"{spec.min_value}-{spec.max_value} {spec.unit}"
+            issues.append(f"Density out of spec for {enamel_control.enamel_type} ({range_str})")
     
-    if (enamel_control.enamel_type in density_specs and 
-        enamel_control.density is not None):
-        
-        min_density, max_density = density_specs[enamel_control.enamel_type]
-        if not (min_density <= enamel_control.density <= max_density):
-            issues.append(f"Density out of spec for {enamel_control.enamel_type} ({min_density}-{max_density} g/l)")
-    
-    # Viscosity: 25-55 seconds (all types)
+    # Viscosity validation (common for all types)
     if enamel_control.viscosity is not None:
-        if not (25 <= enamel_control.viscosity <= 55):
-            issues.append("Viscosity out of spec (25-55 seconds)")
+        spec = Specification.get_spec('enamel', 'viscosity')
+        if spec and not _check_value_against_spec(enamel_control.viscosity, spec):
+            range_str = f"{spec.min_value}-{spec.max_value} {spec.unit}"
+            issues.append(f"Viscosity out of spec ({range_str})")
     
-    # Grammage validation by format and type
-    grammage_specs = {
-        'water': {
-            '20x20': (0.5, 3),
-            '25x40': (1, 5),
-            '25x50': (3, 7)
-        },
-        'engobe': {
-            '20x20': (20, 23),
-            '25x40': (50, 55),
-            '25x50': (70, 75)
-        },
-        'email': {
-            '20x20': (20, 23),
-            '25x40': (50, 55),
-            '25x50': (70, 75)
-        },
-        'mate': {
-            '20x20': (20, 23),
-            '25x40': (50, 55),
-            '25x50': (70, 75)
-        }
-    }
+    # Water grammage validation (format-specific)
+    if enamel_control.water_grammage is not None and enamel_control.format_type:
+        spec = Specification.get_spec('enamel', 'water_grammage', format_type=enamel_control.format_type)
+        if spec and not _check_value_against_spec(enamel_control.water_grammage, spec):
+            range_str = f"{spec.min_value}-{spec.max_value} {spec.unit}"
+            issues.append(f"Water grammage out of spec for {enamel_control.format_type} ({range_str})")
     
-    if (enamel_control.format_type and enamel_control.water_grammage is not None):
-        water_spec = grammage_specs['water'].get(enamel_control.format_type)
-        if water_spec:
-            min_gram, max_gram = water_spec
-            if not (min_gram <= enamel_control.water_grammage <= max_gram):
-                issues.append(f"Water grammage out of spec for {enamel_control.format_type} ({min_gram}-{max_gram}g)")
-    
-    if (enamel_control.format_type and enamel_control.enamel_type and 
-        enamel_control.enamel_grammage is not None and 
-        enamel_control.enamel_type in grammage_specs):
+    # Enamel grammage validation (format and enamel-type specific)
+    if (enamel_control.enamel_grammage is not None and 
+        enamel_control.format_type and enamel_control.enamel_type):
         
-        enamel_spec = grammage_specs[enamel_control.enamel_type].get(enamel_control.format_type)
-        if enamel_spec:
-            min_gram, max_gram = enamel_spec
-            if not (min_gram <= enamel_control.enamel_grammage <= max_gram):
-                issues.append(f"{enamel_control.enamel_type.title()} grammage out of spec for {enamel_control.format_type} ({min_gram}-{max_gram}g)")
+        spec = Specification.get_spec('enamel', 'enamel_grammage', 
+                                    format_type=enamel_control.format_type,
+                                    enamel_type=enamel_control.enamel_type)
+        if spec and not _check_value_against_spec(enamel_control.enamel_grammage, spec):
+            range_str = f"{spec.min_value}-{spec.max_value} {spec.unit}"
+            issues.append(f"{enamel_control.enamel_type.title()} grammage out of spec for {enamel_control.format_type} ({range_str})")
     
     return "compliant" if not issues else "non_compliant"
 
@@ -333,6 +252,14 @@ def validate_digital_decoration(digital_decoration):
         return "non_compliant"
     
     return "compliant"
+
+def _check_value_against_spec(value, spec):
+    """Check if a value meets specification requirements"""
+    if spec.min_value is not None and value < spec.min_value:
+        return False
+    if spec.max_value is not None and value > spec.max_value:
+        return False
+    return True
 
 def get_compliance_summary(model_class, date_range=None):
     """Get compliance summary for a model class"""

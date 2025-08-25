@@ -2,6 +2,7 @@ from app import db
 from flask_login import UserMixin
 from datetime import datetime, date, time
 from sqlalchemy import event
+import json
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -245,6 +246,63 @@ class ExternalTest(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     controller = db.relationship('User', backref='external_tests')
+
+class Specification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    control_type = db.Column(db.String(50), nullable=False)  # clay, press, dryer, etc.
+    parameter_name = db.Column(db.String(100), nullable=False)  # humidity_before_prep, thickness, etc.
+    format_type = db.Column(db.String(20))  # For format-specific specs (20x20, 25x40, etc.)
+    enamel_type = db.Column(db.String(20))  # For enamel-specific specs
+    
+    # Specification limits
+    min_value = db.Column(db.Float)
+    max_value = db.Column(db.Float)
+    target_value = db.Column(db.Float)
+    unit = db.Column(db.String(20))  # %, mm, g, N, etc.
+    
+    # Additional constraints
+    constraints = db.Column(db.Text)  # JSON for complex rules
+    
+    # Metadata
+    is_active = db.Column(db.Boolean, default=True)
+    description = db.Column(db.Text)
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    creator = db.relationship('User', backref='created_specifications')
+    
+    def get_constraints(self):
+        """Parse JSON constraints"""
+        if self.constraints:
+            try:
+                return json.loads(self.constraints)
+            except:
+                return {}
+        return {}
+    
+    def set_constraints(self, constraints_dict):
+        """Set JSON constraints"""
+        self.constraints = json.dumps(constraints_dict) if constraints_dict else None
+    
+    @staticmethod
+    def get_spec(control_type, parameter_name, format_type=None, enamel_type=None):
+        """Get specification for a parameter"""
+        query = Specification.query.filter(
+            Specification.control_type == control_type,
+            Specification.parameter_name == parameter_name,
+            Specification.is_active == True
+        )
+        
+        if format_type:
+            query = query.filter(Specification.format_type == format_type)
+        if enamel_type:
+            query = query.filter(Specification.enamel_type == enamel_type)
+            
+        return query.first()
+    
+    def __repr__(self):
+        return f'<Specification {self.control_type}.{self.parameter_name}: {self.min_value}-{self.max_value} {self.unit}>'
 
 # Event listeners for automatic compliance calculation
 @event.listens_for(ClayControl, 'before_insert')

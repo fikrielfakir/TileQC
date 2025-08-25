@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}{% if edit %}Edit{% else %}Add{% endif %} Specification{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">{% if edit %}Edit{% else %}Add{% endif %} Quality Control Specification</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.control_type.label(class="form-label") }}
+                                    {{ form.control_type(class="form-select") }}
+                                    {% if form.control_type.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.control_type.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.parameter_name.label(class="form-label") }}
+                                    {{ form.parameter_name(class="form-control", placeholder="e.g., humidity_before_prep") }}
+                                    {% if form.parameter_name.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.parameter_name.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.format_type.label(class="form-label") }}
+                                    {{ form.format_type(class="form-select") }}
+                                    <small class="text-muted">Leave empty for general specifications</small>
+                                    {% if form.format_type.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.format_type.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.enamel_type.label(class="form-label") }}
+                                    {{ form.enamel_type(class="form-select") }}
+                                    <small class="text-muted">For enamel-specific specifications only</small>
+                                    {% if form.enamel_type.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.enamel_type.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.min_value.label(class="form-label") }}
+                                    {{ form.min_value(class="form-control", step="any") }}
+                                    {% if form.min_value.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.min_value.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.max_value.label(class="form-label") }}
+                                    {{ form.max_value(class="form-control", step="any") }}
+                                    {% if form.max_value.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.max_value.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.target_value.label(class="form-label") }}
+                                    {{ form.target_value(class="form-control", step="any") }}
+                                    <small class="text-muted">Optional target value</small>
+                                    {% if form.target_value.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.target_value.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.unit.label(class="form-label") }}
+                                    {{ form.unit(class="form-select") }}
+                                    {% if form.unit.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.unit.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Status</label>
+                                    <div class="form-check">
+                                        {{ form.is_active(class="form-check-input") }}
+                                        {{ form.is_active.label(class="form-check-label") }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.description.label(class="form-label") }}
+                            {{ form.description(class="form-control", rows="3", placeholder="Optional description of this specification") }}
+                            {% if form.description.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.description.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('specifications.specifications') }}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to Specifications
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> {% if edit %}Update{% else %}Create{% endif %} Specification
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

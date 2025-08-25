@@ -130,6 +130,27 @@
                             </a></li>
                         </ul>
                     </li>
+                    
+                    <!-- Menu Administration (pour admin et quality_manager) -->
+                    {% if current_user.is_authenticated and current_user.role in ['admin', 'quality_manager'] %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" 
+                           aria-expanded="false" aria-haspopup="true" id="adminDropdown">
+                            <i class="bi bi-gear" aria-hidden="true"></i> Administration
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('specifications.specifications') }}">
+                                <i class="bi bi-sliders" aria-hidden="true"></i> Spécifications Qualité
+                            </a></li>
+                            {% if current_user.role == 'admin' %}
+                            <li><hr class="dropdown-divider" role="separator"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('specifications.initialize_all_defaults') }}">
+                                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> Initialiser Spécifications
+                            </a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                    {% endif %}
                 </ul>
                 
                 <!-- Menu Utilisateur -->
