@@ -19,36 +19,82 @@
     </div>
 </div>
 
-<!-- Specifications Reference -->
+<!-- Sous-Contrôles Argile -->
 <div class="row mb-4">
     <div class="col-12">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-light">
-                <h6 class="mb-0"><i class="bi bi-info-circle text-info"></i> Limites de Spécification</h6>
+                <h6 class="mb-0"><i class="bi bi-list-check text-info"></i> Sous-Contrôles Argile</h6>
             </div>
             <div class="card-body">
+                <!-- R2-F1-LABO - Contrôles d'Humidité -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h6 class="text-primary"><i class="bi bi-droplet"></i> Fiche Rapport: R2-F1-LABO - Contrôles d'Humidité</h6>
+                        <p class="text-muted small">Moyens : Balance Et Etuve/Séchoir</p>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="border rounded p-3">
+                            <h6 class="text-warning mb-2">1. Humidité Trémie Générale</h6>
+                            <p class="small text-muted">Avant préparation</p>
+                            <div class="d-flex justify-content-between">
+                                <span class="badge bg-secondary">Spéc:</span>
+                                <span class="fw-bold">2.5% ≤ H ≤ 4.1%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="border rounded p-3">
+                            <h6 class="text-warning mb-2">2. Humidité Après Tamisage</h6>
+                            <p class="small text-muted">Contrôle post-tamisage</p>
+                            <div class="d-flex justify-content-between">
+                                <span class="badge bg-secondary">Spéc:</span>
+                                <span class="fw-bold">2% ≤ H ≤ 3.5%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="border rounded p-3">
+                            <h6 class="text-warning mb-2">3. Humidité Niveau Silo</h6>
+                            <p class="small text-muted">Après préparation</p>
+                            <div class="d-flex justify-content-between">
+                                <span class="badge bg-secondary">Spéc:</span>
+                                <span class="fw-bold">5.3% ≤ H ≤ 6.3%</span>
+                            </div>
+                            <small class="text-info">Méthode: R2-MA-LABO-01</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- R2-F2-LABO - Analyse Granulométrique -->
                 <div class="row">
-                    <div class="col-md-4">
-                        <strong>Contrôles d'Humidité :</strong>
-                        <ul class="list-unstyled mt-2">
-                            <li><span class="badge bg-secondary">Avant Prépa :</span> 2.5% - 4.1%</li>
-                            <li><span class="badge bg-secondary">Après Tamisage :</span> 2.0% - 3.5%</li>
-                            <li><span class="badge bg-secondary">Après Prépa :</span> 5.3% - 6.3%</li>
-                        </ul>
+                    <div class="col-12">
+                        <h6 class="text-success"><i class="bi bi-graph-up"></i> Fiche Rapport: R2-F2-LABO - Analyse Granulométrique</h6>
                     </div>
-                    <div class="col-md-4">
-                        <strong>Analyse Chimique :</strong>
-                        <ul class="list-unstyled mt-2">
-                            <li><span class="badge bg-secondary">Granulométrie :</span> 10% - 20%</li>
-                            <li><span class="badge bg-secondary">CaCO₃ :</span> 15% - 25%</li>
-                        </ul>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="border rounded p-3">
+                            <h6 class="text-success mb-2">4. Granulométrie CaCO₃</h6>
+                            <p class="small text-muted">Moyens : Machine granulométrie</p>
+                            <div class="d-flex justify-content-between">
+                                <span class="badge bg-secondary">Spéc:</span>
+                                <span class="fw-bold">10% ≤ Refus ≤ 20%</span>
+                            </div>
+                            <small class="text-info">Méthode: R2-MA-LABO-03</small>
+                        </div>
                     </div>
-                    <div class="col-md-4">
-                        <strong>Fréquence de Test :</strong>
-                        <ul class="list-unstyled mt-2">
-                            <li><span class="badge bg-info">Quotidien :</span> Contrôles d'humidité</li>
-                            <li><span class="badge bg-info">Hebdomadaire :</span> Granulométrie & CaCO₃</li>
-                        </ul>
+                    <div class="col-md-6">
+                        <div class="border rounded p-3">
+                            <h6 class="text-success mb-2">5. % Chaux (CaCO₃)</h6>
+                            <p class="small text-muted">Moyens : Calcimètre</p>
+                            <div class="d-flex justify-content-between">
+                                <span class="badge bg-secondary">Spéc:</span>
+                                <span class="fw-bold">15% ≤ CaCO₃ ≤ 25%</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -85,60 +131,80 @@
                         </div>
                     </div>
                     
-                    <h6 class="text-muted border-bottom pb-2 mb-3">Humidity Measurements</h6>
+                    <h6 class="text-primary border-bottom pb-2 mb-3">
+                        <i class="bi bi-droplet"></i> R2-F1-LABO - Contrôles d'Humidité
+                        <small class="text-muted">(Balance Et Etuve/Séchoir)</small>
+                    </h6>
                     
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            {{ form.humidity_before_prep.label(class="form-label") }}
+                            <label class="form-label">
+                                <strong>1. Humidité Trémie Générale</strong>
+                                <small class="text-muted d-block">Avant préparation</small>
+                            </label>
                             <div class="input-group">
                                 {{ form.humidity_before_prep(class="form-control", **{"data-min": "2.5", "data-max": "4.1"}) }}
                                 <span class="input-group-text">%</span>
                             </div>
-                            <small class="text-muted">Spec: 2.5% - 4.1%</small>
+                            <small class="text-muted">Spéc: 2.5% ≤ H ≤ 4.1%</small>
                             <div class="invalid-feedback"></div>
                         </div>
                         
                         <div class="col-md-4 mb-3">
-                            {{ form.humidity_after_sieving.label(class="form-label") }}
+                            <label class="form-label">
+                                <strong>2. Humidité Après Tamisage</strong>
+                                <small class="text-muted d-block">Contrôle post-tamisage</small>
+                            </label>
                             <div class="input-group">
                                 {{ form.humidity_after_sieving(class="form-control", **{"data-min": "2.0", "data-max": "3.5"}) }}
                                 <span class="input-group-text">%</span>
                             </div>
-                            <small class="text-muted">Spec: 2.0% - 3.5%</small>
+                            <small class="text-muted">Spéc: 2% ≤ H ≤ 3.5%</small>
                             <div class="invalid-feedback"></div>
                         </div>
                         
                         <div class="col-md-4 mb-3">
-                            {{ form.humidity_after_prep.label(class="form-label") }}
+                            <label class="form-label">
+                                <strong>3. Humidité Niveau Silo</strong>
+                                <small class="text-muted d-block">Après préparation</small>
+                            </label>
                             <div class="input-group">
                                 {{ form.humidity_after_prep(class="form-control", **{"data-min": "5.3", "data-max": "6.3"}) }}
                                 <span class="input-group-text">%</span>
                             </div>
-                            <small class="text-muted">Spec: 5.3% - 6.3%</small>
+                            <small class="text-muted">Spéc: 5.3% ≤ H ≤ 6.3% (R2-MA-LABO-01)</small>
                             <div class="invalid-feedback"></div>
                         </div>
                     </div>
                     
-                    <h6 class="text-muted border-bottom pb-2 mb-3">Chemical Analysis (Weekly)</h6>
+                    <h6 class="text-success border-bottom pb-2 mb-3">
+                        <i class="bi bi-graph-up"></i> R2-F2-LABO - Analyse Granulométrique
+                    </h6>
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            {{ form.granulometry_refusal.label(class="form-label") }}
+                            <label class="form-label">
+                                <strong>4. Granulométrie après tamis CaCO₃</strong>
+                                <small class="text-muted d-block">Moyens : Machine granulométrie</small>
+                            </label>
                             <div class="input-group">
                                 {{ form.granulometry_refusal(class="form-control", **{"data-min": "10", "data-max": "20"}) }}
-                                <span class="input-group-text">%</span>
+                                <span class="input-group-text">% Refus</span>
                             </div>
-                            <small class="text-muted">Spec: 10% - 20%</small>
+                            <small class="text-muted">Spéc: 10% ≤ Refus ≤ 20% (R2-MA-LABO-03)</small>
                             <div class="invalid-feedback"></div>
                         </div>
                         
                         <div class="col-md-6 mb-3">
-                            {{ form.calcium_carbonate.label(class="form-label") }}
+                            <label class="form-label">
+                                <strong>5. % Chaux (argile)</strong>
+                                <small class="text-muted d-block">Moyens : Calcimètre</small>
+                            </label>
                             <div class="input-group">
                                 {{ form.calcium_carbonate(class="form-control", **{"data-min": "15", "data-max": "25"}) }}
-                                <span class="input-group-text">%</span>
+                                <span class="input-group-text">% CaCO₃</span>
                             </div>
-                            <small class="text-muted">Spec: 15% - 25%</small>
+                            <small class="text-muted">Spéc: 15% ≤ CaCO₃ ≤ 25%</small>
                             <div class="invalid-feedback"></div>
                         </div>
                     </div>
