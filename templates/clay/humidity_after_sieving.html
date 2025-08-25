@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Humidité Après Tamisage - Céramique QC{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-droplet text-warning"></i> Humidité Après Tamisage
+            </h1>
+            <a href="{{ url_for('clay.clay_controls') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Retour
+            </a>
+        </div>
+        <p class="text-muted">R2-F1-LABO - Humidité après tamisage</p>
+    </div>
+</div>
+
+<!-- Specification Card -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-warning">
+            <div class="card-header bg-warning bg-opacity-10">
+                <h6 class="mb-0 text-warning">
+                    <i class="bi bi-info-circle"></i> Spécifications R2-F1-LABO
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Moyens :</strong>
+                        <p class="mb-2">Balance Et Etuve/Séchoir</p>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Spécifications :</strong>
+                        <p class="mb-2 fw-bold text-warning">2% ≤ H ≤ 3.5%</p>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Fiche Rapport :</strong>
+                        <p class="mb-2">R2-F1-LABO</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Form -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-plus-lg"></i> Enregistrer Humidité Après Tamisage
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" id="humidityAfterSievingForm">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.date.label(class="form-label") }}
+                            {{ form.date(class="form-control") }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.shift.label(class="form-label") }}
+                            {{ form.shift(class="form-control") }}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.measurement_time.label(class="form-label") }}
+                            {{ form.measurement_time(class="form-control") }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.humidity_after_sieving.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.humidity_after_sieving(class="form-control", **{"data-min": "2.0", "data-max": "3.5"}) }}
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <small class="text-muted">Spéc: 2% ≤ H ≤ 3.5%</small>
+                            {% if form.humidity_after_sieving.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.humidity_after_sieving.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.notes.label(class="form-label") }}
+                        {{ form.notes(class="form-control", rows="3") }}
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-check-lg"></i> Enregistrer
+                        </button>
+                        <a href="{{ url_for('clay.clay_controls') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Annuler
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="bi bi-lightbulb text-warning"></i> Instructions</h6>
+            </div>
+            <div class="card-body">
+                <h6>Procédure :</h6>
+                <ol class="list-unstyled">
+                    <li><i class="bi bi-1-circle text-warning"></i> Prélever échantillon après tamisage</li>
+                    <li><i class="bi bi-2-circle text-warning"></i> Peser échantillon humide</li>
+                    <li><i class="bi bi-3-circle text-warning"></i> Placer dans étuve/séchoir</li>
+                    <li><i class="bi bi-4-circle text-warning"></i> Peser échantillon sec</li>
+                    <li><i class="bi bi-5-circle text-warning"></i> Calculer % humidité</li>
+                </ol>
+                
+                <div class="alert alert-warning mt-3">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>Important :</strong> Contrôle post-tamisage pour vérifier la teneur en humidité après traitement.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    initializeValidation('humidityAfterSievingForm');
+});
+</script>
+{% endblock %}

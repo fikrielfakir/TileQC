@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}% Chaux CaCO₃ - Céramique QC{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-graph-up text-success"></i> % Chaux (CaCO₃)
+            </h1>
+            <a href="{{ url_for('clay.clay_controls') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Retour
+            </a>
+        </div>
+        <p class="text-muted">R2-F2-LABO - Granulométrie après tamis CaCO₃ - % Chaux (argile)</p>
+    </div>
+</div>
+
+<!-- Specification Card -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-success">
+            <div class="card-header bg-success bg-opacity-10">
+                <h6 class="mb-0 text-success">
+                    <i class="bi bi-info-circle"></i> Spécifications R2-F2-LABO
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Moyens :</strong>
+                        <p class="mb-2">Calcimètre</p>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Spécifications :</strong>
+                        <p class="mb-2 fw-bold text-success">15% ≤ CaCO₃ ≤ 25%</p>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Fiche Rapport :</strong>
+                        <p class="mb-2">R2-F2-LABO</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Form -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-plus-lg"></i> Enregistrer % Chaux CaCO₃
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" id="calciumCarbonateForm">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.date.label(class="form-label") }}
+                            {{ form.date(class="form-control") }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.shift.label(class="form-label") }}
+                            {{ form.shift(class="form-control") }}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.measurement_time.label(class="form-label") }}
+                            {{ form.measurement_time(class="form-control") }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.calcium_carbonate.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.calcium_carbonate(class="form-control", **{"data-min": "15", "data-max": "25"}) }}
+                                <span class="input-group-text">% CaCO₃</span>
+                            </div>
+                            <small class="text-muted">Spéc: 15% ≤ CaCO₃ ≤ 25%</small>
+                            {% if form.calcium_carbonate.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.calcium_carbonate.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.notes.label(class="form-label") }}
+                        {{ form.notes(class="form-control", rows="3") }}
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-lg"></i> Enregistrer
+                        </button>
+                        <a href="{{ url_for('clay.clay_controls') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Annuler
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="bi bi-lightbulb text-success"></i> Instructions</h6>
+            </div>
+            <div class="card-body">
+                <h6>Procédure :</h6>
+                <ol class="list-unstyled">
+                    <li><i class="bi bi-1-circle text-success"></i> Prélever échantillon d'argile</li>
+                    <li><i class="bi bi-2-circle text-success"></i> Préparer échantillon pour calcimètre</li>
+                    <li><i class="bi bi-3-circle text-success"></i> Effectuer mesure au calcimètre</li>
+                    <li><i class="bi bi-4-circle text-success"></i> Mesurer dégagement de CO₂</li>
+                    <li><i class="bi bi-5-circle text-success"></i> Calculer % CaCO₃</li>
+                </ol>
+                
+                <div class="alert alert-success mt-3">
+                    <i class="bi bi-check-circle"></i>
+                    <strong>Important :</strong> Analyse du pourcentage de chaux dans l'argile - contrôle chimique essentiel.
+                </div>
+                
+                <div class="alert alert-info mt-3">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>Calcimètre :</strong> Instrument de mesure du taux de carbonate de calcium dans l'échantillon.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    initializeValidation('calciumCarbonateForm');
+});
+</script>
+{% endblock %}

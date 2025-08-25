@@ -10,9 +10,35 @@
                 <i class="bi bi-layers text-warning"></i> Contrôle Argile (PDM Argile)
             </h1>
             {% if not form %}
-            <a href="{{ url_for('clay.add_clay_control') }}" class="btn btn-primary">
-                <i class="bi bi-plus-lg"></i> Ajouter Contrôle Argile
-            </a>
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-plus-lg"></i> Ajouter Contrôle Argile
+                </button>
+                <ul class="dropdown-menu">
+                    <li><h6 class="dropdown-header">R2-F1-LABO - Contrôles d'Humidité</h6></li>
+                    <li><a class="dropdown-item" href="{{ url_for('clay.humidity_before_prep') }}">
+                        <i class="bi bi-droplet text-warning"></i> Humidité Trémie Générale
+                    </a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('clay.humidity_after_sieving') }}">
+                        <i class="bi bi-droplet text-warning"></i> Humidité Après Tamisage
+                    </a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('clay.humidity_after_prep') }}">
+                        <i class="bi bi-droplet text-warning"></i> Humidité Niveau Silo
+                    </a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><h6 class="dropdown-header">R2-F2-LABO - Analyse Granulométrique</h6></li>
+                    <li><a class="dropdown-item" href="{{ url_for('clay.granulometry') }}">
+                        <i class="bi bi-graph-up text-success"></i> Granulométrie CaCO₃
+                    </a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('clay.calcium_carbonate') }}">
+                        <i class="bi bi-graph-up text-success"></i> % Chaux (CaCO₃)
+                    </a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{ url_for('clay.add_clay_control') }}">
+                        <i class="bi bi-list-ul text-info"></i> Formulaire Complet
+                    </a></li>
+                </ul>
+            </div>
             {% endif %}
         </div>
         <p class="text-muted">Surveiller les paramètres de préparation d'argile selon les spécifications R2-LABO</p>

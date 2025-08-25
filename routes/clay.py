@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
-from forms import ClayControlForm
+from forms import ClayControlForm, HumidityBeforePrepForm, HumidityAfterSievingForm, HumidityAfterPrepForm, GranulometryForm, CalciumCarbonateForm
 from models import ClayControl
 from app import db
 from datetime import date
@@ -88,3 +88,120 @@ def clay_trend_api(parameter):
     from utils.helpers import get_control_chart_data
     data = get_control_chart_data(ClayControl, parameter, days=30)
     return jsonify(data)
+
+# Separate routes for each clay sub-control
+
+@clay_bp.route('/humidity-before-prep', methods=['GET', 'POST'])
+@login_required
+def humidity_before_prep():
+    form = HumidityBeforePrepForm()
+    
+    if form.validate_on_submit():
+        clay_control = ClayControl(
+            date=form.date.data,
+            shift=form.shift.data,
+            measurement_time_1=form.measurement_time.data,
+            humidity_before_prep=form.humidity_before_prep.data,
+            notes=form.notes.data,
+            controller_id=current_user.id
+        )
+        
+        db.session.add(clay_control)
+        db.session.commit()
+        
+        flash('Humidité trémie générale enregistrée avec succès', 'success')
+        return redirect(url_for('clay.clay_controls'))
+    
+    return render_template('clay/humidity_before_prep.html', form=form)
+
+@clay_bp.route('/humidity-after-sieving', methods=['GET', 'POST'])
+@login_required
+def humidity_after_sieving():
+    form = HumidityAfterSievingForm()
+    
+    if form.validate_on_submit():
+        clay_control = ClayControl(
+            date=form.date.data,
+            shift=form.shift.data,
+            measurement_time_1=form.measurement_time.data,
+            humidity_after_sieving=form.humidity_after_sieving.data,
+            notes=form.notes.data,
+            controller_id=current_user.id
+        )
+        
+        db.session.add(clay_control)
+        db.session.commit()
+        
+        flash('Humidité après tamisage enregistrée avec succès', 'success')
+        return redirect(url_for('clay.clay_controls'))
+    
+    return render_template('clay/humidity_after_sieving.html', form=form)
+
+@clay_bp.route('/humidity-after-prep', methods=['GET', 'POST'])
+@login_required
+def humidity_after_prep():
+    form = HumidityAfterPrepForm()
+    
+    if form.validate_on_submit():
+        clay_control = ClayControl(
+            date=form.date.data,
+            shift=form.shift.data,
+            measurement_time_1=form.measurement_time.data,
+            humidity_after_prep=form.humidity_after_prep.data,
+            notes=form.notes.data,
+            controller_id=current_user.id
+        )
+        
+        db.session.add(clay_control)
+        db.session.commit()
+        
+        flash('Humidité niveau silo enregistrée avec succès', 'success')
+        return redirect(url_for('clay.clay_controls'))
+    
+    return render_template('clay/humidity_after_prep.html', form=form)
+
+@clay_bp.route('/granulometry', methods=['GET', 'POST'])
+@login_required
+def granulometry():
+    form = GranulometryForm()
+    
+    if form.validate_on_submit():
+        clay_control = ClayControl(
+            date=form.date.data,
+            shift=form.shift.data,
+            measurement_time_1=form.measurement_time.data,
+            granulometry_refusal=form.granulometry_refusal.data,
+            notes=form.notes.data,
+            controller_id=current_user.id
+        )
+        
+        db.session.add(clay_control)
+        db.session.commit()
+        
+        flash('Granulométrie enregistrée avec succès', 'success')
+        return redirect(url_for('clay.clay_controls'))
+    
+    return render_template('clay/granulometry.html', form=form)
+
+@clay_bp.route('/calcium-carbonate', methods=['GET', 'POST'])
+@login_required
+def calcium_carbonate():
+    form = CalciumCarbonateForm()
+    
+    if form.validate_on_submit():
+        clay_control = ClayControl(
+            date=form.date.data,
+            shift=form.shift.data,
+            measurement_time_1=form.measurement_time.data,
+            calcium_carbonate=form.calcium_carbonate.data,
+            notes=form.notes.data,
+            controller_id=current_user.id
+        )
+        
+        db.session.add(clay_control)
+        db.session.commit()
+        
+        flash('% Chaux CaCO₃ enregistré avec succès', 'success')
+        return redirect(url_for('clay.clay_controls'))
+    
+    return render_template('clay/calcium_carbonate.html', form=form)

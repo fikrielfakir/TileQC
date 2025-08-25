@@ -19,6 +19,42 @@ class ClayControlForm(FlaskForm):
     
     notes = TextAreaField('Notes')
 
+# Separate forms for each clay sub-control
+class HumidityBeforePrepForm(FlaskForm):
+    date = DateField('Date', default=date.today, validators=[DataRequired()])
+    shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
+    measurement_time = TimeField('Temps de Mesure', validators=[Optional()])
+    humidity_before_prep = FloatField('Humidité Trémie Générale (%)', validators=[DataRequired(), NumberRange(min=2.5, max=4.1, message="Spécification: 2.5% ≤ H ≤ 4.1%")])
+    notes = TextAreaField('Notes')
+
+class HumidityAfterSievingForm(FlaskForm):
+    date = DateField('Date', default=date.today, validators=[DataRequired()])
+    shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
+    measurement_time = TimeField('Temps de Mesure', validators=[Optional()])
+    humidity_after_sieving = FloatField('Humidité Après Tamisage (%)', validators=[DataRequired(), NumberRange(min=2.0, max=3.5, message="Spécification: 2% ≤ H ≤ 3.5%")])
+    notes = TextAreaField('Notes')
+
+class HumidityAfterPrepForm(FlaskForm):
+    date = DateField('Date', default=date.today, validators=[DataRequired()])
+    shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
+    measurement_time = TimeField('Temps de Mesure', validators=[Optional()])
+    humidity_after_prep = FloatField('Humidité Niveau Silo (%)', validators=[DataRequired(), NumberRange(min=5.3, max=6.3, message="Spécification: 5.3% ≤ H ≤ 6.3%")])
+    notes = TextAreaField('Notes')
+
+class GranulometryForm(FlaskForm):
+    date = DateField('Date', default=date.today, validators=[DataRequired()])
+    shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
+    measurement_time = TimeField('Temps de Mesure', validators=[Optional()])
+    granulometry_refusal = FloatField('Refus Granulométrique (%)', validators=[DataRequired(), NumberRange(min=10, max=20, message="Spécification: 10% ≤ Refus ≤ 20%")])
+    notes = TextAreaField('Notes')
+
+class CalciumCarbonateForm(FlaskForm):
+    date = DateField('Date', default=date.today, validators=[DataRequired()])
+    shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
+    measurement_time = TimeField('Temps de Mesure', validators=[Optional()])
+    calcium_carbonate = FloatField('% Chaux CaCO₃ (%)', validators=[DataRequired(), NumberRange(min=15, max=25, message="Spécification: 15% ≤ CaCO₃ ≤ 25%")])
+    notes = TextAreaField('Notes')
+
 class PressControlForm(FlaskForm):
     date = DateField('Date', default=date.today, validators=[DataRequired()])
     shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
