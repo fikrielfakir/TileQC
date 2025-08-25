@@ -378,6 +378,12 @@
                                            class="btn btn-outline-primary">
                                             <i class="bi bi-pencil"></i>
                                         </a>
+                                        {% if control.humidity_before_prep and control.humidity_after_sieving and control.humidity_after_prep %}
+                                        <a href="{{ url_for('clay.print_r2_f1_labo', id=control.id) }}" 
+                                           class="btn btn-outline-info" title="Imprimer Fiche R2-F1-LABO">
+                                            <i class="bi bi-printer"></i>
+                                        </a>
+                                        {% endif %}
                                         {% if current_user.role in ['admin', 'quality_manager'] %}
                                         <form method="POST" action="{{ url_for('clay.delete_clay_control', id=control.id) }}" 
                                               style="display: inline;" onsubmit="return confirm('Are you sure?')">

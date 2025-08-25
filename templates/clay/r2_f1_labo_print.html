@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiche R2-F1-LABO - Impression</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            background-color: white;
+            padding: 20px;
+        }
+
+        .r2-form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border: 2px solid #000;
+            padding: 0;
+        }
+
+        /* Header Section */
+        .header-section {
+            display: flex;
+            border-bottom: 2px solid #000;
+        }
+
+        .header-item {
+            flex: 1;
+            padding: 10px;
+            border-right: 2px solid #000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-item:last-child {
+            border-right: none;
+        }
+
+        .header-item label {
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        /* Section Styles */
+        .section {
+            border-bottom: 2px solid #000;
+        }
+
+        .section:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-header {
+            background-color: #d3d3d3;
+            padding: 8px 12px;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 1px solid #000;
+            font-size: 11px;
+        }
+
+        .section-content {
+            display: table;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .row {
+            display: table-row;
+        }
+
+        .cell {
+            display: table-cell;
+            border: 1px solid #000;
+            padding: 6px 8px;
+            vertical-align: middle;
+            text-align: center;
+            position: relative;
+            min-height: 30px;
+        }
+
+        .cell:first-child {
+            border-left: none;
+        }
+
+        .cell:last-child {
+            border-right: none;
+        }
+
+        /* Specific styling for different sections */
+        .specification {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+
+        .specification-value {
+            background-color: #f8f8f8;
+            font-weight: bold;
+            font-size: 11px;
+        }
+
+        .dotted-line {
+            border-bottom: 1px dotted #000 !important;
+            min-width: 200px;
+            padding: 2px 5px;
+            display: inline-block;
+        }
+
+        .dotted-line-small {
+            border-bottom: 1px dotted #000 !important;
+            min-width: 60px;
+            padding: 2px 5px;
+            display: inline-block;
+        }
+
+        /* Footer Section */
+        .footer-section {
+            display: flex;
+            border-top: 2px solid #000;
+            margin-top: 0;
+        }
+
+        .footer-item {
+            flex: 1;
+            padding: 15px;
+            border-right: 2px solid #000;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .footer-item:last-child {
+            border-right: none;
+        }
+
+        /* Header row styling */
+        .header-row .cell {
+            background-color: #e8e8e8;
+            font-weight: bold;
+            font-size: 10px;
+        }
+
+        /* Special styling for merged cells effect */
+        .colspan-5 {
+            text-align: center;
+            font-weight: bold;
+            background-color: #f0f0f0;
+        }
+
+        /* Silo section specific styling */
+        .silo-specification {
+            background-color: #f8f8f8;
+            font-weight: bold;
+            font-size: 10px;
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                padding: 0;
+            }
+            
+            .r2-form-container {
+                margin: 0;
+                box-shadow: none;
+            }
+            
+            .no-print {
+                display: none;
+            }
+        }
+
+        .print-buttons {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .value {
+            font-weight: bold;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <!-- Print Buttons -->
+    <div class="print-buttons no-print">
+        <button onclick="window.print()" class="btn btn-primary">
+            <i class="bi bi-printer"></i> Imprimer
+        </button>
+        <button onclick="window.close()" class="btn btn-secondary">
+            Fermer
+        </button>
+    </div>
+
+    <div class="r2-form-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="header-item">
+                <label>Contrôleur :</label>
+                <span class="dotted-line value">{{ control.controller.full_name or control.controller.username }}</span>
+            </div>
+            <div class="header-item">
+                <label>Date :</label>
+                <span class="dotted-line value">{{ control.date.strftime('%d/%m/%Y') }}</span>
+            </div>
+        </div>
+
+        <!-- HUMIDITE TREMIE GENERALE Section -->
+        <div class="section">
+            <div class="section-header">HUMIDITE TREMIE GENERALE</div>
+            <div class="section-content">
+                <div class="row">
+                    <div class="cell">% Humidité<br><span class="value">{{ "%.2f"|format(control.humidity_before_prep) if control.humidity_before_prep else '' }}%</span></div>
+                    <div class="cell">Contrôleur : <span class="dotted-line-small value">{{ control.controller.username }}</span></div>
+                    <div class="cell">Heure : <span class="dotted-line-small value">{{ control.measurement_time_1.strftime('%H:%M') if control.measurement_time_1 else '' }}</span></div>
+                </div>
+                <div class="row">
+                    <div class="cell"></div>
+                    <div class="cell specification">Spécifications</div>
+                    <div class="cell">N° F.N.C.</div>
+                </div>
+                <div class="row">
+                    <div class="cell"></div>
+                    <div class="cell specification-value">2,5 % ≤ % H ≤ 4,1 %</div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HUMIDITE APRES TAMISAGE Section -->
+        <div class="section">
+            <div class="section-header">HUMIDITE APRES TAMISAGE</div>
+            <div class="section-content">
+                <div class="row">
+                    <div class="cell">% Humidité<br><span class="value">{{ "%.2f"|format(control.humidity_after_sieving) if control.humidity_after_sieving else '' }}%</span></div>
+                    <div class="cell">Contrôleur : <span class="dotted-line-small value">{{ control.controller.username }}</span></div>
+                    <div class="cell">Heure : <span class="dotted-line-small value">{{ control.measurement_time_2.strftime('%H:%M') if control.measurement_time_2 else '' }}</span></div>
+                </div>
+                <div class="row">
+                    <div class="cell"></div>
+                    <div class="cell specification">Spécifications</div>
+                    <div class="cell">N° F.N.C.</div>
+                </div>
+                <div class="row">
+                    <div class="cell"></div>
+                    <div class="cell specification-value">2 % ≤ H ≤ 3,5 %</div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HUMIDITE SILOS Section -->
+        <div class="section">
+            <div class="section-header">HUMIDITE SILOS</div>
+            <div class="section-content">
+                <div class="row header-row">
+                    <div class="cell">Heure</div>
+                    <div class="cell">N° Silo</div>
+                    <div class="cell">% humidité</div>
+                    <div class="cell">Contrôleur : <span class="dotted-line-small value">{{ control.controller.username }}</span></div>
+                    <div class="cell">N° F.N.C.</div>
+                </div>
+                <div class="silo-rows">
+                    <div class="row">
+                        <div class="cell"><span class="dotted-line-small">....H......</span></div>
+                        <div class="cell"><span class="dotted-line-small"></span></div>
+                        <div class="cell"><span class="dotted-line-small"></span></div>
+                        <div class="cell silo-specification">5,3 % ≤ H ≤ 6,3 %</div>
+                        <div class="cell"></div>
+                    </div>
+                    <div class="row">
+                        <div class="cell"><span class="dotted-line-small">....H......</span></div>
+                        <div class="cell"><span class="dotted-line-small"></span></div>
+                        <div class="cell"><span class="dotted-line-small"></span></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                    </div>
+                    <div class="row">
+                        <div class="cell"><span class="dotted-line-small">....H......</span></div>
+                        <div class="cell"><span class="dotted-line-small"></span></div>
+                        <div class="cell"><span class="dotted-line-small"></span></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                    </div>
+                    <div class="row">
+                        <div class="cell"><span class="dotted-line-small">....H......</span></div>
+                        <div class="cell"><span class="dotted-line-small"></span></div>
+                        <div class="cell"><span class="dotted-line-small"></span></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cell colspan-5">Humidité Moyenne: <span class="value">{{ "%.2f"|format(control.humidity_after_prep) if control.humidity_after_prep else '' }}%</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HUMIDITE ARGILE PRESSE Section -->
+        <div class="section">
+            <div class="section-header">HUMIDITE ARGILE PRESSE</div>
+            <div class="section-content">
+                <div class="row">
+                    <div class="cell">N° Silo<br><span class="dotted-line-small"></span></div>
+                    <div class="cell">% Humidité<br><span class="dotted-line-small"></span></div>
+                    <div class="cell">Contrôleur : <span class="dotted-line-small value">{{ control.controller.username }}</span></div>
+                    <div class="cell">Heure : <span class="dotted-line-small"></span></div>
+                </div>
+                <div class="row">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell specification">Spécifications</div>
+                    <div class="cell">N° F.N.C.</div>
+                </div>
+                <div class="row">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell specification-value">5,2 ≤ % Humidité ≤ 6 %</div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HUMIDITE RESIDUELLE SECHOIR Section -->
+        <div class="section">
+            <div class="section-header">HUMIDITE RESIDUELLE SECHOIR</div>
+            <div class="section-content">
+                <div class="row">
+                    <div class="cell">% Humidité<br><span class="dotted-line-small"></span></div>
+                    <div class="cell">Contrôleur : <span class="dotted-line-small value">{{ control.controller.username }}</span></div>
+                    <div class="cell">Heure : <span class="dotted-line-small"></span></div>
+                </div>
+                <div class="row">
+                    <div class="cell"></div>
+                    <div class="cell specification">Spécifications</div>
+                    <div class="cell">N° F.N.C.</div>
+                </div>
+                <div class="row">
+                    <div class="cell"></div>
+                    <div class="cell specification-value">0,1%≤ % HRM ≤1,5%</div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="footer-section">
+            <div class="footer-item">
+                <label>Visa Contrôleur</label>
+            </div>
+            <div class="footer-item">
+                <label>Visa Service Laboratoire</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notes -->
+    {% if control.notes %}
+    <div style="margin-top: 20px; padding: 10px; border: 1px solid #ccc;">
+        <strong>Notes:</strong> {{ control.notes }}
+    </div>
+    {% endif %}
+
+    <script>
+        // Auto-print on load (optional)
+        // window.onload = function() { window.print(); }
+    </script>
+</body>
+</html>

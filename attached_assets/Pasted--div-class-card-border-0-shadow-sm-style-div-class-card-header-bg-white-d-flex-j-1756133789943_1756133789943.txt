@@ -1,0 +1,150 @@
+<div class="card border-0 shadow-sm" style="">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Enregistrements Contrôle Argile</h5>
+                <div class="d-flex gap-2">
+                    <select class="form-select form-select-sm" style="width: auto;">
+                        <option>Tous Enregistrements</option>
+                        <option>Aujourd'hui</option>
+                        <option>Cette Semaine</option>
+                        <option>Ce Mois</option>
+                    </select>
+                </div>
+            </div>
+            <div class="card-body">
+                
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Équipe</th>
+                                <th>Humidité Avant Prép</th>
+                                <th>Humidité Après Tamisage</th>
+                                <th>Humidité Après Prép</th>
+                                <th>Granulométrie</th>
+                                <th>CaCO₃</th>
+                                <th>Statut</th>
+                                <th>Contrôleur</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <tr>
+                                <td>2025-08-25</td>
+                                <td>
+                                    
+                                        <span class="badge bg-secondary">Morning</span>
+                                    
+                                </td>
+                                <td>
+                                    
+                                        3.00%
+                                    
+                                </td>
+                                <td>
+                                    
+                                        2.50%
+                                    
+                                </td>
+                                <td>
+                                    
+                                        5.90%
+                                    
+                                </td>
+                                <td>
+                                    
+                                        19.00%
+                                    
+                                </td>
+                                <td>
+                                    
+                                        18.00%
+                                    
+                                </td>
+                                <td>
+                                    
+                                        <span class="badge bg-success">Conforme</span>
+                                    
+                                </td>
+                                <td>System Administrator</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="/clay/edit/1" class="btn btn-outline-primary" style="touch-action: manipulation;">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        
+                                        <form method="POST" action="/clay/delete/1" style="display: inline;" onsubmit="return confirm('Are you sure?')">
+                                            <button type="submit" class="btn btn-outline-danger" style="touch-action: manipulation;">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                        
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>2025-08-25</td>
+                                <td>
+                                    
+                                        <span class="badge bg-secondary">Morning</span>
+                                    
+                                </td>
+                                <td>
+                                    
+                                        3.00%
+                                    
+                                </td>
+                                <td>
+                                    
+                                        <span class="text-muted">-</span>
+                                    
+                                </td>
+                                <td>
+                                    
+                                        <span class="text-muted">-</span>
+                                    
+                                </td>
+                                <td>
+                                    
+                                        <span class="text-muted">-</span>
+                                    
+                                </td>
+                                <td>
+                                    
+                                        <span class="text-muted">-</span>
+                                    
+                                </td>
+                                <td>
+                                    
+                                        <span class="badge bg-success">Conforme</span>
+                                    
+                                </td>
+                                <td>System Administrator</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="/clay/edit/2" class="btn btn-outline-primary" style="touch-action: manipulation;">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        
+                                        <form method="POST" action="/clay/delete/2" style="display: inline;" onsubmit="return confirm('Are you sure?')">
+                                            <button type="submit" class="btn btn-outline-danger" style="touch-action: manipulation;">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                        
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                
+                
+                
+            </div>
+        </div>

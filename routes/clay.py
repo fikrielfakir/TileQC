@@ -231,3 +231,27 @@ def r2_f1_labo_form():
         return redirect(url_for('clay.clay_controls'))
     
     return render_template('clay/r2_f1_labo_form.html', form=form)
+
+@clay_bp.route('/print-r2-f1-labo/<int:id>')
+@login_required
+def print_r2_f1_labo(id):
+    clay_control = ClayControl.query.get_or_404(id)
+    
+    # Check if the record has the required humidity measurements for R2-F1-LABO
+    if not (clay_control.humidity_before_prep and 
+            clay_control.humidity_after_sieving and 
+            clay_control.humidity_after_prep):
+        flash('Ce contrôle ne contient pas toutes les mesures requises pour la fiche R2-F1-LABO', 'error')
+        return redirect(url_for('clay.clay_controls'))
+    
+    # Create a form pre-filled with the data
+    form = R2F1LaboForm()
+    form.date.data = clay_control.date
+    form.humidity_before_prep.data = clay_control.humidity_before_prep
+    form.humidity_after_sieving.data = clay_control.humidity_after_sieving
+    form.humidity_after_prep.data = clay_control.humidity_after_prep
+    form.measurement_time_1.data = clay_control.measurement_time_1
+    form.measurement_time_2.data = clay_control.measurement_time_2
+    form.notes.data = clay_control.notes
+    
+    return render_template('clay/r2_f1_labo_print.html', form=form, control=clay_control)
