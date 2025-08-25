@@ -155,7 +155,7 @@
                                 {{ form.sieve_refusal(class="form-control") }}
                                 <span class="input-group-text">%</span>
                             </div>
-                            <small class="text-muted">Check against limits</small>
+                            <small class="text-muted">Vérifier contre les limites</small>
                         </div>
                     </div>
                     
@@ -166,10 +166,10 @@
                     
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-lg"></i> {% if edit %}Update{% else %}Save{% endif %} Record
+                            <i class="bi bi-check-lg"></i> {% if edit %}Modifier{% else %}Enregistrer{% endif %} Contrôle
                         </button>
                         <a href="{{ url_for('enamel.enamel_controls') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left"></i> Back to List
+                            <i class="bi bi-arrow-left"></i> Retour à la Liste
                         </a>
                     </div>
                 </form>
@@ -180,25 +180,25 @@
     <div class="col-lg-4">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-light">
-                <h6 class="mb-0"><i class="bi bi-lightbulb text-warning"></i> Enamel Guidelines</h6>
+                <h6 class="mb-0"><i class="bi bi-lightbulb text-warning"></i> Directives Émail</h6>
             </div>
             <div class="card-body">
-                <h6>Measurement Types:</h6>
+                <h6>Types de Mesures:</h6>
                 <ul class="list-unstyled">
-                    <li><i class="bi bi-flask text-info"></i> PDE: 1x/day preparation</li>
-                    <li><i class="bi bi-gear text-info"></i> Production Line: 12x/day</li>
+                    <li><i class="bi bi-flask text-info"></i> PDE: 1x/jour préparation</li>
+                    <li><i class="bi bi-gear text-info"></i> Ligne Production: 12x/jour</li>
                 </ul>
                 
-                <h6 class="mt-3">Critical Parameters:</h6>
+                <h6 class="mt-3">Paramètres Critiques:</h6>
                 <ul class="list-unstyled">
-                    <li><i class="bi bi-speedometer text-warning"></i> Density (type-specific)</li>
-                    <li><i class="bi bi-hourglass text-warning"></i> Viscosity (25-55 sec)</li>
-                    <li><i class="bi bi-weight text-warning"></i> Grammage (format-specific)</li>
+                    <li><i class="bi bi-speedometer text-warning"></i> Densité (spécifique au type)</li>
+                    <li><i class="bi bi-hourglass text-warning"></i> Viscosité (25-55 sec)</li>
+                    <li><i class="bi bi-weight text-warning"></i> Grammage (spécifique au format)</li>
                 </ul>
                 
                 <div class="alert alert-info mt-3">
                     <i class="bi bi-info-circle"></i>
-                    <strong>Note:</strong> Specifications automatically update based on enamel type and format selection.
+                    <strong>Note:</strong> Les spécifications se mettent à jour automatiquement selon le type d'émail et la sélection de format.
                 </div>
             </div>
         </div>
@@ -211,11 +211,11 @@
     <div class="col-12">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Enamel Control Records</h5>
+                <h5 class="mb-0">Enregistrements Contrôle Émail</h5>
                 <div class="d-flex gap-2">
                     <select class="form-select form-select-sm" style="width: auto;" 
                             onchange="window.location.href='{{ url_for('enamel.enamel_controls') }}?enamel_type=' + this.value">
-                        <option value="">All Enamel Types</option>
+                        <option value="">Tous Types d'Émail</option>
                         <option value="engobe" {{ 'selected' if enamel_filter == 'engobe' }}>Engobe</option>
                         <option value="email" {{ 'selected' if enamel_filter == 'email' }}>Email</option>
                         <option value="mate" {{ 'selected' if enamel_filter == 'mate' }}>Mate</option>
@@ -230,13 +230,13 @@
                             <tr>
                                 <th>Date</th>
                                 <th>Type</th>
-                                <th>Enamel Type</th>
-                                <th>Density</th>
-                                <th>Viscosity</th>
+                                <th>Type Émail</th>
+                                <th>Densité</th>
+                                <th>Viscosité</th>
                                 <th>Format</th>
                                 <th>Grammage</th>
-                                <th>Status</th>
-                                <th>Controller</th>
+                                <th>Statut</th>
+                                <th>Contrôleur</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -291,14 +291,14 @@
                                 </td>
                                 <td>
                                     {% if control.compliance_status == 'compliant' %}
-                                        <span class="badge bg-success">Compliant</span>
+                                        <span class="badge bg-success">Conforme</span>
                                     {% elif control.compliance_status == 'non_compliant' %}
-                                        <span class="badge bg-danger">Non-Compliant</span>
+                                        <span class="badge bg-danger">Non-Conforme</span>
                                     {% else %}
-                                        <span class="badge bg-secondary">Partial</span>
+                                        <span class="badge bg-secondary">Partiel</span>
                                     {% endif %}
                                 </td>
-                                <td>{{ control.controller.full_name if control.controller else 'Unknown' }}</td>
+                                <td>{{ control.controller.full_name if control.controller else 'Inconnu' }}</td>
                                 <td>
                                     <div class="btn-group btn-group-sm">
                                         <a href="{{ url_for('enamel.edit_enamel_control', id=control.id) }}" 

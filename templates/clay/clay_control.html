@@ -150,10 +150,10 @@
                     
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-lg"></i> {% if edit %}Update{% else %}Save{% endif %} Record
+                            <i class="bi bi-check-lg"></i> {% if edit %}Modifier{% else %}Enregistrer{% endif %} Contrôle
                         </button>
                         <a href="{{ url_for('clay.clay_controls') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left"></i> Back to List
+                            <i class="bi bi-arrow-left"></i> Retour à la Liste
                         </a>
                     </div>
                 </form>
@@ -173,16 +173,16 @@
                     <li><i class="bi bi-check text-success"></i> Humidity after prep (4x/day)</li>
                 </ul>
                 
-                <h6 class="mt-3">Weekly Measurements:</h6>
+                <h6 class="mt-3">Mesures Hebdomadaires:</h6>
                 <ul class="list-unstyled">
-                    <li><i class="bi bi-check text-success"></i> Humidity after sieving</li>
-                    <li><i class="bi bi-check text-success"></i> Granulometry refusal</li>
-                    <li><i class="bi bi-check text-success"></i> Calcium carbonate</li>
+                    <li><i class="bi bi-check text-success"></i> Humidité après tamisage</li>
+                    <li><i class="bi bi-check text-success"></i> Refus granulométrie</li>
+                    <li><i class="bi bi-check text-success"></i> Carbonate de calcium</li>
                 </ul>
                 
                 <div class="alert alert-info mt-3">
                     <i class="bi bi-info-circle"></i>
-                    <strong>Note:</strong> All measurements are automatically validated against R2-LABO specifications.
+                    <strong>Note:</strong> Toutes les mesures sont automatiquement validées selon les spécifications R2-LABO.
                 </div>
             </div>
         </div>
@@ -195,13 +195,13 @@
     <div class="col-12">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Clay Control Records</h5>
+                <h5 class="mb-0">Enregistrements Contrôle Argile</h5>
                 <div class="d-flex gap-2">
                     <select class="form-select form-select-sm" style="width: auto;">
-                        <option>All Records</option>
-                        <option>Today</option>
-                        <option>This Week</option>
-                        <option>This Month</option>
+                        <option>Tous Enregistrements</option>
+                        <option>Aujourd'hui</option>
+                        <option>Cette Semaine</option>
+                        <option>Ce Mois</option>
                     </select>
                 </div>
             </div>
@@ -212,14 +212,14 @@
                         <thead>
                             <tr>
                                 <th>Date</th>
-                                <th>Shift</th>
-                                <th>Humidity Before Prep</th>
-                                <th>Humidity After Sieving</th>
-                                <th>Humidity After Prep</th>
-                                <th>Granulometry</th>
+                                <th>Équipe</th>
+                                <th>Humidité Avant Prép</th>
+                                <th>Humidité Après Tamisage</th>
+                                <th>Humidité Après Prép</th>
+                                <th>Granulométrie</th>
                                 <th>CaCO₃</th>
-                                <th>Status</th>
-                                <th>Controller</th>
+                                <th>Statut</th>
+                                <th>Contrôleur</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -269,14 +269,14 @@
                                 </td>
                                 <td>
                                     {% if control.compliance_status == 'compliant' %}
-                                        <span class="badge bg-success">Compliant</span>
+                                        <span class="badge bg-success">Conforme</span>
                                     {% elif control.compliance_status == 'non_compliant' %}
-                                        <span class="badge bg-danger">Non-Compliant</span>
+                                        <span class="badge bg-danger">Non-Conforme</span>
                                     {% else %}
-                                        <span class="badge bg-secondary">Partial</span>
+                                        <span class="badge bg-secondary">Partiel</span>
                                     {% endif %}
                                 </td>
-                                <td>{{ control.controller.full_name if control.controller else 'Unknown' }}</td>
+                                <td>{{ control.controller.full_name if control.controller else 'Inconnu' }}</td>
                                 <td>
                                     <div class="btn-group btn-group-sm">
                                         <a href="{{ url_for('clay.edit_clay_control', id=control.id) }}" 

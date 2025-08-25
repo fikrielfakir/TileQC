@@ -101,7 +101,7 @@
                                 {{ form.defect_cracks(class="form-control", **{"data-max": "5"}) }}
                                 <span class="input-group-text">%</span>
                             </div>
-                            <small class="text-muted">Limit: ≤ 5%</small>
+                            <small class="text-muted">Limite: ≤ 5%</small>
                             <div class="invalid-feedback"></div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -110,7 +110,7 @@
                                 {{ form.defect_chipping(class="form-control", **{"data-max": "5"}) }}
                                 <span class="input-group-text">%</span>
                             </div>
-                            <small class="text-muted">Limit: ≤ 5%</small>
+                            <small class="text-muted">Limite: ≤ 5%</small>
                             <div class="invalid-feedback"></div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -119,7 +119,7 @@
                                 {{ form.defect_cooking(class="form-control", **{"data-max": "1"}) }}
                                 <span class="input-group-text">%</span>
                             </div>
-                            <small class="text-muted">Limit: ≤ 1%</small>
+                            <small class="text-muted">Limite: ≤ 1%</small>
                             <div class="invalid-feedback"></div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -128,7 +128,7 @@
                                 {{ form.defect_foliage(class="form-control", **{"data-max": "1"}) }}
                                 <span class="input-group-text">%</span>
                             </div>
-                            <small class="text-muted">Limit: ≤ 1%</small>
+                            <small class="text-muted">Limite: ≤ 1%</small>
                             <div class="invalid-feedback"></div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -137,18 +137,18 @@
                                 {{ form.defect_flatness(class="form-control", **{"data-max": "5"}) }}
                                 <span class="input-group-text">%</span>
                             </div>
-                            <small class="text-muted">Limit: ≤ 5%</small>
+                            <small class="text-muted">Limite: ≤ 5%</small>
                             <div class="invalid-feedback"></div>
                         </div>
                     </div>
                     
-                    <h6 class="text-muted border-bottom pb-2 mb-3">Quality Tests</h6>
+                    <h6 class="text-muted border-bottom pb-2 mb-3">Tests Qualité</h6>
                     
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             {{ form.thermal_shock.label(class="form-label") }}
                             {{ form.thermal_shock(class="form-control") }}
-                            <small class="text-muted">6x daily test</small>
+                            <small class="text-muted">Test 6x quotidien</small>
                         </div>
                         <div class="col-md-4 mb-3">
                             {{ form.shrinkage_expansion.label(class="form-label") }}
@@ -156,7 +156,7 @@
                                 {{ form.shrinkage_expansion(class="form-control", **{"data-min": "-0.2", "data-max": "0.4"}) }}
                                 <span class="input-group-text">%</span>
                             </div>
-                            <small class="text-muted">Spec: -0.2% to +0.4% (weekly)</small>
+                            <small class="text-muted">Spéc: -0.2% à +0.4% (hebdomadaire)</small>
                             <div class="invalid-feedback"></div>
                         </div>
                         <div class="col-md-4 mb-3">
@@ -165,7 +165,7 @@
                                 {{ form.fire_loss(class="form-control", **{"data-min": "10", "data-max": "19"}) }}
                                 <span class="input-group-text">%</span>
                             </div>
-                            <small class="text-muted">Spec: 10% - 19% (weekly)</small>
+                            <small class="text-muted">Spéc: 10% - 19% (hebdomadaire)</small>
                             <div class="invalid-feedback"></div>
                         </div>
                     </div>
@@ -177,10 +177,10 @@
                     
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-lg"></i> {% if edit %}Update{% else %}Save{% endif %} Record
+                            <i class="bi bi-check-lg"></i> {% if edit %}Modifier{% else %}Enregistrer{% endif %} Contrôle
                         </button>
                         <a href="{{ url_for('kilns.biscuit_kiln_controls') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left"></i> Back to List
+                            <i class="bi bi-arrow-left"></i> Retour à la Liste
                         </a>
                     </div>
                 </form>
@@ -191,24 +191,24 @@
     <div class="col-lg-4">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-light">
-                <h6 class="mb-0"><i class="bi bi-lightbulb text-warning"></i> Biscuit Firing Guidelines</h6>
+                <h6 class="mb-0"><i class="bi bi-lightbulb text-warning"></i> Directives Cuisson Biscuit</h6>
             </div>
             <div class="card-body">
-                <h6>Testing Protocol:</h6>
+                <h6>Protocole de Test:</h6>
                 <ul class="list-unstyled">
-                    <li><i class="bi bi-thermometer text-danger"></i> Thermal shock test (6x/day)</li>
-                    <li><i class="bi bi-eye text-info"></i> Visual defect inspection</li>
-                    <li><i class="bi bi-calendar text-info"></i> Weekly dimensional & loss tests</li>
+                    <li><i class="bi bi-thermometer text-danger"></i> Test choc thermique (6x/jour)</li>
+                    <li><i class="bi bi-eye text-info"></i> Inspection visuelle défauts</li>
+                    <li><i class="bi bi-calendar text-info"></i> Tests dimensionnels et perte hebdomadaires</li>
                 </ul>
                 
                 <div class="alert alert-danger mt-3">
                     <i class="bi bi-exclamation-triangle"></i>
-                    <strong>Critical:</strong> Thermal shock failures indicate temperature profile issues.
+                    <strong>Critique:</strong> Les échecs de choc thermique indiquent des problèmes de profil de température.
                 </div>
                 
                 <div class="alert alert-info">
                     <i class="bi bi-info-circle"></i>
-                    Fire loss and shrinkage tests are required weekly for process control.
+                    Les tests de perte au feu et retrait sont requis hebdomadairement pour le contrôle processus.
                 </div>
             </div>
         </div>
@@ -221,13 +221,13 @@
     <div class="col-12">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Biscuit Kiln Control Records</h5>
+                <h5 class="mb-0">Enregistrements Contrôle Four Biscuit</h5>
                 <div class="d-flex gap-2">
                     <select class="form-select form-select-sm" style="width: auto;">
-                        <option>All Records</option>
-                        <option>Today</option>
-                        <option>This Week</option>
-                        <option>This Month</option>
+                        <option>Tous Enregistrements</option>
+                        <option>Aujourd'hui</option>
+                        <option>Cette Semaine</option>
+                        <option>Ce Mois</option>
                     </select>
                 </div>
             </div>
@@ -238,13 +238,13 @@
                         <thead>
                             <tr>
                                 <th>Date</th>
-                                <th>Measurement #</th>
-                                <th>Thermal Shock</th>
-                                <th>Defects (%)</th>
-                                <th>Shrinkage/Expansion</th>
-                                <th>Fire Loss</th>
-                                <th>Status</th>
-                                <th>Controller</th>
+                                <th>Mesure #</th>
+                                <th>Choc Thermique</th>
+                                <th>Défauts (%)</th>
+                                <th>Retrait/Expansion</th>
+                                <th>Perte Feu</th>
+                                <th>Statut</th>
+                                <th>Contrôleur</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -292,14 +292,14 @@
                                 </td>
                                 <td>
                                     {% if control.compliance_status == 'compliant' %}
-                                        <span class="badge bg-success">Compliant</span>
+                                        <span class="badge bg-success">Conforme</span>
                                     {% elif control.compliance_status == 'non_compliant' %}
-                                        <span class="badge bg-danger">Non-Compliant</span>
+                                        <span class="badge bg-danger">Non-Conforme</span>
                                     {% else %}
-                                        <span class="badge bg-secondary">Partial</span>
+                                        <span class="badge bg-secondary">Partiel</span>
                                     {% endif %}
                                 </td>
-                                <td>{{ control.controller.full_name if control.controller else 'Unknown' }}</td>
+                                <td>{{ control.controller.full_name if control.controller else 'Inconnu' }}</td>
                                 <td>
                                     <div class="btn-group btn-group-sm">
                                         <a href="{{ url_for('kilns.edit_biscuit_control', id=control.id) }}" 
