@@ -31,9 +31,12 @@ def add_press_control():
             date=form.date.data,
             shift=form.shift.data,
             measurement_number=form.measurement_number.data,
+            measurement_time=form.measurement_time.data,
             format_type=form.format_type.data,
             thickness=form.thickness.data,
             wet_weight=form.wet_weight.data,
+            weight_output_1=form.weight_output_1.data,
+            weight_output_2=form.weight_output_2.data,
             defect_grains=form.defect_grains.data,
             defect_cracks=form.defect_cracks.data,
             defect_cleaning=form.defect_cleaning.data,
@@ -61,9 +64,12 @@ def edit_press_control(id):
         press_control.date = form.date.data
         press_control.shift = form.shift.data
         press_control.measurement_number = form.measurement_number.data
+        press_control.measurement_time = form.measurement_time.data
         press_control.format_type = form.format_type.data
         press_control.thickness = form.thickness.data
         press_control.wet_weight = form.wet_weight.data
+        press_control.weight_output_1 = form.weight_output_1.data
+        press_control.weight_output_2 = form.weight_output_2.data
         press_control.defect_grains = form.defect_grains.data
         press_control.defect_cracks = form.defect_cracks.data
         press_control.defect_cleaning = form.defect_cleaning.data

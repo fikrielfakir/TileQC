@@ -24,6 +24,8 @@ def add_clay_control():
         clay_control = ClayControl(
             date=form.date.data,
             shift=form.shift.data,
+            measurement_time_1=form.measurement_time_1.data,
+            measurement_time_2=form.measurement_time_2.data,
             humidity_before_prep=form.humidity_before_prep.data,
             humidity_after_sieving=form.humidity_after_sieving.data,
             humidity_after_prep=form.humidity_after_prep.data,
@@ -50,6 +52,8 @@ def edit_clay_control(id):
     if form.validate_on_submit():
         clay_control.date = form.date.data
         clay_control.shift = form.shift.data
+        clay_control.measurement_time_1 = form.measurement_time_1.data
+        clay_control.measurement_time_2 = form.measurement_time_2.data
         clay_control.humidity_before_prep = form.humidity_before_prep.data
         clay_control.humidity_after_sieving = form.humidity_after_sieving.data
         clay_control.humidity_after_prep = form.humidity_after_prep.data

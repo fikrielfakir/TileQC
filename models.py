@@ -1,6 +1,6 @@
 from app import db
 from flask_login import UserMixin
-from datetime import datetime, date
+from datetime import datetime, date, time
 from sqlalchemy import event
 
 class User(UserMixin, db.Model):
@@ -16,6 +16,10 @@ class ClayControl(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, nullable=False, default=date.today)
     shift = db.Column(db.String(20))  # morning, afternoon, night
+    
+    # Time measurements (from R2-F1 template)
+    measurement_time_1 = db.Column(db.Time)  # First measurement time
+    measurement_time_2 = db.Column(db.Time)  # Second measurement time
     
     # Humidity measurements
     humidity_before_prep = db.Column(db.Float)  # 2.5-4.1%
@@ -39,11 +43,16 @@ class PressControl(db.Model):
     date = db.Column(db.Date, nullable=False, default=date.today)
     shift = db.Column(db.String(20))
     measurement_number = db.Column(db.Integer)  # 1-6 daily measurements
+    measurement_time = db.Column(db.Time)  # Time of measurement (from R2-F3 template)
     
     # Format and dimensions
     format_type = db.Column(db.String(10))  # 20x20, 25x40, 25x50
     thickness = db.Column(db.Float)  # mm
     wet_weight = db.Column(db.Float)  # g
+    
+    # Weight measurements from different outputs (from R2-F3 template)
+    weight_output_1 = db.Column(db.Float)  # g
+    weight_output_2 = db.Column(db.Float)  # g
     
     # Surface defects (percentages)
     defect_grains = db.Column(db.Float, default=0)  # ≤15%
@@ -176,6 +185,7 @@ class EnamelControl(db.Model):
     shift = db.Column(db.String(20))
     measurement_type = db.Column(db.String(20))  # pde, production_line
     measurement_number = db.Column(db.Integer)  # 1-12 for production line
+    measurement_time = db.Column(db.Time)  # Time of measurement (from R2-F9 template)
     
     # Enamel type and properties
     enamel_type = db.Column(db.String(20))  # engobe, email, mate

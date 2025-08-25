@@ -32,6 +32,7 @@ def add_enamel_control():
             shift=form.shift.data,
             measurement_type=form.measurement_type.data,
             measurement_number=form.measurement_number.data,
+            measurement_time=form.measurement_time.data,
             enamel_type=form.enamel_type.data,
             density=form.density.data,
             viscosity=form.viscosity.data,
@@ -62,6 +63,7 @@ def edit_enamel_control(id):
         enamel_control.shift = form.shift.data
         enamel_control.measurement_type = form.measurement_type.data
         enamel_control.measurement_number = form.measurement_number.data
+        enamel_control.measurement_time = form.measurement_time.data
         enamel_control.enamel_type = form.enamel_type.data
         enamel_control.density = form.density.data
         enamel_control.viscosity = form.viscosity.data
