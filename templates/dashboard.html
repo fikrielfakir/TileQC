@@ -1,36 +1,36 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard - Ceramic QC{% endblock %}
+{% block title %}Tableau de Bord - Céramique QC{% endblock %}
 
 {% block content %}
-<!-- Dashboard Header -->
+<!-- En-tête du Tableau de Bord -->
 <div class="row mb-4">
     <div class="col-12">
         <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
             <div class="flex-grow-1">
                 <h1 class="h2 mb-2 d-flex align-items-center">
                     <i class="bi bi-speedometer2 text-primary me-3" aria-hidden="true"></i> 
-                    <span>Quality Control Dashboard</span>
+                    <span>Tableau de Bord Contrôle Qualité</span>
                 </h1>
-                <p class="text-muted mb-0">Real-time production monitoring and compliance tracking</p>
+                <p class="text-muted mb-0">Surveillance de la production en temps réel et suivi de conformité</p>
             </div>
             <div class="d-flex flex-column flex-sm-row gap-3 align-items-stretch align-items-sm-center">
                 <div class="d-flex align-items-center gap-2">
-                    <label for="dateFilter" class="form-label mb-0 text-nowrap fw-semibold">Filter Date:</label>
+                    <label for="dateFilter" class="form-label mb-0 text-nowrap fw-semibold">Filtrer par Date :</label>
                     <input type="date" id="dateFilter" class="form-control" value="{{ selected_date }}" 
                            onchange="updateDashboard(this.value)" 
                            style="min-width: 150px;">
                 </div>
-                <button class="btn btn-outline-primary" onclick="refreshDashboard()" aria-label="Refresh dashboard">
+                <button class="btn btn-outline-primary" onclick="refreshDashboard()" aria-label="Actualiser le tableau de bord">
                     <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
-                    <span class="d-none d-sm-inline ms-1">Refresh</span>
+                    <span class="d-none d-sm-inline ms-1">Actualiser</span>
                 </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Overall Statistics Cards -->
+<!-- Cartes Statistiques Globales -->
 <div class="row mb-4 g-3">
     <div class="col-lg-3 col-md-6">
         <div class="stats-card">
@@ -38,9 +38,9 @@
                 <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
             </div>
             <div class="stats-content">
-                <h6 class="stats-title mb-1">Overall Compliance</h6>
+                <h6 class="stats-title mb-1">Conformité Globale</h6>
                 <div class="stats-value text-primary">{{ stats.overall.compliance_rate }}%</div>
-                <p class="stats-subtitle mb-0">{{ stats.overall.compliant }}/{{ stats.overall.total }} tests passed</p>
+                <p class="stats-subtitle mb-0">{{ stats.overall.compliant }}/{{ stats.overall.total }} tests réussis</p>
             </div>
         </div>
     </div>
@@ -51,9 +51,9 @@
                 <i class="bi bi-check2-all text-white" aria-hidden="true"></i>
             </div>
             <div class="stats-content">
-                <h6 class="stats-title mb-1">Compliant Tests</h6>
+                <h6 class="stats-title mb-1">Tests Conformes</h6>
                 <div class="stats-value text-success">{{ stats.overall.compliant }}</div>
-                <p class="stats-subtitle mb-0">Today's passing tests</p>
+                <p class="stats-subtitle mb-0">Tests réussis aujourd'hui</p>
             </div>
         </div>
     </div>
@@ -64,9 +64,9 @@
                 <i class="bi bi-x-circle-fill text-white" aria-hidden="true"></i>
             </div>
             <div class="stats-content">
-                <h6 class="stats-title mb-1">Non-Compliant</h6>
+                <h6 class="stats-title mb-1">Non-Conformes</h6>
                 <div class="stats-value text-danger">{{ stats.overall.non_compliant }}</div>
-                <p class="stats-subtitle mb-0">Requiring attention</p>
+                <p class="stats-subtitle mb-0">Nécessitent une attention</p>
             </div>
         </div>
     </div>
@@ -79,32 +79,32 @@
             <div class="stats-content">
                 <h6 class="stats-title mb-1">Total Tests</h6>
                 <div class="stats-value" style="color: var(--primary-color);">{{ stats.overall.total }}</div>
-                <p class="stats-subtitle mb-0">All production stages</p>
+                <p class="stats-subtitle mb-0">Toutes étapes de production</p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Production Stages and Charts Row -->
+<!-- Ligne Étapes de Production et Graphiques -->
 <div class="row g-4">
-    <!-- Production Stage Status -->
+    <!-- Statut des Étapes de Production -->
     <div class="col-xl-8 col-lg-7">
         <div class="card h-100">
             <div class="card-header">
                 <h5 class="card-title d-flex align-items-center mb-0">
                     <i class="bi bi-factory text-primary me-2" aria-hidden="true"></i>
-                    Production Stage Status
+                    Statut des Étapes de Production
                 </h5>
             </div>
             <div class="card-body">
                 <div class="row g-3">
-                    <!-- Clay Control -->
+                    <!-- Contrôle Argile -->
                     <div class="col-xl-6 col-md-6">
                         <div class="stage-card">
                             <div class="stage-header">
                                 <div class="flex-grow-1">
                                     <h6 class="mb-1 d-flex align-items-center">
-                                        <i class="bi bi-layers text-warning me-2" aria-hidden="true"></i>Clay Control
+                                        <i class="bi bi-layers text-warning me-2" aria-hidden="true"></i>Contrôle Argile
                                     </h6>
                                     <small class="stage-subtitle">PDM Argile</small>
                                 </div>
@@ -118,15 +118,15 @@
                         </div>
                     </div>
                     
-                    <!-- Press Control -->
+                    <!-- Contrôle Presse -->
                     <div class="col-xl-6 col-md-6">
                         <div class="stage-card">
                             <div class="stage-header">
                                 <div class="flex-grow-1">
                                     <h6 class="mb-1 d-flex align-items-center">
-                                        <i class="bi bi-hammer text-info me-2" aria-hidden="true"></i>Press Control
+                                        <i class="bi bi-hammer text-info me-2" aria-hidden="true"></i>Contrôle Presse
                                     </h6>
-                                    <small class="stage-subtitle">Format & Defects</small>
+                                    <small class="stage-subtitle">Format & Défauts</small>
                                 </div>
                                 <div class="stage-stats">
                                     <span class="badge bg-{{ 'success' if ((stats.press.compliant / stats.press.total * 100) if stats.press.total > 0 else 0) > 95 else 'warning' if ((stats.press.compliant / stats.press.total * 100) if stats.press.total > 0 else 0) > 80 else 'danger' }}">
@@ -138,13 +138,13 @@
                         </div>
                     </div>
                     
-                    <!-- Dryer Control -->
+                    <!-- Contrôle Séchoir -->
                     <div class="col-xl-6 col-md-6">
                         <div class="stage-card">
                             <div class="stage-header">
                                 <div class="flex-grow-1">
                                     <h6 class="mb-1 d-flex align-items-center">
-                                        <i class="bi bi-thermometer-sun text-orange me-2" aria-hidden="true"></i>Dryer Control
+                                        <i class="bi bi-thermometer-sun text-orange me-2" aria-hidden="true"></i>Contrôle Séchoir
                                     </h6>
                                     <small class="stage-subtitle">Séchoir</small>
                                 </div>
@@ -158,13 +158,13 @@
                         </div>
                     </div>
                     
-                    <!-- Biscuit Kiln -->
+                    <!-- Four Biscuit -->
                     <div class="col-xl-6 col-md-6">
                         <div class="stage-card">
                             <div class="stage-header">
                                 <div class="flex-grow-1">
                                     <h6 class="mb-1 d-flex align-items-center">
-                                        <i class="bi bi-fire text-danger me-2" aria-hidden="true"></i>Biscuit Kiln
+                                        <i class="bi bi-fire text-danger me-2" aria-hidden="true"></i>Four Biscuit
                                     </h6>
                                     <small class="stage-subtitle">Four Biscuit</small>
                                 </div>
@@ -178,15 +178,15 @@
                         </div>
                     </div>
                     
-                    <!-- Email Kiln -->
+                    <!-- Four Émail -->
                     <div class="col-xl-6 col-md-6">
                         <div class="stage-card">
                             <div class="stage-header">
                                 <div class="flex-grow-1">
                                     <h6 class="mb-1 d-flex align-items-center">
-                                        <i class="bi bi-fire text-primary me-2" aria-hidden="true"></i>Email Kiln
+                                        <i class="bi bi-fire text-primary me-2" aria-hidden="true"></i>Four Émail
                                     </h6>
-                                    <small class="stage-subtitle">Four Email</small>
+                                    <small class="stage-subtitle">Four Émail</small>
                                 </div>
                                 <div class="stage-stats">
                                     <span class="badge bg-{{ 'success' if ((stats.email_kiln.compliant / stats.email_kiln.total * 100) if stats.email_kiln.total > 0 else 0) > 95 else 'warning' if ((stats.email_kiln.compliant / stats.email_kiln.total * 100) if stats.email_kiln.total > 0 else 0) > 80 else 'danger' }}">
@@ -198,13 +198,13 @@
                         </div>
                     </div>
                     
-                    <!-- Enamel Control -->
+                    <!-- Contrôle Émail -->
                     <div class="col-xl-6 col-md-6">
                         <div class="stage-card">
                             <div class="stage-header">
                                 <div class="flex-grow-1">
                                     <h6 class="mb-1 d-flex align-items-center">
-                                        <i class="bi bi-palette text-secondary me-2" aria-hidden="true"></i>Enamel Control
+                                        <i class="bi bi-palette text-secondary me-2" aria-hidden="true"></i>Contrôle Émail
                                     </h6>
                                     <small class="stage-subtitle">PDE & Production</small>
                                 </div>
@@ -222,13 +222,13 @@
         </div>
     </div>
     
-    <!-- Recent Non-Conformities -->
+    <!-- Non-Conformités Récentes -->
     <div class="col-xl-4 col-lg-5">
         <div class="card h-100">
             <div class="card-header">
                 <h5 class="card-title d-flex align-items-center mb-0">
                     <i class="bi bi-exclamation-triangle text-warning me-2" aria-hidden="true"></i>
-                    Recent Non-Conformities
+                    Non-Conformités Récentes
                 </h5>
             </div>
             <div class="card-body">
@@ -240,7 +240,7 @@
                                 <div class="me-auto">
                                     <h6 class="mb-1 fw-semibold">{{ nc.type }}</h6>
                                     <p class="mb-1 small text-muted">{{ nc.controller }}</p>
-                                    <small class="text-muted">{{ nc.date.strftime('%Y-%m-%d') }}</small>
+                                    <small class="text-muted">{{ nc.date.strftime('%d/%m/%Y') }}</small>
                                 </div>
                                 <span class="badge bg-danger ms-2 flex-shrink-0">{{ nc.status }}</span>
                             </div>
@@ -250,15 +250,15 @@
                     {% if recent_nc|length > 6 %}
                     <div class="text-center mt-3">
                         <a href="{{ url_for('reports.non_conformities') }}" class="btn btn-outline-primary btn-sm">
-                            View All Non-Conformities
+                            Voir Toutes les Non-Conformités
                         </a>
                     </div>
                     {% endif %}
                 {% else %}
                     <div class="text-center py-5">
                         <i class="bi bi-check-circle text-success display-4 mb-3"></i>
-                        <h6 class="text-success">No Recent Non-Conformities</h6>
-                        <p class="text-muted small">All recent tests are compliant</p>
+                        <h6 class="text-success">Aucune Non-Conformité Récente</h6>
+                        <p class="text-muted small">Tous les tests récents sont conformes</p>
                     </div>
                 {% endif %}
             </div>
@@ -266,14 +266,14 @@
     </div>
 </div>
 
-<!-- Trend Chart Row -->
+<!-- Ligne Graphique des Tendances -->
 <div class="row mt-4">
     <div class="col-12">
         <div class="card">
             <div class="card-header">
                 <h5 class="card-title d-flex align-items-center mb-0">
                     <i class="bi bi-graph-up text-primary me-2" aria-hidden="true"></i>
-                    Weekly Compliance Trend
+                    Tendance de Conformité Hebdomadaire
                 </h5>
             </div>
             <div class="card-body">
@@ -285,14 +285,14 @@
     </div>
 </div>
 
-<!-- Quick Actions Section -->
+<!-- Section Actions Rapides -->
 <div class="row mt-4">
     <div class="col-12">
         <div class="card">
             <div class="card-header">
                 <h5 class="card-title d-flex align-items-center mb-0">
                     <i class="bi bi-lightning-charge text-primary me-2" aria-hidden="true"></i>
-                    Quick Actions
+                    Actions Rapides
                 </h5>
             </div>
             <div class="card-body">
@@ -300,37 +300,37 @@
                     <div class="col-lg-2 col-md-3 col-sm-6">
                         <a href="{{ url_for('clay.add_clay_control') }}" class="btn btn-outline-primary w-100 h-100">
                             <i class="bi bi-layers d-block fs-1 mb-2" aria-hidden="true"></i>
-                            <span class="small">Add Clay Control</span>
+                            <span class="small">Ajouter Contrôle Argile</span>
                         </a>
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-6">
                         <a href="{{ url_for('press.add_press_control') }}" class="btn btn-outline-primary w-100 h-100">
                             <i class="bi bi-hammer d-block fs-1 mb-2" aria-hidden="true"></i>
-                            <span class="small">Add Press Control</span>
+                            <span class="small">Ajouter Contrôle Presse</span>
                         </a>
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-6">
                         <a href="{{ url_for('dryer.add_dryer_control') }}" class="btn btn-outline-primary w-100 h-100">
                             <i class="bi bi-thermometer-sun d-block fs-1 mb-2" aria-hidden="true"></i>
-                            <span class="small">Add Dryer Control</span>
+                            <span class="small">Ajouter Contrôle Séchoir</span>
                         </a>
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-6">
                         <a href="{{ url_for('kilns.add_biscuit_control') }}" class="btn btn-outline-primary w-100 h-100">
                             <i class="bi bi-fire d-block fs-1 mb-2" aria-hidden="true"></i>
-                            <span class="small">Add Kiln Control</span>
+                            <span class="small">Ajouter Contrôle Four</span>
                         </a>
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-6">
                         <a href="{{ url_for('enamel.add_enamel_control') }}" class="btn btn-outline-primary w-100 h-100">
                             <i class="bi bi-palette d-block fs-1 mb-2" aria-hidden="true"></i>
-                            <span class="small">Add Enamel Control</span>
+                            <span class="small">Ajouter Contrôle Émail</span>
                         </a>
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-6">
                         <a href="{{ url_for('reports.daily_report') }}" class="btn btn-outline-secondary w-100 h-100">
                             <i class="bi bi-file-earmark-text d-block fs-1 mb-2" aria-hidden="true"></i>
-                            <span class="small">Daily Report</span>
+                            <span class="small">Rapport Quotidien</span>
                         </a>
                     </div>
                 </div>
@@ -342,23 +342,23 @@
 
 {% block scripts %}
 <script>
-// Dashboard functionality
+// Fonctionnalité du tableau de bord
 let trendChart;
 
-// Initialize dashboard
+// Initialiser le tableau de bord
 document.addEventListener('DOMContentLoaded', function() {
     initializeTrendChart();
-    setInterval(refreshDashboard, 300000); // Auto-refresh every 5 minutes
+    setInterval(refreshDashboard, 300000); // Auto-actualisation toutes les 5 minutes
 });
 
-// Initialize trend chart
+// Initialiser le graphique de tendances
 function initializeTrendChart() {
     const trendData = {{ trend_data|safe }};
     const ctx = document.getElementById('trendChart');
     
     if (!ctx) return;
     
-    // Destroy existing chart if it exists
+    // Détruire le graphique existant s'il existe
     if (trendChart) {
         trendChart.destroy();
     }
@@ -368,10 +368,10 @@ function initializeTrendChart() {
         data: {
             labels: trendData.map(d => {
                 const date = new Date(d.date);
-                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                return date.toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' });
             }),
             datasets: [{
-                label: 'Compliance Rate',
+                label: 'Taux de Conformité',
                 data: trendData.map(d => d.compliance_rate),
                 borderColor: '#003d9d',
                 backgroundColor: 'rgba(0, 61, 157, 0.1)',
@@ -406,7 +406,7 @@ function initializeTrendChart() {
                     padding: 12,
                     callbacks: {
                         label: function(context) {
-                            return 'Compliance: ' + context.parsed.y + '%';
+                            return 'Conformité : ' + context.parsed.y + '%';
                         }
                     }
                 }
@@ -452,18 +452,18 @@ function initializeTrendChart() {
     });
 }
 
-// Update dashboard with selected date
+// Mettre à jour le tableau de bord avec la date sélectionnée
 function updateDashboard(selectedDate) {
     showLoadingOverlay();
     window.location.href = `/?date=${selectedDate}`;
 }
 
-// Refresh dashboard
+// Actualiser le tableau de bord
 async function refreshDashboard() {
     const refreshBtn = document.querySelector('button[onclick="refreshDashboard()"]');
     const icon = refreshBtn.querySelector('i');
     
-    // Add spinning animation
+    // Ajouter l'animation de rotation
     icon.classList.add('rotating');
     refreshBtn.disabled = true;
     
@@ -479,14 +479,14 @@ async function refreshDashboard() {
             const data = await response.json();
             updateDashboardData(data);
         } else {
-            console.error('Error refreshing dashboard:', response.statusText);
-            location.reload(); // Fallback to full refresh
+            console.error('Erreur lors de l\'actualisation du tableau de bord:', response.statusText);
+            location.reload(); // Retour à l'actualisation complète
         }
     } catch (error) {
-        console.error('Error refreshing dashboard:', error);
-        location.reload(); // Fallback to full refresh
+        console.error('Erreur lors de l\'actualisation du tableau de bord:', error);
+        location.reload(); // Retour à l'actualisation complète
     } finally {
-        // Remove spinning animation
+        // Supprimer l'animation de rotation
         setTimeout(() => {
             icon.classList.remove('rotating');
             refreshBtn.disabled = false;
@@ -494,9 +494,9 @@ async function refreshDashboard() {
     }
 }
 
-// Update dashboard data (if API exists)
+// Mettre à jour les données du tableau de bord (si l'API existe)
 function updateDashboardData(data) {
-    // Update statistics
+    // Mettre à jour les statistiques
     if (data.stats) {
         document.querySelector('.stats-value.text-primary').textContent = data.stats.overall.compliance_rate + '%';
         document.querySelector('.stats-value.text-success').textContent = data.stats.overall.compliant;
@@ -504,28 +504,28 @@ function updateDashboardData(data) {
         document.querySelector('.stats-value[style*="primary-color"]').textContent = data.stats.overall.total;
     }
     
-    // Update chart if trend data is provided
+    // Mettre à jour le graphique si les données de tendance sont fournies
     if (data.trend_data && trendChart) {
         trendChart.data.labels = data.trend_data.map(d => {
             const date = new Date(d.date);
-            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            return date.toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' });
         });
         trendChart.data.datasets[0].data = data.trend_data.map(d => d.compliance_rate);
         trendChart.update('active');
     }
 }
 
-// Show loading overlay
+// Afficher l'overlay de chargement
 function showLoadingOverlay() {
     document.getElementById('loadingOverlay').classList.remove('d-none');
 }
 
-// Hide loading overlay
+// Masquer l'overlay de chargement
 function hideLoadingOverlay() {
     document.getElementById('loadingOverlay').classList.add('d-none');
 }
 
-// Add CSS for rotating animation
+// Ajouter du CSS pour l'animation de rotation
 const style = document.createElement('style');
 style.textContent = `
     .rotating {

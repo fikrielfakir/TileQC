@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0">
-    <meta name="description" content="Advanced ceramic tile quality control system with R2-LABO compliance">
+    <meta name="description" content="Système avancé de contrôle qualité pour carreaux céramiques avec conformité R2-LABO">
     <meta name="theme-color" content="#003d9d">
     <meta name="format-detection" content="telephone=no">
     
-    <title>{% block title %}Ceramic Quality Control{% endblock %}</title>
+    <title>{% block title %}Contrôle Qualité Céramique{% endblock %}</title>
     
-    <!-- Preconnect to CDN for faster loading -->
+    <!-- Préconnexion aux CDN pour un chargement plus rapide -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     
@@ -20,7 +20,7 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js" crossorigin="anonymous"></script>
     
-    <!-- Custom Styles -->
+    <!-- Styles personnalisés -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     
     <!-- Favicon -->
@@ -29,19 +29,19 @@
     {% block head %}{% endblock %}
 </head>
 <body>
-    <!-- Skip Navigation Link for Accessibility -->
-    <a href="#main-content" class="visually-hidden-focusable">Skip to main content</a>
+    <!-- Lien d'évitement pour l'accessibilité -->
+    <a href="#main-content" class="visually-hidden-focusable">Aller au contenu principal</a>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-xl navbar-dark sticky-top" role="navigation" aria-label="Main navigation">
+    <nav class="navbar navbar-expand-xl navbar-dark sticky-top" role="navigation" aria-label="Navigation principale">
         <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('main.dashboard') }}" aria-label="Ceramic QC Home">
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('main.dashboard') }}" aria-label="Accueil Contrôle QC Céramique">
                 <i class="bi bi-gear-fill me-2" aria-hidden="true"></i>
-                <span class="d-none d-sm-inline">Ceramic</span> QC
+                <span class="d-none d-sm-inline">Céramique</span> QC
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation menu">
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Ouvrir/fermer le menu de navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             
@@ -50,89 +50,89 @@
                     <li class="nav-item">
                         <a class="nav-link {{ 'active' if request.endpoint == 'main.dashboard' }}" 
                            href="{{ url_for('main.dashboard') }}" aria-current="{% if request.endpoint == 'main.dashboard' %}page{% endif %}">
-                            <i class="bi bi-speedometer2" aria-hidden="true"></i> Dashboard
+                            <i class="bi bi-speedometer2" aria-hidden="true"></i> Tableau de Bord
                         </a>
                     </li>
                     
-                    <!-- Quality Controls Dropdown -->
+                    <!-- Menu Contrôles Qualité -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" 
                            aria-expanded="false" aria-haspopup="true" id="qualityDropdown">
                             <i class="bi bi-clipboard-data" aria-hidden="true"></i> 
-                            <span class="d-xl-inline d-none">Quality Controls</span>
-                            <span class="d-xl-none">Controls</span>
+                            <span class="d-xl-inline d-none">Contrôles Qualité</span>
+                            <span class="d-xl-none">Contrôles</span>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="qualityDropdown">
                             <li><a class="dropdown-item" href="{{ url_for('clay.clay_controls') }}">
-                                <i class="bi bi-layers" aria-hidden="true"></i> Clay Control
+                                <i class="bi bi-layers" aria-hidden="true"></i> Contrôle Argile
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('press.press_controls') }}">
-                                <i class="bi bi-hammer" aria-hidden="true"></i> Press Control
+                                <i class="bi bi-hammer" aria-hidden="true"></i> Contrôle Presse
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('dryer.dryer_controls') }}">
-                                <i class="bi bi-thermometer-sun" aria-hidden="true"></i> Dryer Control
+                                <i class="bi bi-thermometer-sun" aria-hidden="true"></i> Contrôle Séchoir
                             </a></li>
                             <li><hr class="dropdown-divider" role="separator"></li>
                             <li><a class="dropdown-item" href="{{ url_for('kilns.biscuit_kiln_controls') }}">
-                                <i class="bi bi-fire" aria-hidden="true"></i> Biscuit Kiln
+                                <i class="bi bi-fire" aria-hidden="true"></i> Four Biscuit
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('kilns.email_kiln_controls') }}">
-                                <i class="bi bi-fire" aria-hidden="true"></i> Email Kiln
+                                <i class="bi bi-fire" aria-hidden="true"></i> Four Émail
                             </a></li>
                             <li><hr class="dropdown-divider" role="separator"></li>
                             <li><a class="dropdown-item" href="{{ url_for('enamel.enamel_controls') }}">
-                                <i class="bi bi-palette" aria-hidden="true"></i> Enamel Control
+                                <i class="bi bi-palette" aria-hidden="true"></i> Contrôle Émail
                             </a></li>
                         </ul>
                     </li>
                     
-                    <!-- Testing Dropdown -->
+                    <!-- Menu Tests -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" 
                            aria-expanded="false" aria-haspopup="true" id="testingDropdown">
-                            <i class="bi bi-clipboard-check" aria-hidden="true"></i> Testing
+                            <i class="bi bi-clipboard-check" aria-hidden="true"></i> Tests
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="testingDropdown">
                             <li><a class="dropdown-item" href="{{ url_for('tests.dimensional_tests') }}">
-                                <i class="bi bi-rulers" aria-hidden="true"></i> Dimensional Tests
+                                <i class="bi bi-rulers" aria-hidden="true"></i> Tests Dimensionnels
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('tests.digital_decorations') }}">
-                                <i class="bi bi-printer" aria-hidden="true"></i> Digital Decoration
+                                <i class="bi bi-printer" aria-hidden="true"></i> Décoration Numérique
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('tests.external_tests') }}">
-                                <i class="bi bi-building" aria-hidden="true"></i> External Tests
+                                <i class="bi bi-building" aria-hidden="true"></i> Tests Externes
                             </a></li>
                         </ul>
                     </li>
                     
-                    <!-- Reports Dropdown -->
+                    <!-- Menu Rapports -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" 
                            aria-expanded="false" aria-haspopup="true" id="reportsDropdown">
-                            <i class="bi bi-graph-up" aria-hidden="true"></i> Reports
+                            <i class="bi bi-graph-up" aria-hidden="true"></i> Rapports
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
                             <li><a class="dropdown-item" href="{{ url_for('reports.daily_report') }}">
-                                <i class="bi bi-calendar-day" aria-hidden="true"></i> Daily Report
+                                <i class="bi bi-calendar-day" aria-hidden="true"></i> Rapport Quotidien
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('reports.weekly_report') }}">
-                                <i class="bi bi-calendar-week" aria-hidden="true"></i> Weekly Report
+                                <i class="bi bi-calendar-week" aria-hidden="true"></i> Rapport Hebdomadaire
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('reports.monthly_report') }}">
-                                <i class="bi bi-calendar-month" aria-hidden="true"></i> Monthly Report
+                                <i class="bi bi-calendar-month" aria-hidden="true"></i> Rapport Mensuel
                             </a></li>
                             <li><hr class="dropdown-divider" role="separator"></li>
                             <li><a class="dropdown-item" href="{{ url_for('reports.non_conformities') }}">
-                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Non-Conformities
+                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Non-Conformités
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('reports.spc_charts') }}">
-                                <i class="bi bi-graph-up" aria-hidden="true"></i> SPC Charts
+                                <i class="bi bi-graph-up" aria-hidden="true"></i> Cartes SPC
                             </a></li>
                         </ul>
                     </li>
                 </ul>
                 
-                <!-- User Menu -->
+                <!-- Menu Utilisateur -->
                 <ul class="navbar-nav">
                     {% if current_user.is_authenticated %}
                     <li class="nav-item dropdown">
@@ -144,18 +144,18 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="{{ url_for('main.profile') }}">
-                                <i class="bi bi-person" aria-hidden="true"></i> Profile
+                                <i class="bi bi-person" aria-hidden="true"></i> Profil
                             </a></li>
                             <li><hr class="dropdown-divider" role="separator"></li>
                             <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">
-                                <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Logout
+                                <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Déconnexion
                             </a></li>
                         </ul>
                     </li>
                     {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('auth.login') }}">
-                            <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> Login
+                            <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> Connexion
                         </a>
                     </li>
                     {% endif %}
@@ -164,7 +164,7 @@
         </div>
     </nav>
 
-    <!-- Flash Messages -->
+    <!-- Messages Flash -->
     <div class="container-fluid mt-3" id="flash-messages">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -174,52 +174,52 @@
                         <i class="bi bi-{{ 'exclamation-triangle-fill' if category == 'error' else 'check-circle-fill' if category == 'success' else 'info-circle-fill' }}" 
                            aria-hidden="true"></i>
                         <span class="ms-1">{{ message }}</span>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close alert"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer l'alerte"></button>
                     </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
     </div>
 
-    <!-- Main Content -->
+    <!-- Contenu Principal -->
     <main class="container-fluid py-3" id="main-content" role="main">
         <div class="fade-in">
             {% block content %}{% endblock %}
         </div>
     </main>
 
-    <!-- Back to Top Button -->
+    <!-- Bouton Retour en Haut -->
     <button id="backToTop" class="btn btn-primary position-fixed bottom-0 end-0 m-4 rounded-circle d-none" 
             style="width: 50px; height: 50px; z-index: 1000;" 
-            aria-label="Back to top" title="Back to top">
+            aria-label="Retour en haut" title="Retour en haut">
         <i class="bi bi-arrow-up" aria-hidden="true"></i>
     </button>
 
-    <!-- Footer -->
+    <!-- Pied de Page -->
     <footer class="mt-5 py-4" role="contentinfo">
         <div class="container text-center">
             <div class="row">
                 <div class="col-12">
                     <p class="mb-2">
-                        <strong>Ceramic Tile Quality Control System</strong>
+                        <strong>Système de Contrôle Qualité Carreaux Céramiques</strong>
                     </p>
                     <p class="mb-0 text-muted">
-                        <small>R2-LABO Control Plan Implementation • Touch-Optimized Interface</small>
+                        <small>Implémentation Plan de Contrôle R2-LABO • Interface Optimisée Tactile</small>
                     </p>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Loading Overlay -->
+    <!-- Overlay de Chargement -->
     <div id="loadingOverlay" class="position-fixed top-0 start-0 w-100 h-100 d-none" 
          style="background: rgba(0, 61, 157, 0.1); z-index: 9999; backdrop-filter: blur(2px);">
         <div class="d-flex justify-content-center align-items-center h-100">
             <div class="text-center">
                 <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
-                    <span class="visually-hidden">Loading...</span>
+                    <span class="visually-hidden">Chargement...</span>
                 </div>
-                <p class="text-primary">Loading...</p>
+                <p class="text-primary">Chargement...</p>
             </div>
         </div>
     </div>
@@ -228,17 +228,17 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     
-    <!-- Custom Scripts -->
+    <!-- Scripts Personnalisés -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="{{ url_for('static', filename='js/validation.js') }}"></script>
     
     {% block scripts %}{% endblock %}
 
-    <!-- Initialize App -->
+    <!-- Initialisation de l'Application -->
     <script>
-        console.log("Ceramic QC Application initialized successfully");
+        console.log("Application Contrôle QC Céramique initialisée avec succès");
         
-        // Initialize back to top button
+        // Initialiser le bouton retour en haut
         document.addEventListener('DOMContentLoaded', function() {
             const backToTopBtn = document.getElementById('backToTop');
             

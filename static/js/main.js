@@ -1,6 +1,6 @@
 /**
- * Ceramic QC - Touch-Optimized Main JavaScript
- * Enhanced for tablets and tactile screens with modern interactions
+ * QC Céramique - JavaScript Principal Optimisé Tactile
+ * Amélioré pour tablettes et écrans tactiles avec interactions modernes
  */
 
 class CeramicQCApp {
@@ -21,7 +21,7 @@ class CeramicQCApp {
         this.initializeKeyboardShortcuts();
         this.initializeNotifications();
         
-        console.log('Ceramic QC Application initialized successfully - Touch device:', this.touchDevice);
+        console.log('Application QC Céramique initialisée avec succès - Appareil tactile:', this.touchDevice);
     }
 
     detectTouchDevice() {
@@ -29,19 +29,19 @@ class CeramicQCApp {
     }
 
     setupEventListeners() {
-        // Navigation enhancement
+        // Amélioration de la navigation
         this.setupNavigationEnhancements();
         
-        // Form enhancements
+        // Améliorations des formulaires
         this.setupAdvancedFormEnhancements();
         
-        // Card interactions
+        // Interactions avec les cartes
         this.setupCardInteractions();
         
-        // Button enhancements
+        // Améliorations des boutons
         this.setupButtonEnhancements();
         
-        // Search functionality
+        // Fonctionnalité de recherche
         this.setupSearchFunctionality();
     }
 
@@ -50,7 +50,7 @@ class CeramicQCApp {
         const navbarToggler = document.querySelector('.navbar-toggler');
         const navbarCollapse = document.querySelector('.navbar-collapse');
 
-        // Close mobile menu when clicking outside
+        // Fermer le menu mobile en cliquant à l'extérieur
         document.addEventListener('click', (e) => {
             if (navbarCollapse && navbarCollapse.classList.contains('show')) {
                 if (!navbar.contains(e.target)) {
@@ -62,7 +62,7 @@ class CeramicQCApp {
             }
         });
 
-        // Auto-close mobile menu when selecting nav item
+        // Fermer automatiquement le menu mobile lors de la sélection d'un élément de navigation
         const navLinks = document.querySelectorAll('.navbar-nav .nav-link:not(.dropdown-toggle)');
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
@@ -75,7 +75,7 @@ class CeramicQCApp {
             });
         });
 
-        // Enhance dropdown interactions for touch devices
+        // Améliorer les interactions des menus déroulants pour les appareils tactiles
         if (this.touchDevice) {
             this.enhanceDropdownsForTouch();
         }
@@ -89,10 +89,10 @@ class CeramicQCApp {
             const menu = dropdown.querySelector('.dropdown-menu');
             
             if (toggle && menu) {
-                // Add touch-friendly spacing
+                // Ajouter un espacement compatible tactile
                 toggle.style.minHeight = '44px';
                 
-                // Prevent default behavior and manually handle dropdown
+                // Empêcher le comportement par défaut et gérer manuellement le menu déroulant
                 toggle.addEventListener('touchstart', (e) => {
                     e.preventDefault();
                     const bsDropdown = new bootstrap.Dropdown(toggle);
@@ -103,14 +103,14 @@ class CeramicQCApp {
     }
 
     setupAdvancedFormEnhancements() {
-        // Auto-resize textareas
+        // Redimensionnement automatique des zones de texte
         const textareas = document.querySelectorAll('textarea');
         textareas.forEach(textarea => {
             this.autoResizeTextarea(textarea);
             textarea.addEventListener('input', () => this.autoResizeTextarea(textarea));
         });
 
-        // Enhanced input focus/blur effects
+        // Effets de focus/blur améliorés pour les saisies
         const inputs = document.querySelectorAll('.form-control, .form-select');
         inputs.forEach(input => {
             input.addEventListener('focus', (e) => {
@@ -122,12 +122,12 @@ class CeramicQCApp {
             });
         });
 
-        // Number input enhancement for touch devices
+        // Amélioration des saisies numériques pour appareils tactiles
         if (this.touchDevice) {
             this.enhanceNumberInputsForTouch();
         }
 
-        // Auto-save form data
+        // Sauvegarde automatique des données de formulaire
         this.initializeAutoSave();
     }
 
@@ -140,12 +140,12 @@ class CeramicQCApp {
         const numberInputs = document.querySelectorAll('input[type="number"]:not(.enhanced)');
         
         numberInputs.forEach(input => {
-            // Mark as enhanced to avoid duplicate processing
+            // Marquer comme amélioré pour éviter le traitement en double
             input.classList.add('enhanced');
             
-            // Increase touch target size
+            // Augmenter la taille de la zone tactile
             input.style.minHeight = '44px';
-            input.style.fontSize = '16px'; // Prevent zoom on iOS
+            input.style.fontSize = '16px'; // Empêcher le zoom sur iOS
         });
     }
 
@@ -154,15 +154,15 @@ class CeramicQCApp {
         forms.forEach(form => {
             const formId = form.id || form.getAttribute('data-auto-save');
             
-            // Load saved data
+            // Charger les données sauvegardées
             this.loadFormData(form, formId);
             
-            // Save data on input
+            // Sauvegarder les données lors de la saisie
             form.addEventListener('input', this.debounce(() => {
                 this.saveFormData(form, formId);
             }, 1000));
             
-            // Clear saved data on successful submit
+            // Effacer les données sauvegardées lors de la soumission réussie
             form.addEventListener('submit', () => {
                 this.clearFormData(formId);
             });
@@ -192,7 +192,7 @@ class CeramicQCApp {
                     }
                 });
             } catch (e) {
-                console.warn('Error loading saved form data:', e);
+                console.warn('Erreur lors du chargement des données de formulaire sauvegardées:', e);
             }
         }
     }
@@ -205,14 +205,14 @@ class CeramicQCApp {
         const cards = document.querySelectorAll('.card, .stats-card, .stage-card');
         
         cards.forEach(card => {
-            // Add ripple effect for touch devices
+            // Ajouter un effet d'ondulation pour les appareils tactiles
             if (this.touchDevice) {
                 card.addEventListener('touchstart', (e) => {
                     this.createRippleEffect(e, card);
                 });
             }
             
-            // Enhance hover effects for non-touch devices
+            // Améliorer les effets de survol pour les appareils non tactiles
             if (!this.touchDevice) {
                 card.addEventListener('mouseenter', () => {
                     card.style.transform = 'translateY(-2px)';
@@ -229,7 +229,7 @@ class CeramicQCApp {
         const buttons = document.querySelectorAll('.btn');
         
         buttons.forEach(button => {
-            // Add touch feedback
+            // Ajouter un retour tactile
             if (this.touchDevice) {
                 button.addEventListener('touchstart', (e) => {
                     button.style.transform = 'scale(0.98)';
@@ -243,7 +243,7 @@ class CeramicQCApp {
                 });
             }
             
-            // Prevent double-tap zoom on buttons
+            // Empêcher le zoom double-tap sur les boutons
             button.style.touchAction = 'manipulation';
         });
     }
@@ -308,7 +308,7 @@ class CeramicQCApp {
     }
 
     setupResponsiveFeatures() {
-        // Responsive table wrapper
+        // Wrapper de table responsive
         const tables = document.querySelectorAll('.table');
         tables.forEach(table => {
             if (!table.parentElement.classList.contains('table-responsive')) {
@@ -319,7 +319,7 @@ class CeramicQCApp {
             }
         });
 
-        // Responsive navigation adjustments
+        // Ajustements de navigation responsive
         window.addEventListener('resize', this.debounce(() => {
             this.handleResize();
         }, 250));
@@ -328,7 +328,7 @@ class CeramicQCApp {
     handleResize() {
         const width = window.innerWidth;
         
-        // Update navigation based on screen size
+        // Mettre à jour la navigation selon la taille d'écran
         const navbarNav = document.querySelector('.navbar-nav');
         if (navbarNav) {
             if (width < 1200) {
@@ -338,7 +338,7 @@ class CeramicQCApp {
             }
         }
         
-        // Adjust chart responsiveness
+        // Ajuster la réactivité des graphiques
         this.charts.forEach(chart => {
             if (chart && typeof chart.resize === 'function') {
                 chart.resize();
@@ -347,7 +347,7 @@ class CeramicQCApp {
     }
 
     initializeTooltips() {
-        // Initialize Bootstrap tooltips
+        // Initialiser les tooltips Bootstrap
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         tooltipTriggerList.map(tooltipTriggerEl => {
             return new bootstrap.Tooltip(tooltipTriggerEl, {
@@ -355,7 +355,7 @@ class CeramicQCApp {
             });
         });
 
-        // Initialize Bootstrap popovers
+        // Initialiser les popovers Bootstrap
         const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
         popoverTriggerList.map(popoverTriggerEl => {
             return new bootstrap.Popover(popoverTriggerEl);
@@ -365,13 +365,13 @@ class CeramicQCApp {
     setupTouchInteractions() {
         if (!this.touchDevice) return;
         
-        // Disable hover effects on touch devices
+        // Désactiver les effets de survol sur les appareils tactiles
         document.body.classList.add('touch-device');
         
-        // Enhanced swipe detection for cards
+        // Détection de balayage améliorée pour les cartes
         this.setupSwipeDetection();
         
-        // Touch-friendly form validation
+        // Validation de formulaire compatible tactile
         this.setupTouchFormValidation();
     }
 
@@ -396,7 +396,7 @@ class CeramicQCApp {
                 const deltaY = endY - startY;
                 const deltaTime = endTime - startTime;
                 
-                // Detect horizontal swipe
+                // Détecter le balayage horizontal
                 if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50 && deltaTime < 300) {
                     const direction = deltaX > 0 ? 'right' : 'left';
                     this.handleSwipe(direction, e.target);
@@ -406,7 +406,7 @@ class CeramicQCApp {
     }
 
     handleSwipe(direction, element) {
-        // Find the closest swipeable element
+        // Trouver l'élément balayable le plus proche
         const swipeableElement = element.closest('[data-swipe]');
         if (swipeableElement) {
             const swipeAction = swipeableElement.dataset.swipe;
@@ -505,7 +505,7 @@ class CeramicQCApp {
     }
 
     initializeFormEnhancements() {
-        // Initialize date inputs with current date
+        // Initialiser les saisies de date avec la date actuelle
         const dateInputs = document.querySelectorAll('input[type="date"]');
         dateInputs.forEach(input => {
             if (!input.value) {
@@ -513,7 +513,7 @@ class CeramicQCApp {
             }
         });
 
-        // Initialize number formatting
+        // Initialiser le formatage des nombres
         this.initializeNumberFormatting();
     }
 
@@ -531,7 +531,7 @@ class CeramicQCApp {
                 }
             });
             
-            // Add visual formatting
+            // Ajouter un formatage visuel
             input.addEventListener('input', function() {
                 const value = parseFloat(this.value);
                 const min = parseFloat(this.getAttribute('data-min'));
@@ -607,21 +607,21 @@ class CeramicQCApp {
             if (response.ok) {
                 const data = await response.json();
                 this.updateDashboardStats(data);
-                this.showNotification('Dashboard data refreshed', 'success');
+                this.showNotification('Données du tableau de bord actualisées', 'success');
             }
         } catch (error) {
-            console.error('Error refreshing dashboard:', error);
+            console.error('Erreur lors de l\'actualisation du tableau de bord:', error);
         }
     }
 
     updateDashboardStats(data) {
-        // Update overall compliance rate
+        // Mettre à jour le taux de conformité global
         const complianceElement = document.querySelector('[data-stat="compliance-rate"]');
         if (complianceElement) {
             complianceElement.textContent = data.overall.compliance_rate + '%';
         }
         
-        // Update other stats
+        // Mettre à jour les autres statistiques
         const totalElement = document.querySelector('[data-stat="total-tests"]');
         if (totalElement) {
             totalElement.textContent = data.overall.total;
@@ -638,7 +638,7 @@ class CeramicQCApp {
         }
     }
 
-    // Utility functions
+    // Fonctions utilitaires
     debounce(func, wait) {
         let timeout;
         return function executedFunction(...args) {
@@ -664,7 +664,7 @@ class CeramicQCApp {
         };
     }
 
-    // Public API methods
+    // Méthodes API publiques
     showNotification(message, type = 'info') {
         const alertClass = type === 'error' ? 'danger' : type;
         const iconClass = type === 'error' ? 'exclamation-triangle-fill' : 
@@ -675,13 +675,13 @@ class CeramicQCApp {
                  style="position: fixed; top: 20px; right: 20px; z-index: 1050; min-width: 300px;">
                 <i class="bi bi-${iconClass}" aria-hidden="true"></i>
                 <span class="ms-1">${message}</span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
             </div>
         `;
         
         document.body.insertAdjacentHTML('beforeend', alertHtml);
         
-        // Auto-dismiss after 5 seconds
+        // Supprimer automatiquement après 5 secondes
         setTimeout(() => {
             const alerts = document.querySelectorAll('.alert[style*="position: fixed"]');
             const lastAlert = alerts[alerts.length - 1];
@@ -691,7 +691,7 @@ class CeramicQCApp {
             }
         }, 5000);
         
-        // Announce to screen readers
+        // Annoncer aux lecteurs d'écran
         this.announceToScreenReader(message);
     }
 
@@ -724,7 +724,7 @@ class CeramicQCApp {
         return Math.round((compliant / total) * 100 * 10) / 10;
     }
 
-    confirmDelete(message = 'Are you sure you want to delete this record?') {
+    confirmDelete(message = 'Êtes-vous sûr de vouloir supprimer cet enregistrement ?') {
         return confirm(message);
     }
 
@@ -758,7 +758,7 @@ class CeramicQCApp {
     }
 }
 
-// Add modern CSS styles
+// Ajouter les styles CSS modernes
 const modernCSS = `
 .ripple-effect {
     position: absolute;
@@ -826,19 +826,19 @@ const modernCSS = `
 }
 `;
 
-// Inject CSS
+// Injecter le CSS
 const styleSheet = document.createElement('style');
 styleSheet.textContent = modernCSS;
 document.head.appendChild(styleSheet);
 
-// Initialize the app
+// Initialiser l'application
 let ceramicQCApp;
 document.addEventListener('DOMContentLoaded', () => {
     ceramicQCApp = new CeramicQCApp();
     window.CeramicQC = ceramicQCApp;
 });
 
-// Legacy compatibility
+// Compatibilité héritée
 window.showNotification = (message, type = 'info', duration = 3000) => {
     if (window.CeramicQC && window.CeramicQC.showNotification) {
         window.CeramicQC.showNotification(message, type);
@@ -851,7 +851,7 @@ window.refreshDashboardData = () => {
     }
 };
 
-// Export for use in other scripts
+// Exporter pour utilisation dans d'autres scripts
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = CeramicQCApp;
 }

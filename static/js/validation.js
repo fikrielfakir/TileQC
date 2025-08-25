@@ -1,7 +1,7 @@
-// Ceramic Tile Quality Control - Real-time Form Validation
+// Contrôle Qualité Carreaux Céramiques - Validation de Formulaires en Temps Réel
 
 /**
- * Specification limits for different control types
+ * Limites de spécifications pour différents types de contrôles
  */
 const SPECIFICATIONS = {
     clay: {
@@ -93,7 +93,7 @@ const SPECIFICATIONS = {
             email: { min: 1730, max: 1780, unit: 'g/l' },
             mate: { min: 1780, max: 1830, unit: 'g/l' }
         },
-        viscosity: { min: 25, max: 55, unit: 'seconds' },
+        viscosity: { min: 25, max: 55, unit: 'secondes' },
         grammage: {
             water: {
                 '20x20': { min: 0.5, max: 3, unit: 'g' },
@@ -110,25 +110,25 @@ const SPECIFICATIONS = {
 };
 
 /**
- * Initialize form validation
+ * Initialiser la validation des formulaires
  */
 function initializeValidation(formId) {
     const form = document.getElementById(formId);
     if (!form) return;
     
-    // Get form type from ID or data attribute
+    // Obtenir le type de formulaire depuis l'ID ou l'attribut data
     const formType = getFormType(formId);
     
-    // Initialize real-time validation for all inputs
+    // Initialiser la validation en temps réel pour toutes les saisies
     const inputs = form.querySelectorAll('input[type="number"], input[data-validate]');
     inputs.forEach(input => {
         initializeInputValidation(input, formType);
     });
     
-    // Initialize format-dependent validation
+    // Initialiser la validation dépendante du format
     initializeFormatValidation(form, formType);
     
-    // Initialize form submission validation
+    // Initialiser la validation de soumission du formulaire
     form.addEventListener('submit', function(e) {
         if (!validateForm(form, formType)) {
             e.preventDefault();
@@ -136,11 +136,11 @@ function initializeValidation(formId) {
         }
     });
     
-    console.log(`Initialized validation for ${formType} form`);
+    console.log(`Validation initialisée pour le formulaire ${formType}`);
 }
 
 /**
- * Get form type from form ID
+ * Obtenir le type de formulaire depuis l'ID du formulaire
  */
 function getFormType(formId) {
     const typeMap = {
@@ -154,25 +154,25 @@ function getFormType(formId) {
         'digitalDecorationForm': 'digital'
     };
     
-    return typeMap[formId] || 'unknown';
+    return typeMap[formId] || 'inconnu';
 }
 
 /**
- * Initialize validation for individual input
+ * Initialiser la validation pour une saisie individuelle
  */
 function initializeInputValidation(input, formType) {
-    // Get validation parameters from data attributes or specifications
+    // Obtenir les paramètres de validation depuis les attributs data ou les spécifications
     const parameter = getParameterName(input.name);
     const specs = getSpecificationForParameter(formType, parameter, input);
     
     if (!specs) return;
     
-    // Set data attributes for validation
+    // Définir les attributs data pour la validation
     if (specs.min !== undefined) input.setAttribute('data-min', specs.min);
     if (specs.max !== undefined) input.setAttribute('data-max', specs.max);
     if (specs.unit) input.setAttribute('data-unit', specs.unit);
     
-    // Add real-time validation
+    // Ajouter la validation en temps réel
     input.addEventListener('input', function() {
         validateInput(this, specs);
     });
@@ -181,7 +181,7 @@ function initializeInputValidation(input, formType) {
         validateInput(this, specs, true);
     });
     
-    // Add helpful placeholder
+    // Ajouter un placeholder utile
     if (specs.min !== undefined && specs.max !== undefined) {
         input.placeholder = `${specs.min} - ${specs.max} ${specs.unit || ''}`;
     } else if (specs.max !== undefined) {
@@ -192,33 +192,33 @@ function initializeInputValidation(input, formType) {
 }
 
 /**
- * Get parameter name from input name
+ * Obtenir le nom du paramètre depuis le nom de la saisie
  */
 function getParameterName(inputName) {
-    // Remove common prefixes and suffixes
+    // Supprimer les préfixes et suffixes communs
     return inputName.replace(/^(defect_|humidity_|dimension_)/, '')
                   .replace(/(_deviation|_defects)$/, '');
 }
 
 /**
- * Get specification for parameter
+ * Obtenir les spécifications pour un paramètre
  */
 function getSpecificationForParameter(formType, parameter, input) {
     const specs = SPECIFICATIONS[formType];
     if (!specs) return null;
     
-    // Handle nested specifications (e.g., format-dependent)
+    // Gérer les spécifications imbriquées (ex: dépendantes du format)
     if (specs[parameter]) {
         const spec = specs[parameter];
         
-        // Check if it's format-dependent
+        // Vérifier si c'est dépendant du format
         if (typeof spec === 'object' && spec.hasOwnProperty('20x20')) {
             const formatSelect = input.form.querySelector('[name="format_type"]');
             const format = formatSelect ? formatSelect.value : '20x20';
             return spec[format] || spec['20x20'];
         }
         
-        // Check if it's enamel type dependent
+        // Vérifier si c'est dépendant du type d'émail
         if (typeof spec === 'object' && spec.hasOwnProperty('engobe')) {
             const enamelSelect = input.form.querySelector('[name="enamel_type"]');
             const enamelType = enamelSelect ? enamelSelect.value : 'engobe';
@@ -228,7 +228,7 @@ function getSpecificationForParameter(formType, parameter, input) {
         return spec;
     }
     
-    // Check in nested objects (defects, quality, etc.)
+    // Vérifier dans les objets imbriqués (défauts, qualité, etc.)
     for (const [category, categorySpecs] of Object.entries(specs)) {
         if (typeof categorySpecs === 'object' && categorySpecs[parameter]) {
             return categorySpecs[parameter];
@@ -239,23 +239,23 @@ function getSpecificationForParameter(formType, parameter, input) {
 }
 
 /**
- * Validate individual input
+ * Valider une saisie individuelle
  */
 function validateInput(input, specs, showFeedback = false) {
     const value = parseFloat(input.value);
     const isValid = validateValue(value, specs);
     
-    // Update input classes
+    // Mettre à jour les classes de saisie
     input.classList.remove('is-valid', 'is-invalid');
     if (input.value) {
         input.classList.add(isValid ? 'is-valid' : 'is-invalid');
     }
     
-    // Show/hide feedback
+    // Afficher/masquer le feedback
     const feedback = getOrCreateFeedback(input);
     if (showFeedback || !isValid) {
         if (isValid) {
-            feedback.textContent = '✓ Within specification';
+            feedback.textContent = '✓ Dans les spécifications';
             feedback.className = 'valid-feedback';
         } else {
             feedback.textContent = getValidationMessage(value, specs);
@@ -268,7 +268,7 @@ function validateInput(input, specs, showFeedback = false) {
 }
 
 /**
- * Validate value against specifications
+ * Valider la valeur par rapport aux spécifications
  */
 function validateValue(value, specs) {
     if (isNaN(value)) return false;
@@ -280,26 +280,26 @@ function validateValue(value, specs) {
 }
 
 /**
- * Get validation message
+ * Obtenir le message de validation
  */
 function getValidationMessage(value, specs) {
     if (isNaN(value)) {
-        return 'Please enter a valid number';
+        return 'Veuillez saisir un nombre valide';
     }
     
     if (specs.min !== undefined && specs.max !== undefined) {
-        return `Value must be between ${specs.min} and ${specs.max} ${specs.unit || ''}`;
+        return `La valeur doit être entre ${specs.min} et ${specs.max} ${specs.unit || ''}`;
     } else if (specs.min !== undefined && value < specs.min) {
-        return `Value must be at least ${specs.min} ${specs.unit || ''}`;
+        return `La valeur doit être d'au moins ${specs.min} ${specs.unit || ''}`;
     } else if (specs.max !== undefined && value > specs.max) {
-        return `Value must not exceed ${specs.max} ${specs.unit || ''}`;
+        return `La valeur ne doit pas dépasser ${specs.max} ${specs.unit || ''}`;
     }
     
-    return 'Value is out of specification';
+    return 'Valeur hors spécification';
 }
 
 /**
- * Get or create feedback element
+ * Obtenir ou créer l'élément de feedback
  */
 function getOrCreateFeedback(input) {
     let feedback = input.parentNode.querySelector('.invalid-feedback, .valid-feedback');
@@ -313,7 +313,7 @@ function getOrCreateFeedback(input) {
 }
 
 /**
- * Initialize format-dependent validation
+ * Initialiser la validation dépendante du format
  */
 function initializeFormatValidation(form, formType) {
     const formatSelect = form.querySelector('[name="format_type"]');
@@ -324,7 +324,7 @@ function initializeFormatValidation(form, formType) {
             updateFormatDependentValidation(form, formType);
         });
         
-        // Trigger initial update
+        // Déclencher la mise à jour initiale
         updateFormatDependentValidation(form, formType);
     }
     
@@ -333,13 +333,13 @@ function initializeFormatValidation(form, formType) {
             updateEnamelDependentValidation(form, formType);
         });
         
-        // Trigger initial update
+        // Déclencher la mise à jour initiale
         updateEnamelDependentValidation(form, formType);
     }
 }
 
 /**
- * Update format-dependent validation
+ * Mettre à jour la validation dépendante du format
  */
 function updateFormatDependentValidation(form, formType) {
     const formatSelect = form.querySelector('[name="format_type"]');
@@ -347,24 +347,24 @@ function updateFormatDependentValidation(form, formType) {
     
     if (!format) return;
     
-    // Update thickness and weight validation for press controls
+    // Mettre à jour la validation d'épaisseur et de poids pour les contrôles de presse
     if (formType === 'press') {
         updatePressValidation(form, format);
     }
     
-    // Update grammage validation for enamel controls
+    // Mettre à jour la validation de grammage pour les contrôles d'émail
     if (formType === 'enamel') {
         updateGrammageValidation(form, format);
     }
 }
 
 /**
- * Update press validation based on format
+ * Mettre à jour la validation de presse selon le format
  */
 function updatePressValidation(form, format) {
     const specs = SPECIFICATIONS.press;
     
-    // Update thickness validation
+    // Mettre à jour la validation d'épaisseur
     const thicknessInput = form.querySelector('[name="thickness"]');
     if (thicknessInput && specs.thickness[format]) {
         const thicknessSpec = specs.thickness[format];
@@ -372,19 +372,19 @@ function updatePressValidation(form, format) {
         thicknessInput.setAttribute('data-max', thicknessSpec.max);
         thicknessInput.placeholder = `${thicknessSpec.min} - ${thicknessSpec.max} ${thicknessSpec.unit}`;
         
-        // Update help text
+        // Mettre à jour le texte d'aide
         const helpText = form.querySelector('#thicknessSpec');
         if (helpText) {
-            helpText.textContent = `Spec: ${thicknessSpec.min} - ${thicknessSpec.max} ${thicknessSpec.unit}`;
+            helpText.textContent = `Spéc : ${thicknessSpec.min} - ${thicknessSpec.max} ${thicknessSpec.unit}`;
         }
         
-        // Revalidate if has value
+        // Re-valider s'il y a une valeur
         if (thicknessInput.value) {
             validateInput(thicknessInput, thicknessSpec);
         }
     }
     
-    // Update weight validation
+    // Mettre à jour la validation de poids
     const weightInput = form.querySelector('[name="wet_weight"]');
     if (weightInput && specs.weight[format]) {
         const weightSpec = specs.weight[format];
@@ -392,13 +392,13 @@ function updatePressValidation(form, format) {
         weightInput.setAttribute('data-max', weightSpec.max);
         weightInput.placeholder = `${weightSpec.min} - ${weightSpec.max} ${weightSpec.unit}`;
         
-        // Update help text
+        // Mettre à jour le texte d'aide
         const helpText = form.querySelector('#weightSpec');
         if (helpText) {
-            helpText.textContent = `Spec: ${weightSpec.min} - ${weightSpec.max} ${weightSpec.unit}`;
+            helpText.textContent = `Spéc : ${weightSpec.min} - ${weightSpec.max} ${weightSpec.unit}`;
         }
         
-        // Revalidate if has value
+        // Re-valider s'il y a une valeur
         if (weightInput.value) {
             validateInput(weightInput, weightSpec);
         }
@@ -406,7 +406,7 @@ function updatePressValidation(form, format) {
 }
 
 /**
- * Update enamel validation based on type
+ * Mettre à jour la validation d'émail selon le type
  */
 function updateEnamelDependentValidation(form, formType) {
     const enamelSelect = form.querySelector('[name="enamel_type"]');
@@ -416,7 +416,7 @@ function updateEnamelDependentValidation(form, formType) {
     
     const specs = SPECIFICATIONS.enamel;
     
-    // Update density validation
+    // Mettre à jour la validation de densité
     const densityInput = form.querySelector('[name="density"]');
     if (densityInput && specs.density[enamelType]) {
         const densitySpec = specs.density[enamelType];
@@ -424,13 +424,13 @@ function updateEnamelDependentValidation(form, formType) {
         densityInput.setAttribute('data-max', densitySpec.max);
         densityInput.placeholder = `${densitySpec.min} - ${densitySpec.max} ${densitySpec.unit}`;
         
-        // Update help text
+        // Mettre à jour le texte d'aide
         const helpText = form.querySelector('#densitySpec');
         if (helpText) {
-            helpText.textContent = `Spec: ${densitySpec.min} - ${densitySpec.max} ${densitySpec.unit}`;
+            helpText.textContent = `Spéc : ${densitySpec.min} - ${densitySpec.max} ${densitySpec.unit}`;
         }
         
-        // Revalidate if has value
+        // Re-valider s'il y a une valeur
         if (densityInput.value) {
             validateInput(densityInput, densitySpec);
         }
@@ -438,12 +438,12 @@ function updateEnamelDependentValidation(form, formType) {
 }
 
 /**
- * Update grammage validation based on format
+ * Mettre à jour la validation de grammage selon le format
  */
 function updateGrammageValidation(form, format) {
     const specs = SPECIFICATIONS.enamel.grammage;
     
-    // Update water grammage
+    // Mettre à jour le grammage d'eau
     const waterInput = form.querySelector('[name="water_grammage"]');
     if (waterInput && specs.water[format]) {
         const waterSpec = specs.water[format];
@@ -451,14 +451,14 @@ function updateGrammageValidation(form, format) {
         waterInput.setAttribute('data-max', waterSpec.max);
         waterInput.placeholder = `${waterSpec.min} - ${waterSpec.max} ${waterSpec.unit}`;
         
-        // Update help text
+        // Mettre à jour le texte d'aide
         const helpText = form.querySelector('#waterSpec');
         if (helpText) {
-            helpText.textContent = `Spec: ${waterSpec.min} - ${waterSpec.max} ${waterSpec.unit}`;
+            helpText.textContent = `Spéc : ${waterSpec.min} - ${waterSpec.max} ${waterSpec.unit}`;
         }
     }
     
-    // Update enamel grammage
+    // Mettre à jour le grammage d'émail
     const enamelInput = form.querySelector('[name="enamel_grammage"]');
     if (enamelInput && specs.enamel[format]) {
         const enamelSpec = specs.enamel[format];
@@ -466,16 +466,16 @@ function updateGrammageValidation(form, format) {
         enamelInput.setAttribute('data-max', enamelSpec.max);
         enamelInput.placeholder = `${enamelSpec.min} - ${enamelSpec.max} ${enamelSpec.unit}`;
         
-        // Update help text
+        // Mettre à jour le texte d'aide
         const helpText = form.querySelector('#enamelSpec');
         if (helpText) {
-            helpText.textContent = `Spec: ${enamelSpec.min} - ${enamelSpec.max} ${enamelSpec.unit}`;
+            helpText.textContent = `Spéc : ${enamelSpec.min} - ${enamelSpec.max} ${enamelSpec.unit}`;
         }
     }
 }
 
 /**
- * Validate entire form
+ * Valider le formulaire entier
  */
 function validateForm(form, formType) {
     const inputs = form.querySelectorAll('input[type="number"], input[data-validate]');
@@ -497,33 +497,33 @@ function validateForm(form, formType) {
 }
 
 /**
- * Show validation summary
+ * Afficher le résumé de validation
  */
 function showValidationSummary(form) {
     const invalidInputs = form.querySelectorAll('.is-invalid');
     
     if (invalidInputs.length === 0) return;
     
-    let message = `Please correct the following ${invalidInputs.length} error(s):\n\n`;
+    let message = `Veuillez corriger les ${invalidInputs.length} erreur(s) suivante(s) :\n\n`;
     
     invalidInputs.forEach((input, index) => {
         const label = form.querySelector(`label[for="${input.id}"]`) || 
                      form.querySelector(`label[for="${input.name}"]`);
         const labelText = label ? label.textContent : input.name;
         const feedback = input.parentNode.querySelector('.invalid-feedback');
-        const errorText = feedback ? feedback.textContent : 'Invalid value';
+        const errorText = feedback ? feedback.textContent : 'Valeur invalide';
         
-        message += `${index + 1}. ${labelText}: ${errorText}\n`;
+        message += `${index + 1}. ${labelText} : ${errorText}\n`;
     });
     
     alert(message);
     
-    // Focus first invalid input
+    // Focaliser sur la première saisie invalide
     invalidInputs[0].focus();
 }
 
 /**
- * Real-time compliance indicator
+ * Indicateur de conformité en temps réel
  */
 function updateComplianceIndicator(form, formType) {
     const indicator = form.querySelector('.compliance-indicator');
@@ -543,7 +543,7 @@ function updateComplianceIndicator(form, formType) {
     });
     
     if (totalInputs === 0) {
-        indicator.textContent = 'No data entered';
+        indicator.textContent = 'Aucune donnée saisie';
         indicator.className = 'compliance-indicator partial';
         return;
     }
@@ -551,19 +551,19 @@ function updateComplianceIndicator(form, formType) {
     const complianceRate = (validInputs / totalInputs) * 100;
     
     if (complianceRate === 100) {
-        indicator.textContent = 'All parameters compliant';
+        indicator.textContent = 'Tous les paramètres sont conformes';
         indicator.className = 'compliance-indicator compliant';
     } else if (complianceRate === 0) {
-        indicator.textContent = 'Non-compliant measurements detected';
+        indicator.textContent = 'Mesures non conformes détectées';
         indicator.className = 'compliance-indicator non-compliant';
     } else {
-        indicator.textContent = `${validInputs}/${totalInputs} parameters compliant`;
+        indicator.textContent = `${validInputs}/${totalInputs} paramètres conformes`;
         indicator.className = 'compliance-indicator partial';
     }
 }
 
 /**
- * Initialize surface quality calculation for dimensional tests
+ * Initialiser le calcul de qualité de surface pour les tests dimensionnels
  */
 function initializeSurfaceQualityCalculation(form) {
     const tilesTestedInput = form.querySelector('[name="tiles_tested"]');
@@ -581,11 +581,11 @@ function initializeSurfaceQualityCalculation(form) {
             const isCompliant = percentage >= 95;
             
             if (qualityIndicator) {
-                qualityIndicator.textContent = `${percentage.toFixed(1)}% defect-free`;
+                qualityIndicator.textContent = `${percentage.toFixed(1)}% sans défaut`;
                 qualityIndicator.className = `badge ${isCompliant ? 'bg-success' : 'bg-danger'}`;
             }
             
-            // Validate defect-free input
+            // Valider la saisie sans défaut
             defectFreeInput.classList.remove('is-valid', 'is-invalid');
             if (defectFree <= total) {
                 defectFreeInput.classList.add(isCompliant ? 'is-valid' : 'is-invalid');
@@ -597,7 +597,7 @@ function initializeSurfaceQualityCalculation(form) {
     defectFreeInput.addEventListener('input', updateSurfaceQuality);
 }
 
-// Export validation functions
+// Exporter les fonctions de validation
 window.CeramicQCValidation = {
     initializeValidation,
     validateInput,
@@ -606,7 +606,7 @@ window.CeramicQCValidation = {
     SPECIFICATIONS
 };
 
-// Auto-initialize validation for forms with specific IDs
+// Auto-initialiser la validation pour les formulaires avec des IDs spécifiques
 document.addEventListener('DOMContentLoaded', function() {
     const formIds = [
         'clayControlForm',
