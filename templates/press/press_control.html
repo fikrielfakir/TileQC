@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 
-{% block title %}Press Control - Ceramic QC{% endblock %}
+{% block title %}Contrôle Presse - Ceramic QC{% endblock %}
 
 {% block content %}
 <div class="row mb-4">
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center">
             <h1 class="h3 mb-0">
-                <i class="bi bi-hammer text-info"></i> Press Control
+                <i class="bi bi-hammer text-info"></i> Contrôle Presse
             </h1>
             {% if not form %}
             <a href="{{ url_for('press.add_press_control') }}" class="btn btn-primary">
-                <i class="bi bi-plus-lg"></i> Add Press Control
+                <i class="bi bi-plus-lg"></i> Ajouter Contrôle Presse
             </a>
             {% endif %}
         </div>
-        <p class="text-muted">Monitor press stage parameters and surface defects (6x daily measurements)</p>
+        <p class="text-muted">Surveillance des paramètres étape presse et défauts de surface (6x mesures quotidiennes)</p>
     </div>
 </div>
 
@@ -24,41 +24,41 @@
     <div class="col-12">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-light">
-                <h6 class="mb-0"><i class="bi bi-info-circle text-info"></i> Format Specifications</h6>
+                <h6 class="mb-0"><i class="bi bi-info-circle text-info"></i> Spécifications Formats</h6>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-4">
                         <strong>20x20 Format:</strong>
                         <ul class="list-unstyled mt-2">
-                            <li><span class="badge bg-primary">Thickness:</span> 6.2 - 7.2 mm</li>
-                            <li><span class="badge bg-primary">Weight:</span> 480 - 580 g</li>
+                            <li><span class="badge bg-primary">Épaisseur:</span> 6.2 - 7.2 mm</li>
+                            <li><span class="badge bg-primary">Poids:</span> 480 - 580 g</li>
                         </ul>
                     </div>
                     <div class="col-md-4">
                         <strong>25x40 Format:</strong>
                         <ul class="list-unstyled mt-2">
-                            <li><span class="badge bg-success">Thickness:</span> 6.8 - 7.4 mm</li>
-                            <li><span class="badge bg-success">Weight:</span> 1150 - 1550 g</li>
+                            <li><span class="badge bg-success">Épaisseur:</span> 6.8 - 7.4 mm</li>
+                            <li><span class="badge bg-success">Poids:</span> 1150 - 1550 g</li>
                         </ul>
                     </div>
                     <div class="col-md-4">
                         <strong>25x50 Format:</strong>
                         <ul class="list-unstyled mt-2">
-                            <li><span class="badge bg-warning">Thickness:</span> 7.1 - 7.7 mm</li>
-                            <li><span class="badge bg-warning">Weight:</span> 1800 - 2000 g</li>
+                            <li><span class="badge bg-warning">Épaisseur:</span> 7.1 - 7.7 mm</li>
+                            <li><span class="badge bg-warning">Poids:</span> 1800 - 2000 g</li>
                         </ul>
                     </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col-12">
-                        <strong>Surface Defect Limits:</strong>
+                        <strong>Limites Défauts Surface:</strong>
                         <span class="ms-3">
                             <span class="badge bg-secondary">Grains ≤ 15%</span>
-                            <span class="badge bg-secondary">Cracks ≤ 1%</span>
-                            <span class="badge bg-secondary">Cleaning ≤ 1%</span>
-                            <span class="badge bg-secondary">Foliage ≤ 1%</span>
-                            <span class="badge bg-secondary">Chipping ≤ 1%</span>
+                            <span class="badge bg-secondary">Fissures ≤ 1%</span>
+                            <span class="badge bg-secondary">Nettoyage ≤ 1%</span>
+                            <span class="badge bg-secondary">Feuillage ≤ 1%</span>
+                            <span class="badge bg-secondary">Écaillage ≤ 1%</span>
                         </span>
                     </div>
                 </div>

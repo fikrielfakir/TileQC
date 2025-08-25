@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 
-{% block title %}External Tests - Ceramic QC{% endblock %}
+{% block title %}Tests Externes - Ceramic QC{% endblock %}
 
 {% block content %}
 <div class="row mb-4">
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center">
             <h1 class="h3 mb-0">
-                <i class="bi bi-building text-info"></i> External Laboratory Tests
+                <i class="bi bi-building text-info"></i> Tests de Laboratoire Externes
             </h1>
             {% if not form %}
             <a href="{{ url_for('tests.add_external_test') }}" class="btn btn-primary">
-                <i class="bi bi-plus-lg"></i> Add External Test
+                <i class="bi bi-plus-lg"></i> Ajouter Test Externe
             </a>
             {% endif %}
         </div>
-        <p class="text-muted">CETEMCO laboratory test results and certifications</p>
+        <p class="text-muted">Résultats de tests et certifications du laboratoire CETEMCO</p>
     </div>
 </div>
 
@@ -24,32 +24,32 @@
     <div class="col-12">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-light">
-                <h6 class="mb-0"><i class="bi bi-info-circle text-info"></i> External Test Types</h6>
+                <h6 class="mb-0"><i class="bi bi-info-circle text-info"></i> Types de Tests Externes</h6>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-4">
-                        <strong>Thermal Shock Resistance:</strong>
+                        <strong>Résistance au Choc Thermique:</strong>
                         <ul class="list-unstyled mt-2">
-                            <li><span class="badge bg-primary">Standard:</span> ISO 10545-11V2000</li>
-                            <li><span class="badge bg-info">Laboratory:</span> CETEMCO</li>
-                            <li><span class="badge bg-secondary">Result:</span> Pass/Fail certification</li>
+                            <li><span class="badge bg-primary">Norme:</span> ISO 10545-11V2000</li>
+                            <li><span class="badge bg-info">Laboratoire:</span> CETEMCO</li>
+                            <li><span class="badge bg-secondary">Résultat:</span> Certification Réussi/Échoué</li>
                         </ul>
                     </div>
                     <div class="col-md-4">
-                        <strong>Chemical Resistance:</strong>
+                        <strong>Résistance Chimique:</strong>
                         <ul class="list-unstyled mt-2">
-                            <li><span class="badge bg-success">Standard:</span> ISO 10545-13V2017</li>
-                            <li><span class="badge bg-info">Laboratory:</span> CETEMCO</li>
-                            <li><span class="badge bg-secondary">Scope:</span> Acids, bases, household chemicals</li>
+                            <li><span class="badge bg-success">Norme:</span> ISO 10545-13V2017</li>
+                            <li><span class="badge bg-info">Laboratoire:</span> CETEMCO</li>
+                            <li><span class="badge bg-secondary">Portée:</span> Acides, bases, produits chimiques ménagers</li>
                         </ul>
                     </div>
                     <div class="col-md-4">
-                        <strong>Stain Resistance:</strong>
+                        <strong>Résistance aux Taches:</strong>
                         <ul class="list-unstyled mt-2">
-                            <li><span class="badge bg-warning">Standard:</span> ISO 10545-14V2017</li>
-                            <li><span class="badge bg-info">Laboratory:</span> CETEMCO</li>
-                            <li><span class="badge bg-secondary">Classification:</span> Class 1-5 rating</li>
+                            <li><span class="badge bg-warning">Norme:</span> ISO 10545-14V2017</li>
+                            <li><span class="badge bg-info">Laboratoire:</span> CETEMCO</li>
+                            <li><span class="badge bg-secondary">Classification:</span> Classement 1-5</li>
                         </ul>
                     </div>
                 </div>
@@ -66,9 +66,9 @@
             <div class="card-header bg-white">
                 <h5 class="mb-0">
                     {% if edit %}
-                        <i class="bi bi-pencil"></i> Edit External Test Record
+                        <i class="bi bi-pencil"></i> Modifier Enregistrement Test Externe
                     {% else %}
-                        <i class="bi bi-plus-lg"></i> Add New External Test Record
+                        <i class="bi bi-plus-lg"></i> Ajouter Nouvel Enregistrement Test Externe
                     {% endif %}
                 </h5>
             </div>
@@ -87,13 +87,13 @@
                         </div>
                     </div>
                     
-                    <h6 class="text-muted border-bottom pb-2 mb-3">Test Details</h6>
+                    <h6 class="text-muted border-bottom pb-2 mb-3">Détails du Test</h6>
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             {{ form.iso_standard.label(class="form-label") }}
                             {{ form.iso_standard(class="form-control", id="isoStandard") }}
-                            <small class="text-muted" id="standardHelp">ISO standard reference</small>
+                            <small class="text-muted" id="standardHelp">Référence norme ISO</small>
                         </div>
                         <div class="col-md-6 mb-3">
                             {{ form.laboratory.label(class="form-label") }}
@@ -105,11 +105,11 @@
                         <div class="col-md-6 mb-3">
                             {{ form.test_report_number.label(class="form-label") }}
                             {{ form.test_report_number(class="form-control") }}
-                            <small class="text-muted">Laboratory report reference number</small>
+                            <small class="text-muted">Numéro de référence rapport laboratoire</small>
                         </div>
                     </div>
                     
-                    <h6 class="text-muted border-bottom pb-2 mb-3">Test Results</h6>
+                    <h6 class="text-muted border-bottom pb-2 mb-3">Résultats du Test</h6>
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
@@ -119,7 +119,7 @@
                         <div class="col-md-6 mb-3">
                             {{ form.result_value.label(class="form-label") }}
                             {{ form.result_value(class="form-control") }}
-                            <small class="text-muted" id="valueHelp">Numeric result if applicable</small>
+                            <small class="text-muted" id="valueHelp">Résultat numérique si applicable</small>
                         </div>
                     </div>
                     
@@ -128,9 +128,9 @@
                         <div class="col-12 mb-3">
                             <div class="card border-0 bg-light">
                                 <div class="card-body">
-                                    <h6 class="card-title">Test Status</h6>
+                                    <h6 class="card-title">Statut du Test</h6>
                                     <div id="testStatusIndicator" class="alert alert-secondary">
-                                        <i class="bi bi-info-circle"></i> Select test result status to see details
+                                        <i class="bi bi-info-circle"></i> Sélectionnez le statut du résultat pour voir les détails
                                     </div>
                                 </div>
                             </div>
@@ -139,15 +139,15 @@
                     
                     <div class="mb-3">
                         {{ form.notes.label(class="form-label") }}
-                        {{ form.notes(class="form-control", rows="4", placeholder="Additional test details, conditions, observations, or corrective actions...") }}
+                        {{ form.notes(class="form-control", rows="4", placeholder="Détails supplémentaires du test, conditions, observations, ou actions correctives...") }}
                     </div>
                     
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-lg"></i> {% if edit %}Update{% else %}Save{% endif %} Record
+                            <i class="bi bi-check-lg"></i> {% if edit %}Modifier{% else %}Enregistrer{% endif %} Contrôle
                         </button>
                         <a href="{{ url_for('tests.external_tests') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left"></i> Back to List
+                            <i class="bi bi-arrow-left"></i> Retour à la Liste
                         </a>
                     </div>
                 </form>
@@ -158,26 +158,26 @@
     <div class="col-lg-4">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-light">
-                <h6 class="mb-0"><i class="bi bi-lightbulb text-warning"></i> External Testing Guidelines</h6>
+                <h6 class="mb-0"><i class="bi bi-lightbulb text-warning"></i> Directives Tests Externes</h6>
             </div>
             <div class="card-body">
-                <h6>CETEMCO Laboratory:</h6>
+                <h6>CETEMCO Laboratoire:</h6>
                 <ul class="list-unstyled">
-                    <li><i class="bi bi-building text-info"></i> Accredited testing facility</li>
-                    <li><i class="bi bi-award text-info"></i> ISO standard compliance</li>
-                    <li><i class="bi bi-file-earmark-check text-info"></i> Official certifications</li>
+                    <li><i class="bi bi-building text-info"></i> Installation de test accréditée</li>
+                    <li><i class="bi bi-award text-info"></i> Conformité aux normes ISO</li>
+                    <li><i class="bi bi-file-earmark-check text-info"></i> Certifications officielles</li>
                 </ul>
                 
-                <h6 class="mt-3">Test Scheduling:</h6>
+                <h6 class="mt-3">Planification Tests:</h6>
                 <ul class="list-unstyled">
-                    <li><i class="bi bi-calendar text-warning"></i> Periodic testing required</li>
-                    <li><i class="bi bi-clock text-warning"></i> Results typically 2-3 weeks</li>
-                    <li><i class="bi bi-file-text text-warning"></i> Official reports required for certification</li>
+                    <li><i class="bi bi-calendar text-warning"></i> Tests périodiques requis</li>
+                    <li><i class="bi bi-clock text-warning"></i> Résultats typiquement 2-3 semaines</li>
+                    <li><i class="bi bi-file-text text-warning"></i> Rapports officiels requis pour certification</li>
                 </ul>
                 
                 <div class="alert alert-info mt-3">
                     <i class="bi bi-info-circle"></i>
-                    <strong>Important:</strong> External test results are required for product certification and compliance.
+                    <strong>Important:</strong> Les résultats de tests externes sont requis pour la certification produit et la conformité.
                 </div>
             </div>
         </div>
@@ -190,14 +190,14 @@
     <div class="col-12">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">External Test Records</h5>
+                <h5 class="mb-0">Enregistrements Tests Externes</h5>
                 <div class="d-flex gap-2">
                     <select class="form-select form-select-sm" style="width: auto;" 
                             onchange="window.location.href='{{ url_for('tests.external_tests') }}?test_type=' + this.value">
-                        <option value="">All Test Types</option>
-                        <option value="thermal_shock" {{ 'selected' if test_filter == 'thermal_shock' }}>Thermal Shock Resistance</option>
-                        <option value="chemical_resistance" {{ 'selected' if test_filter == 'chemical_resistance' }}>Chemical Resistance</option>
-                        <option value="stain_resistance" {{ 'selected' if test_filter == 'stain_resistance' }}>Stain Resistance</option>
+                        <option value="">Tous Types de Tests</option>
+                        <option value="thermal_shock" {{ 'selected' if test_filter == 'thermal_shock' }}>Résistance Choc Thermique</option>
+                        <option value="chemical_resistance" {{ 'selected' if test_filter == 'chemical_resistance' }}>Résistance Chimique</option>
+                        <option value="stain_resistance" {{ 'selected' if test_filter == 'stain_resistance' }}>Résistance aux Taches</option>
                     </select>
                 </div>
             </div>
@@ -208,12 +208,12 @@
                         <thead>
                             <tr>
                                 <th>Date</th>
-                                <th>Test Type</th>
-                                <th>ISO Standard</th>
-                                <th>Report Number</th>
-                                <th>Result</th>
-                                <th>Laboratory</th>
-                                <th>Controller</th>
+                                <th>Type Test</th>
+                                <th>Norme ISO</th>
+                                <th>N° Rapport</th>
+                                <th>Résultat</th>
+                                <th>Laboratoire</th>
+                                <th>Contrôleur</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -223,11 +223,11 @@
                                 <td>{{ test.date.strftime('%Y-%m-%d') }}</td>
                                 <td>
                                     {% if test.test_type == 'thermal_shock' %}
-                                        <span class="badge bg-primary">Thermal Shock</span>
+                                        <span class="badge bg-primary">Choc Thermique</span>
                                     {% elif test.test_type == 'chemical_resistance' %}
-                                        <span class="badge bg-success">Chemical Resistance</span>
+                                        <span class="badge bg-success">Résistance Chimique</span>
                                     {% elif test.test_type == 'stain_resistance' %}
-                                        <span class="badge bg-warning">Stain Resistance</span>
+                                        <span class="badge bg-warning">Résistance Taches</span>
                                     {% else %}
                                         <span class="badge bg-secondary">{{ test.test_type|title }}</span>
                                     {% endif %}
@@ -248,11 +248,11 @@
                                 </td>
                                 <td>
                                     {% if test.result_status == 'pass' %}
-                                        <span class="badge bg-success">Pass</span>
+                                        <span class="badge bg-success">Réussi</span>
                                     {% elif test.result_status == 'fail' %}
-                                        <span class="badge bg-danger">Fail</span>
+                                        <span class="badge bg-danger">Échoué</span>
                                     {% elif test.result_status == 'pending' %}
-                                        <span class="badge bg-warning">Pending</span>
+                                        <span class="badge bg-warning">En Attente</span>
                                     {% else %}
                                         <span class="badge bg-secondary">{{ test.result_status|title }}</span>
                                     {% endif %}
@@ -261,7 +261,7 @@
                                     {% endif %}
                                 </td>
                                 <td>{{ test.laboratory or 'CETEMCO' }}</td>
-                                <td>{{ test.controller.full_name if test.controller else 'Unknown' }}</td>
+                                <td>{{ test.controller.full_name if test.controller else 'Inconnu' }}</td>
                                 <td>
                                     <div class="btn-group btn-group-sm">
                                         <a href="{{ url_for('tests.edit_external_test', id=test.id) }}" 
@@ -285,10 +285,10 @@
                 {% else %}
                 <div class="text-center py-5">
                     <i class="bi bi-building text-muted display-4"></i>
-                    <h5 class="text-muted mt-3">No external test records found</h5>
-                    <p class="text-muted">Start by adding your first external laboratory test result.</p>
+                    <h5 class="text-muted mt-3">Aucun enregistrement de test externe trouvé</h5>
+                    <p class="text-muted">Commencez par ajouter votre premier résultat de test de laboratoire externe.</p>
                     <a href="{{ url_for('tests.add_external_test') }}" class="btn btn-primary">
-                        <i class="bi bi-plus-lg"></i> Add First Record
+                        <i class="bi bi-plus-lg"></i> Ajouter Premier Enregistrement
                     </a>
                 </div>
                 {% endif %}
@@ -306,15 +306,15 @@
 const testSpecs = {
     'thermal_shock': {
         standard: 'ISO 10545-11V2000',
-        description: 'Thermal shock resistance testing'
+        description: 'Test de résistance au choc thermique'
     },
     'chemical_resistance': {
         standard: 'ISO 10545-13V2017',
-        description: 'Chemical resistance testing'
+        description: 'Test de résistance chimique'
     },
     'stain_resistance': {
         standard: 'ISO 10545-14V2017',
-        description: 'Stain resistance testing'
+        description: 'Test de résistance aux taches'
     }
 };
 
@@ -339,13 +339,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Update value help text
                 if (testType === 'stain_resistance') {
-                    valueHelp.textContent = 'Classification (1-5) if applicable';
+                    valueHelp.textContent = 'Classification (1-5) si applicable';
                 } else {
-                    valueHelp.textContent = 'Numeric result if applicable';
+                    valueHelp.textContent = 'Résultat numérique si applicable';
                 }
             } else {
-                standardHelp.textContent = 'ISO standard reference';
-                valueHelp.textContent = 'Numeric result if applicable';
+                standardHelp.textContent = 'Référence norme ISO';
+                valueHelp.textContent = 'Résultat numérique si applicable';
             }
         });
         
@@ -363,19 +363,19 @@ document.addEventListener('DOMContentLoaded', function() {
             switch (status) {
                 case 'pass':
                     testStatusIndicator.className = 'alert alert-success';
-                    testStatusIndicator.innerHTML = '<i class="bi bi-check-circle"></i> <strong>Test Passed</strong> - Product meets requirements';
+                    testStatusIndicator.innerHTML = '<i class="bi bi-check-circle"></i> <strong>Test Réussi</strong> - Le produit répond aux exigences';
                     break;
                 case 'fail':
                     testStatusIndicator.className = 'alert alert-danger';
-                    testStatusIndicator.innerHTML = '<i class="bi bi-x-circle"></i> <strong>Test Failed</strong> - Product does not meet requirements - corrective action required';
+                    testStatusIndicator.innerHTML = '<i class="bi bi-x-circle"></i> <strong>Test Échoué</strong> - Le produit ne répond pas aux exigences - action corrective requise';
                     break;
                 case 'pending':
                     testStatusIndicator.className = 'alert alert-warning';
-                    testStatusIndicator.innerHTML = '<i class="bi bi-clock"></i> <strong>Test Pending</strong> - Awaiting laboratory results';
+                    testStatusIndicator.innerHTML = '<i class="bi bi-clock"></i> <strong>Test En Attente</strong> - En attente des résultats du laboratoire';
                     break;
                 default:
                     testStatusIndicator.className = 'alert alert-secondary';
-                    testStatusIndicator.innerHTML = '<i class="bi bi-info-circle"></i> Select test result status to see details';
+                    testStatusIndicator.innerHTML = '<i class="bi bi-info-circle"></i> Sélectionnez le statut du résultat pour voir les détails';
                     break;
             }
         });
@@ -388,7 +388,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function confirmDelete(id) {
-    if (confirm('Are you sure you want to delete this external test record?')) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cet enregistrement de test externe ?')) {
         fetch(`/tests/external/delete/${id}`, {method: 'POST'})
             .then(() => location.reload());
     }

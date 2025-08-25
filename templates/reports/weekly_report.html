@@ -1,24 +1,24 @@
 {% extends "base.html" %}
 
-{% block title %}Weekly Report - Ceramic QC{% endblock %}
+{% block title %}Rapport Hebdomadaire - Ceramic QC{% endblock %}
 
 {% block content %}
 <div class="row mb-4">
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center">
             <h1 class="h3 mb-0">
-                <i class="bi bi-calendar-week text-success"></i> Weekly Quality Control Report
+                <i class="bi bi-calendar-week text-success"></i> Rapport Hebdomadaire Contrôle Qualité
             </h1>
             <div class="d-flex gap-2">
                 <button class="btn btn-outline-primary" onclick="window.print()">
-                    <i class="bi bi-printer"></i> Print
+                    <i class="bi bi-printer"></i> Imprimer
                 </button>
                 <button class="btn btn-outline-success">
-                    <i class="bi bi-download"></i> Export
+                    <i class="bi bi-download"></i> Exporter
                 </button>
             </div>
         </div>
-        <p class="text-muted">7-day quality control performance analysis</p>
+        <p class="text-muted">Analyse de performance contrôle qualité sur 7 jours</p>
     </div>
 </div>
 
@@ -27,7 +27,7 @@
     <div class="col-12">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-success text-white">
-                <h5 class="mb-0">Weekly Overview</h5>
+                <h5 class="mb-0">Aperçu Hebdomadaire</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -35,13 +35,13 @@
                         <thead>
                             <tr>
                                 <th>Date</th>
-                                <th>Clay</th>
-                                <th>Press</th>
-                                <th>Dryer</th>
-                                <th>Biscuit Kiln</th>
-                                <th>Email Kiln</th>
-                                <th>Enamel</th>
-                                <th>Overall</th>
+                                <th>Argile</th>
+                                <th>Presse</th>
+                                <th>Séchoir</th>
+                                <th>Four Biscuit</th>
+                                <th>Four Email</th>
+                                <th>Émail</th>
+                                <th>Global</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -113,7 +113,7 @@
     <div class="col-12">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-light">
-                <h5 class="mb-0"><i class="bi bi-graph-up text-primary"></i> Weekly Compliance Trends</h5>
+                <h5 class="mb-0"><i class="bi bi-graph-up text-primary"></i> Tendances Conformité Hebdomadaire</h5>
             </div>
             <div class="card-body">
                 <canvas id="weeklyTrendChart" height="100"></canvas>
@@ -127,7 +127,7 @@
     <div class="col-12">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-light">
-                <h5 class="mb-0"><i class="bi bi-bar-chart text-info"></i> Weekly Summary</h5>
+                <h5 class="mb-0"><i class="bi bi-bar-chart text-info"></i> Résumé Hebdomadaire</h5>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -139,17 +139,17 @@
                     <div class="col-md-3 text-center">
                         {% set total_compliant = weekly_stats|sum(attribute='stats.overall.compliant') %}
                         <div class="display-6 text-success">{{ total_compliant }}</div>
-                        <small class="text-muted">Compliant</small>
+                        <small class="text-muted">Conforme</small>
                     </div>
                     <div class="col-md-3 text-center">
                         {% set total_non_compliant = weekly_stats|sum(attribute='stats.overall.non_compliant') %}
                         <div class="display-6 text-danger">{{ total_non_compliant }}</div>
-                        <small class="text-muted">Non-Compliant</small>
+                        <small class="text-muted">Non-Conforme</small>
                     </div>
                     <div class="col-md-3 text-center">
                         {% set weekly_compliance = (total_compliant / total_tests * 100) if total_tests > 0 else 0 %}
                         <div class="display-6 text-primary">{{ "%.1f"|format(weekly_compliance) }}%</div>
-                        <small class="text-muted">Weekly Average</small>
+                        <small class="text-muted">Moyenne Hebdomadaire</small>
                     </div>
                 </div>
             </div>
@@ -176,7 +176,7 @@ new Chart(ctx, {
     data: {
         labels: weeklyData.map(d => d.date),
         datasets: [{
-            label: 'Overall Compliance %',
+            label: 'Conformité Globale %',
             data: weeklyData.map(d => d.compliance),
             borderColor: '#28a745',
             backgroundColor: 'rgba(40, 167, 69, 0.1)',
