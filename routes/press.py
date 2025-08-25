@@ -49,7 +49,7 @@ def add_press_control():
         db.session.add(press_control)
         db.session.commit()
         
-        flash('Press control record added successfully', 'success')
+        flash('Enregistrement du contrôle presse ajouté avec succès', 'success')
         return redirect(url_for('press.press_controls'))
     
     return render_template('press/press_control.html', form=form)
@@ -79,7 +79,7 @@ def edit_press_control(id):
         
         db.session.commit()
         
-        flash('Press control record updated successfully', 'success')
+        flash('Enregistrement du contrôle presse mis à jour avec succès', 'success')
         return redirect(url_for('press.press_controls'))
     
     return render_template('press/press_control.html', form=form, edit=True, control=press_control)

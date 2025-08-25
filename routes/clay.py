@@ -38,7 +38,7 @@ def add_clay_control():
         db.session.add(clay_control)
         db.session.commit()
         
-        flash('Clay control record added successfully', 'success')
+        flash('Enregistrement du contrôle argile ajouté avec succès', 'success')
         return redirect(url_for('clay.clay_controls'))
     
     return render_template('clay/clay_control.html', form=form)
@@ -63,7 +63,7 @@ def edit_clay_control(id):
         
         db.session.commit()
         
-        flash('Clay control record updated successfully', 'success')
+        flash('Enregistrement du contrôle argile mis à jour avec succès', 'success')
         return redirect(url_for('clay.clay_controls'))
     
     return render_template('clay/clay_control.html', form=form, edit=True, control=clay_control)
@@ -72,14 +72,14 @@ def edit_clay_control(id):
 @login_required
 def delete_clay_control(id):
     if current_user.role not in ['admin', 'quality_manager']:
-        flash('Insufficient permissions', 'error')
+        flash('Permissions insuffisantes', 'error')
         return redirect(url_for('clay.clay_controls'))
     
     clay_control = ClayControl.query.get_or_404(id)
     db.session.delete(clay_control)
     db.session.commit()
     
-    flash('Clay control record deleted successfully', 'success')
+    flash('Enregistrement du contrôle argile supprimé avec succès', 'success')
     return redirect(url_for('clay.clay_controls'))
 
 @clay_bp.route('/api/trend/<parameter>')

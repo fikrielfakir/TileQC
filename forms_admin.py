@@ -4,66 +4,66 @@ from wtforms.validators import DataRequired, Optional, NumberRange
 from models import Specification
 
 class SpecificationForm(FlaskForm):
-    control_type = SelectField('Control Type', 
-                              choices=[('clay', 'Clay Control'),
-                                     ('press', 'Press Control'),
-                                     ('dryer', 'Dryer Control'),
-                                     ('biscuit_kiln', 'Biscuit Kiln'),
-                                     ('email_kiln', 'Email Kiln'),
-                                     ('dimensional', 'Dimensional Test'),
-                                     ('enamel', 'Enamel Control'),
-                                     ('digital', 'Digital Decoration')],
+    control_type = SelectField('Type de Contrôle', 
+                              choices=[('clay', 'Contrôle Argile'),
+                                     ('press', 'Contrôle Presse'),
+                                     ('dryer', 'Contrôle Séchoir'),
+                                     ('biscuit_kiln', 'Four Biscuit'),
+                                     ('email_kiln', 'Four Émail'),
+                                     ('dimensional', 'Test Dimensionnel'),
+                                     ('enamel', 'Contrôle Émail'),
+                                     ('digital', 'Décoration Numérique')],
                               validators=[DataRequired()])
     
-    parameter_name = StringField('Parameter Name', validators=[DataRequired()])
-    format_type = SelectField('Format Type (Optional)', 
-                             choices=[('', 'All Formats'),
+    parameter_name = StringField('Nom du Paramètre', validators=[DataRequired()])
+    format_type = SelectField('Type de Format (Optionnel)', 
+                             choices=[('', 'Tous les Formats'),
                                     ('20x20', '20x20'),
                                     ('25x40', '25x40'),
                                     ('25x50', '25x50')],
                              validators=[Optional()])
     
-    enamel_type = SelectField('Enamel Type (Optional)',
-                             choices=[('', 'All Types'),
+    enamel_type = SelectField('Type d\'Émail (Optionnel)',
+                             choices=[('', 'Tous les Types'),
                                     ('engobe', 'Engobe'),
-                                    ('email', 'Email'),
-                                    ('mate', 'Mate')],
+                                    ('email', 'Émail'),
+                                    ('mate', 'Mat')],
                              validators=[Optional()])
     
-    min_value = FloatField('Minimum Value', validators=[Optional()])
-    max_value = FloatField('Maximum Value', validators=[Optional()])
-    target_value = FloatField('Target Value (Optional)', validators=[Optional()])
+    min_value = FloatField('Valeur Minimale', validators=[Optional()])
+    max_value = FloatField('Valeur Maximale', validators=[Optional()])
+    target_value = FloatField('Valeur Cible (Optionnelle)', validators=[Optional()])
     
-    unit = SelectField('Unit',
+    unit = SelectField('Unité',
                       choices=[('%', '%'),
                              ('mm', 'mm'),
                              ('g', 'g'),
                              ('N', 'N'),
                              ('N/mm²', 'N/mm²'),
                              ('g/l', 'g/l'),
-                             ('seconds', 'seconds'),
+                             ('seconds', 'secondes'),
                              ('lux', 'lux'),
                              ('m²', 'm²'),
-                             ('pieces', 'pieces')],
+                             ('pieces', 'pièces')],
                       validators=[DataRequired()])
     
     description = TextAreaField('Description', validators=[Optional()])
-    is_active = BooleanField('Active', default=True)
+    is_active = BooleanField('Actif', default=True)
 
 class BulkSpecificationForm(FlaskForm):
-    control_type = SelectField('Control Type', 
-                              choices=[('clay', 'Clay Control'),
-                                     ('press', 'Press Control'),
-                                     ('dryer', 'Dryer Control'),
-                                     ('biscuit_kiln', 'Biscuit Kiln'),
-                                     ('email_kiln', 'Email Kiln'),
-                                     ('dimensional', 'Dimensional Test'),
-                                     ('enamel', 'Enamel Control'),
-                                     ('digital', 'Digital Decoration')],
+    control_type = SelectField('Type de Contrôle', 
+                              choices=[('clay', 'Contrôle Argile'),
+                                     ('press', 'Contrôle Presse'),
+                                     ('dryer', 'Contrôle Séchoir'),
+                                     ('biscuit_kiln', 'Four Biscuit'),
+                                     ('email_kiln', 'Four Émail'),
+                                     ('dimensional', 'Test Dimensionnel'),
+                                     ('enamel', 'Contrôle Émail'),
+                                     ('digital', 'Décoration Numérique')],
                               validators=[DataRequired()])
     
     action = SelectField('Action',
-                        choices=[('reset_defaults', 'Reset to Default Values'),
-                               ('export', 'Export Current Specifications'),
-                               ('deactivate_all', 'Deactivate All')],
+                        choices=[('reset_defaults', 'Réinitialiser aux Valeurs par Défaut'),
+                               ('export', 'Exporter les Spécifications Actuelles'),
+                               ('deactivate_all', 'Désactiver Tout')],
                         validators=[DataRequired()])

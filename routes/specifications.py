@@ -11,7 +11,7 @@ spec_bp = Blueprint('specifications', __name__)
 @login_required
 def specifications():
     if current_user.role not in ['admin', 'quality_manager']:
-        flash('Insufficient permissions to access specifications', 'error')
+        flash('Permissions insuffisantes pour accéder aux spécifications', 'error')
         return redirect(url_for('main.dashboard'))
     
     page = request.args.get('page', 1, type=int)
@@ -36,7 +36,7 @@ def specifications():
 @login_required
 def add_specification():
     if current_user.role not in ['admin', 'quality_manager']:
-        flash('Insufficient permissions', 'error')
+        flash('Permissions insuffisantes', 'error')
         return redirect(url_for('specifications.specifications'))
     
     form = SpecificationForm()
@@ -51,7 +51,7 @@ def add_specification():
         ).first()
         
         if existing:
-            flash('Specification already exists for this parameter combination', 'error')
+            flash('Spécification déjà existante pour cette combinaison de paramètres', 'error')
             return render_template('specifications/specification_form.html', form=form)
         
         specification = Specification(
@@ -71,7 +71,7 @@ def add_specification():
         db.session.add(specification)
         db.session.commit()
         
-        flash('Specification added successfully', 'success')
+        flash('Spécification ajoutée avec succès', 'success')
         return redirect(url_for('specifications.specifications'))
     
     return render_template('specifications/specification_form.html', form=form)
@@ -80,7 +80,7 @@ def add_specification():
 @login_required
 def edit_specification(id):
     if current_user.role not in ['admin', 'quality_manager']:
-        flash('Insufficient permissions', 'error')
+        flash('Permissions insuffisantes', 'error')
         return redirect(url_for('specifications.specifications'))
     
     specification = Specification.query.get_or_404(id)
@@ -100,7 +100,7 @@ def edit_specification(id):
         
         db.session.commit()
         
-        flash('Specification updated successfully', 'success')
+        flash('Spécification mise à jour avec succès', 'success')
         return redirect(url_for('specifications.specifications'))
     
     return render_template('specifications/specification_form.html', form=form, edit=True, spec=specification)
@@ -109,21 +109,21 @@ def edit_specification(id):
 @login_required
 def delete_specification(id):
     if current_user.role != 'admin':
-        flash('Only administrators can delete specifications', 'error')
+        flash('Seuls les administrateurs peuvent supprimer les spécifications', 'error')
         return redirect(url_for('specifications.specifications'))
     
     specification = Specification.query.get_or_404(id)
     db.session.delete(specification)
     db.session.commit()
     
-    flash('Specification deleted successfully', 'success')
+    flash('Spécification supprimée avec succès', 'success')
     return redirect(url_for('specifications.specifications'))
 
 @spec_bp.route('/bulk', methods=['GET', 'POST'])
 @login_required
 def bulk_operations():
     if current_user.role not in ['admin', 'quality_manager']:
-        flash('Insufficient permissions', 'error')
+        flash('Permissions insuffisantes', 'error')
         return redirect(url_for('specifications.specifications'))
     
     form = BulkSpecificationForm()
@@ -132,7 +132,7 @@ def bulk_operations():
         if form.action.data == 'reset_defaults':
             # Reset to default specifications
             result = initialize_default_specifications(form.control_type.data)
-            flash(f'Reset {result} default specifications for {form.control_type.data}', 'success')
+            flash(f'Réinitialisé {result} spécifications par défaut pour {form.control_type.data}', 'success')
         
         elif form.action.data == 'deactivate_all':
             # Deactivate all specifications for the control type
@@ -140,7 +140,7 @@ def bulk_operations():
             for spec in specs:
                 spec.is_active = False
             db.session.commit()
-            flash(f'Deactivated all specifications for {form.control_type.data}', 'warning')
+            flash(f'Désactivé toutes les spécifications pour {form.control_type.data}', 'warning')
         
         return redirect(url_for('specifications.specifications'))
     
@@ -150,7 +150,7 @@ def bulk_operations():
 @login_required
 def initialize_all_defaults():
     if current_user.role != 'admin':
-        flash('Only administrators can initialize all specifications', 'error')
+        flash('Seuls les administrateurs peuvent initialiser toutes les spécifications', 'error')
         return redirect(url_for('specifications.specifications'))
     
     total_created = 0
@@ -160,7 +160,7 @@ def initialize_all_defaults():
         created = initialize_default_specifications(control_type)
         total_created += created
     
-    flash(f'Initialized {total_created} default specifications across all control types', 'success')
+    flash(f'Initialisé {total_created} spécifications par défaut pour tous les types de contrôle', 'success')
     return redirect(url_for('specifications.specifications'))
 
 @spec_bp.route('/api/specs/<control_type>')

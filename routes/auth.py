@@ -18,7 +18,7 @@ def login():
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('main.dashboard'))
         else:
-            flash('Invalid username or password', 'error')
+            flash('Nom d\'utilisateur ou mot de passe invalide', 'error')
     
     return render_template('auth/login.html')
 

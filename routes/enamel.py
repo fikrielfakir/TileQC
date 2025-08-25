@@ -47,7 +47,7 @@ def add_enamel_control():
         db.session.add(enamel_control)
         db.session.commit()
         
-        flash('Enamel control record added successfully', 'success')
+        flash('Enregistrement du contrôle émail ajouté avec succès', 'success')
         return redirect(url_for('enamel.enamel_controls'))
     
     return render_template('enamel/enamel_control.html', form=form)
@@ -75,7 +75,7 @@ def edit_enamel_control(id):
         
         db.session.commit()
         
-        flash('Enamel control record updated successfully', 'success')
+        flash('Enregistrement du contrôle émail mis à jour avec succès', 'success')
         return redirect(url_for('enamel.enamel_controls'))
     
     return render_template('enamel/enamel_control.html', form=form, edit=True, control=enamel_control)

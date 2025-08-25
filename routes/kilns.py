@@ -39,7 +39,7 @@ def add_biscuit_control():
         db.session.add(biscuit_control)
         db.session.commit()
         
-        flash('Biscuit kiln control record added successfully', 'success')
+        flash('Enregistrement du contrôle four biscuit ajouté avec succès', 'success')
         return redirect(url_for('kilns.biscuit_kiln_controls'))
     
     return render_template('kilns/biscuit_kiln.html', form=form)
@@ -79,7 +79,7 @@ def add_email_control():
         db.session.add(email_control)
         db.session.commit()
         
-        flash('Email kiln control record added successfully', 'success')
+        flash('Enregistrement du contrôle four émail ajouté avec succès', 'success')
         return redirect(url_for('kilns.email_kiln_controls'))
     
     return render_template('kilns/email_kiln.html', form=form)
@@ -106,7 +106,7 @@ def edit_biscuit_control(id):
         
         db.session.commit()
         
-        flash('Biscuit kiln control record updated successfully', 'success')
+        flash('Enregistrement du contrôle four biscuit mis à jour avec succès', 'success')
         return redirect(url_for('kilns.biscuit_kiln_controls'))
     
     return render_template('kilns/biscuit_kiln.html', form=form, edit=True, control=biscuit_control)
@@ -135,7 +135,7 @@ def edit_email_control(id):
         
         db.session.commit()
         
-        flash('Email kiln control record updated successfully', 'success')
+        flash('Enregistrement du contrôle four émail mis à jour avec succès', 'success')
         return redirect(url_for('kilns.email_kiln_controls'))
     
     return render_template('kilns/email_kiln.html', form=form, edit=True, control=email_control)

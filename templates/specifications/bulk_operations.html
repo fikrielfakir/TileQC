@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Bulk Specification Operations{% endblock %}
+{% block title %}Opérations en Lot sur les Spécifications{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -8,7 +8,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="mb-0">Bulk Specification Operations</h4>
+                    <h4 class="mb-0">Opérations en Lot sur les Spécifications</h4>
                 </div>
                 <div class="card-body">
                     <form method="POST">
@@ -40,15 +40,15 @@
                         
                         <div class="alert alert-warning">
                             <i class="bi bi-exclamation-triangle"></i>
-                            <strong>Warning:</strong> These operations will affect all specifications for the selected control type. Please confirm before proceeding.
+                            <strong>Attention :</strong> Ces opérations affecteront toutes les spécifications pour le type de contrôle sélectionné. Veuillez confirmer avant de continuer.
                         </div>
                         
                         <div class="d-flex justify-content-between">
                             <a href="{{ url_for('specifications.specifications') }}" class="btn btn-secondary">
-                                <i class="bi bi-arrow-left"></i> Back
+                                <i class="bi bi-arrow-left"></i> Retour
                             </a>
-                            <button type="submit" class="btn btn-warning" onclick="return confirm('Are you sure you want to perform this bulk operation?');">
-                                <i class="bi bi-gear"></i> Execute Operation
+                            <button type="submit" class="btn btn-warning" onclick="return confirm('Êtes-vous sûr de vouloir effectuer cette opération en lot?');">
+                                <i class="bi bi-gear"></i> Exécuter l'Opération
                             </button>
                         </div>
                     </form>

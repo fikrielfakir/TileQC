@@ -5,48 +5,48 @@ from datetime import date
 
 class ClayControlForm(FlaskForm):
     date = DateField('Date', default=date.today, validators=[DataRequired()])
-    shift = SelectField('Shift', choices=[('morning', 'Morning'), ('afternoon', 'Afternoon'), ('night', 'Night')])
+    shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
     
     # Time measurements (matching R2-F1 template)
-    measurement_time_1 = TimeField('First Measurement Time', validators=[Optional()])
-    measurement_time_2 = TimeField('Second Measurement Time', validators=[Optional()])
+    measurement_time_1 = TimeField('Premier Temps de Mesure', validators=[Optional()])
+    measurement_time_2 = TimeField('Deuxième Temps de Mesure', validators=[Optional()])
     
-    humidity_before_prep = FloatField('Humidity Before Prep (%)', validators=[Optional(), NumberRange(min=0, max=100)])
-    humidity_after_sieving = FloatField('Humidity After Sieving (%)', validators=[Optional(), NumberRange(min=0, max=100)])
-    humidity_after_prep = FloatField('Humidity After Prep (%)', validators=[Optional(), NumberRange(min=0, max=100)])
-    granulometry_refusal = FloatField('Granulometry Refusal (%)', validators=[Optional(), NumberRange(min=0, max=100)])
-    calcium_carbonate = FloatField('Calcium Carbonate (%)', validators=[Optional(), NumberRange(min=0, max=100)])
+    humidity_before_prep = FloatField('Humidité Avant Préparation (%)', validators=[Optional(), NumberRange(min=0, max=100)])
+    humidity_after_sieving = FloatField('Humidité Après Tamisage (%)', validators=[Optional(), NumberRange(min=0, max=100)])
+    humidity_after_prep = FloatField('Humidité Après Préparation (%)', validators=[Optional(), NumberRange(min=0, max=100)])
+    granulometry_refusal = FloatField('Refus Granulométrique (%)', validators=[Optional(), NumberRange(min=0, max=100)])
+    calcium_carbonate = FloatField('Carbonate de Calcium (%)', validators=[Optional(), NumberRange(min=0, max=100)])
     
     notes = TextAreaField('Notes')
 
 class PressControlForm(FlaskForm):
     date = DateField('Date', default=date.today, validators=[DataRequired()])
-    shift = SelectField('Shift', choices=[('morning', 'Morning'), ('afternoon', 'Afternoon'), ('night', 'Night')])
-    measurement_number = IntegerField('Measurement Number (1-6)', validators=[DataRequired(), NumberRange(min=1, max=6)])
-    measurement_time = TimeField('Measurement Time', validators=[Optional()])
+    shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
+    measurement_number = IntegerField('Numéro de Mesure (1-6)', validators=[DataRequired(), NumberRange(min=1, max=6)])
+    measurement_time = TimeField('Temps de Mesure', validators=[Optional()])
     
     format_type = SelectField('Format', choices=[('20x20', '20x20'), ('25x40', '25x40'), ('25x50', '25x50')], validators=[DataRequired()])
-    thickness = FloatField('Thickness (mm)', validators=[DataRequired(), NumberRange(min=0)])
-    wet_weight = FloatField('Wet Weight (g)', validators=[DataRequired(), NumberRange(min=0)])
+    thickness = FloatField('Épaisseur (mm)', validators=[DataRequired(), NumberRange(min=0)])
+    wet_weight = FloatField('Poids Humide (g)', validators=[DataRequired(), NumberRange(min=0)])
     
     # Weight measurements from different outputs (matching R2-F3 template)
-    weight_output_1 = FloatField('Weight Output 1 (g)', validators=[Optional(), NumberRange(min=0)])
-    weight_output_2 = FloatField('Weight Output 2 (g)', validators=[Optional(), NumberRange(min=0)])
+    weight_output_1 = FloatField('Poids Sortie 1 (g)', validators=[Optional(), NumberRange(min=0)])
+    weight_output_2 = FloatField('Poids Sortie 2 (g)', validators=[Optional(), NumberRange(min=0)])
     
     defect_grains = FloatField('Grains (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
-    defect_cracks = FloatField('Cracks (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
-    defect_cleaning = FloatField('Cleaning (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
-    defect_foliage = FloatField('Foliage (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
-    defect_chipping = FloatField('Chipping (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
+    defect_cracks = FloatField('Fissures (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
+    defect_cleaning = FloatField('Nettoyage (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
+    defect_foliage = FloatField('Feuillage (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
+    defect_chipping = FloatField('Ébrochage (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
     
     notes = TextAreaField('Notes')
 
 class DryerControlForm(FlaskForm):
     date = DateField('Date', default=date.today, validators=[DataRequired()])
-    shift = SelectField('Shift', choices=[('morning', 'Morning'), ('afternoon', 'Afternoon'), ('night', 'Night')])
-    measurement_number = IntegerField('Measurement Number (1-6)', validators=[DataRequired(), NumberRange(min=1, max=6)])
+    shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
+    measurement_number = IntegerField('Numéro de Mesure (1-6)', validators=[DataRequired(), NumberRange(min=1, max=6)])
     
-    residual_humidity = FloatField('Residual Humidity (%)', validators=[DataRequired(), NumberRange(min=0, max=100)])
+    residual_humidity = FloatField('Humidité Résiduelle (%)', validators=[DataRequired(), NumberRange(min=0, max=100)])
     
     defect_grains = FloatField('Grains (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
     defect_cracks = FloatField('Cracks (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
@@ -58,8 +58,8 @@ class DryerControlForm(FlaskForm):
 
 class BiscuitKilnForm(FlaskForm):
     date = DateField('Date', default=date.today, validators=[DataRequired()])
-    shift = SelectField('Shift', choices=[('morning', 'Morning'), ('afternoon', 'Afternoon'), ('night', 'Night')])
-    measurement_number = IntegerField('Measurement Number (1-6)', validators=[DataRequired(), NumberRange(min=1, max=6)])
+    shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
+    measurement_number = IntegerField('Numéro de Mesure (1-6)', validators=[DataRequired(), NumberRange(min=1, max=6)])
     
     defect_cracks = FloatField('Cracks (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
     defect_chipping = FloatField('Chipping (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
@@ -75,7 +75,7 @@ class BiscuitKilnForm(FlaskForm):
 
 class EmailKilnForm(FlaskForm):
     date = DateField('Date', default=date.today, validators=[DataRequired()])
-    shift = SelectField('Shift', choices=[('morning', 'Morning'), ('afternoon', 'Afternoon'), ('night', 'Night')])
+    shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
     
     thermal_shock = FloatField('Thermal Shock (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
     
@@ -114,10 +114,10 @@ class DimensionalTestForm(FlaskForm):
 
 class EnamelControlForm(FlaskForm):
     date = DateField('Date', default=date.today, validators=[DataRequired()])
-    shift = SelectField('Shift', choices=[('morning', 'Morning'), ('afternoon', 'Afternoon'), ('night', 'Night')])
+    shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
     measurement_type = SelectField('Measurement Type', choices=[('pde', 'PDE'), ('production_line', 'Production Line')], validators=[DataRequired()])
     measurement_number = IntegerField('Measurement Number', validators=[Optional(), NumberRange(min=1, max=12)])
-    measurement_time = TimeField('Measurement Time', validators=[Optional()])
+    measurement_time = TimeField('Temps de Mesure', validators=[Optional()])
     
     enamel_type = SelectField('Enamel Type', choices=[('engobe', 'Engobe'), ('email', 'Email'), ('mate', 'Mate')], validators=[DataRequired()])
     density = FloatField('Density (g/l)', validators=[Optional(), NumberRange(min=0)])
@@ -133,7 +133,7 @@ class EnamelControlForm(FlaskForm):
 
 class DigitalDecorationForm(FlaskForm):
     date = DateField('Date', default=date.today, validators=[DataRequired()])
-    shift = SelectField('Shift', choices=[('morning', 'Morning'), ('afternoon', 'Afternoon'), ('night', 'Night')])
+    shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
     measurement_number = IntegerField('Measurement Number (1-12)', validators=[DataRequired(), NumberRange(min=1, max=12)])
     
     sharpness = SelectField('Sharpness', choices=[('pass', 'Pass'), ('fail', 'Fail')], validators=[DataRequired()])

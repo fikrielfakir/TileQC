@@ -37,7 +37,7 @@ def add_dryer_control():
         db.session.add(dryer_control)
         db.session.commit()
         
-        flash('Dryer control record added successfully', 'success')
+        flash('Enregistrement du contrôle séchoir ajouté avec succès', 'success')
         return redirect(url_for('dryer.dryer_controls'))
     
     return render_template('dryer/dryer_control.html', form=form)
@@ -62,7 +62,7 @@ def edit_dryer_control(id):
         
         db.session.commit()
         
-        flash('Dryer control record updated successfully', 'success')
+        flash('Enregistrement du contrôle séchoir mis à jour avec succès', 'success')
         return redirect(url_for('dryer.dryer_controls'))
     
     return render_template('dryer/dryer_control.html', form=form, edit=True, control=dryer_control)

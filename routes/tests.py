@@ -46,7 +46,7 @@ def add_dimensional_test():
         db.session.add(dimensional_test)
         db.session.commit()
         
-        flash('Dimensional test record added successfully', 'success')
+        flash('Enregistrement du test dimensionnel ajouté avec succès', 'success')
         return redirect(url_for('tests.dimensional_tests'))
     
     return render_template('tests/dimensional_tests.html', form=form)
@@ -73,7 +73,7 @@ def edit_dimensional_test(id):
         
         db.session.commit()
         
-        flash('Dimensional test record updated successfully', 'success')
+        flash('Enregistrement du test dimensionnel mis à jour avec succès', 'success')
         return redirect(url_for('tests.dimensional_tests'))
     
     return render_template('tests/dimensional_tests.html', form=form, edit=True, test=dimensional_test)
@@ -106,7 +106,7 @@ def add_digital_decoration():
         db.session.add(digital_decoration)
         db.session.commit()
         
-        flash('Digital decoration record added successfully', 'success')
+        flash('Enregistrement de décoration numérique ajouté avec succès', 'success')
         return redirect(url_for('tests.digital_decorations'))
     
     return render_template('tests/digital_decoration.html', form=form)
@@ -147,7 +147,7 @@ def add_external_test():
         db.session.add(external_test)
         db.session.commit()
         
-        flash('External test record added successfully', 'success')
+        flash('Enregistrement du test externe ajouté avec succès', 'success')
         return redirect(url_for('tests.external_tests'))
     
     return render_template('tests/external_tests.html', form=form)
