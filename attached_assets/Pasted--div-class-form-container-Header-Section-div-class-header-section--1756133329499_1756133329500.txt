@@ -1,0 +1,158 @@
+<div class="form-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="header-item">
+                <label>Contrôleur :</label>
+                <input type="text" class="dotted-line">
+            </div>
+            <div class="header-item">
+                <label>Date :</label>
+                <input type="text" class="dotted-line" placeholder="../../....">
+            </div>
+        </div>
+
+        <!-- HUMIDITE TREMIE GENERALE Section -->
+        <div class="section">
+            <div class="section-header">HUMIDITE TREMIE GENERALE</div>
+            <div class="section-content">
+                <div class="row">
+                    <div class="cell">% Humidité</div>
+                    <div class="cell">Contrôleur : <input type="text" class="dotted-line-small"></div>
+                    <div class="cell">Heure : <input type="text" class="dotted-line-small">H<input type="text" class="dotted-line-small"></div>
+                </div>
+                <div class="row">
+                    <div class="cell"></div>
+                    <div class="cell specification">Spécifications</div>
+                    <div class="cell">N° F.N.C.</div>
+                </div>
+                <div class="row">
+                    <div class="cell"></div>
+                    <div class="cell specification-value">2,5 % ≤ % H ≤ 4,1 %</div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HUMIDITE APRES TAMISAGE Section -->
+        <div class="section">
+            <div class="section-header">HUMIDITE APRES TAMISAGE</div>
+            <div class="section-content">
+                <div class="row">
+                    <div class="cell">% Humidité</div>
+                    <div class="cell">Contrôleur : <input type="text" class="dotted-line-small"></div>
+                    <div class="cell">Heure : <input type="text" class="dotted-line-small">H<input type="text" class="dotted-line-small"></div>
+                </div>
+                <div class="row">
+                    <div class="cell"></div>
+                    <div class="cell specification">Spécifications</div>
+                    <div class="cell">N° F.N.C.</div>
+                </div>
+                <div class="row">
+                    <div class="cell"></div>
+                    <div class="cell specification-value">2 % ≤ H ≤ 3,5 %</div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HUMIDITE SILOS Section -->
+        <div class="section">
+            <div class="section-header">HUMIDITE SILOS</div>
+            <div class="section-content">
+                <div class="row header-row">
+                    <div class="cell">Heure</div>
+                    <div class="cell">N° Silo</div>
+                    <div class="cell">% humidité</div>
+                    <div class="cell">Contrôleur : <input type="text" class="dotted-line-small"></div>
+                    <div class="cell">N° F.N.C.</div>
+                </div>
+                <div class="silo-rows">
+                    <div class="row">
+                        <div class="cell">....H......</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell specification-value" rowspan="4">5,3 % ≤ H ≤ 6,3 %</div>
+                        <div class="cell"></div>
+                    </div>
+                    <div class="row">
+                        <div class="cell">....H......</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                    </div>
+                    <div class="row">
+                        <div class="cell">....H......</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                    </div>
+                    <div class="row">
+                        <div class="cell">....H......</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cell colspan-5">Humidité Moyenne</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HUMIDITE ARGILE PRESSE Section -->
+        <div class="section">
+            <div class="section-header">HUMIDITE ARGILE PRESSE</div>
+            <div class="section-content">
+                <div class="row">
+                    <div class="cell">N° Silo</div>
+                    <div class="cell">% Humidité</div>
+                    <div class="cell">Contrôleur : <input type="text" class="dotted-line-small"></div>
+                    <div class="cell">Heure : <input type="text" class="dotted-line-small">H<input type="text" class="dotted-line-small"></div>
+                </div>
+                <div class="row">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell specification">Spécifications</div>
+                    <div class="cell">N° F.N.C.</div>
+                </div>
+                <div class="row">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell specification-value">5,2 ≤ % Humidité ≤ 6 %</div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HUMIDITE RESIDUELLE SECHOIR Section -->
+        <div class="section">
+            <div class="section-header">HUMIDITE RESIDUELLE SECHOIR</div>
+            <div class="section-content">
+                <div class="row">
+                    <div class="cell">% Humidité</div>
+                    <div class="cell">Contrôleur : <input type="text" class="dotted-line-small"></div>
+                    <div class="cell">Heure : <input type="text" class="dotted-line-small">H<input type="text" class="dotted-line-small"></div>
+                </div>
+                <div class="row">
+                    <div class="cell"></div>
+                    <div class="cell specification">Spécifications</div>
+                    <div class="cell">N° F.N.C.</div>
+                </div>
+                <div class="row">
+                    <div class="cell"></div>
+                    <div class="cell specification-value">0,1%≤ % HRM ≤1,5%</div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="footer-section">
+            <div class="footer-item">
+                <label>Visa Contrôleur</label>
+            </div>
+            <div class="footer-item">
+                <label>Visa Service Laboratoire</label>
+            </div>
+        </div>
+    </div>

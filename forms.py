@@ -19,6 +19,49 @@ class ClayControlForm(FlaskForm):
     
     notes = TextAreaField('Notes')
 
+# Complete R2-F1-LABO Form
+class R2F1LaboForm(FlaskForm):
+    date = DateField('Date', default=date.today, validators=[DataRequired()])
+    
+    # Humidité Trémie Générale
+    humidity_before_prep = FloatField('% Humidité Trémie', validators=[Optional(), NumberRange(min=2.5, max=4.1)])
+    measurement_time_1 = TimeField('Heure', validators=[Optional()])
+    
+    # Humidité Après Tamisage  
+    humidity_after_sieving = FloatField('% Humidité Tamisage', validators=[Optional(), NumberRange(min=2.0, max=3.5)])
+    measurement_time_2 = TimeField('Heure', validators=[Optional()])
+    
+    # Humidité Silos (4 mesures)
+    silo_time_1 = TimeField('Heure Silo 1', validators=[Optional()])
+    silo_number_1 = StringField('N° Silo 1', validators=[Optional()])
+    silo_humidity_1 = FloatField('% Humidité Silo 1', validators=[Optional(), NumberRange(min=5.3, max=6.3)])
+    
+    silo_time_2 = TimeField('Heure Silo 2', validators=[Optional()])
+    silo_number_2 = StringField('N° Silo 2', validators=[Optional()])
+    silo_humidity_2 = FloatField('% Humidité Silo 2', validators=[Optional(), NumberRange(min=5.3, max=6.3)])
+    
+    silo_time_3 = TimeField('Heure Silo 3', validators=[Optional()])
+    silo_number_3 = StringField('N° Silo 3', validators=[Optional()])
+    silo_humidity_3 = FloatField('% Humidité Silo 3', validators=[Optional(), NumberRange(min=5.3, max=6.3)])
+    
+    silo_time_4 = TimeField('Heure Silo 4', validators=[Optional()])
+    silo_number_4 = StringField('N° Silo 4', validators=[Optional()])
+    silo_humidity_4 = FloatField('% Humidité Silo 4', validators=[Optional(), NumberRange(min=5.3, max=6.3)])
+    
+    # Humidité Moyenne (calculée automatiquement)
+    humidity_after_prep = FloatField('Humidité Moyenne', validators=[Optional(), NumberRange(min=5.3, max=6.3)])
+    
+    # Humidité Argile Presse
+    press_silo_number = StringField('N° Silo Presse', validators=[Optional()])
+    press_humidity = FloatField('% Humidité Presse', validators=[Optional(), NumberRange(min=5.2, max=6.0)])
+    press_time = TimeField('Heure Presse', validators=[Optional()])
+    
+    # Humidité Résiduelle Séchoir
+    residual_humidity = FloatField('% Humidité Résiduelle', validators=[Optional(), NumberRange(min=0.1, max=1.5)])
+    dryer_time = TimeField('Heure Séchoir', validators=[Optional()])
+    
+    notes = TextAreaField('Notes')
+
 # Separate forms for each clay sub-control
 class HumidityBeforePrepForm(FlaskForm):
     date = DateField('Date', default=date.today, validators=[DataRequired()])

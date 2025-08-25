@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
-from forms import ClayControlForm, HumidityBeforePrepForm, HumidityAfterSievingForm, HumidityAfterPrepForm, GranulometryForm, CalciumCarbonateForm
+from forms import ClayControlForm, HumidityBeforePrepForm, HumidityAfterSievingForm, HumidityAfterPrepForm, GranulometryForm, CalciumCarbonateForm, R2F1LaboForm
 from models import ClayControl
 from app import db
 from datetime import date
@@ -205,3 +205,29 @@ def calcium_carbonate():
         return redirect(url_for('clay.clay_controls'))
     
     return render_template('clay/calcium_carbonate.html', form=form)
+
+@clay_bp.route('/r2-f1-labo', methods=['GET', 'POST'])
+@login_required
+def r2_f1_labo_form():
+    form = R2F1LaboForm()
+    
+    if form.validate_on_submit():
+        # Create a comprehensive clay control record from the R2-F1-LABO form
+        clay_control = ClayControl(
+            date=form.date.data,
+            measurement_time_1=form.measurement_time_1.data,
+            measurement_time_2=form.measurement_time_2.data,
+            humidity_before_prep=form.humidity_before_prep.data,
+            humidity_after_sieving=form.humidity_after_sieving.data,
+            humidity_after_prep=form.humidity_after_prep.data,
+            notes=form.notes.data,
+            controller_id=current_user.id
+        )
+        
+        db.session.add(clay_control)
+        db.session.commit()
+        
+        flash('Fiche R2-F1-LABO enregistrée avec succès', 'success')
+        return redirect(url_for('clay.clay_controls'))
+    
+    return render_template('clay/r2_f1_labo_form.html', form=form)
