@@ -119,7 +119,7 @@
                                     <small class="text-muted">PDM Argile</small>
                                 </div>
                                 <div class="text-end">
-                                    <span class="badge bg-{{ 'success' if stats.clay.compliance_rate > 95 else 'warning' if stats.clay.compliance_rate > 80 else 'danger' }}">
+                                    <span class="badge bg-{{ 'success' if ((stats.clay.compliant / stats.clay.total * 100) if stats.clay.total > 0 else 0) > 95 else 'warning' if ((stats.clay.compliant / stats.clay.total * 100) if stats.clay.total > 0 else 0) > 80 else 'danger' }}">
                                         {{ "%.1f"|format((stats.clay.compliant / stats.clay.total * 100) if stats.clay.total > 0 else 0) }}%
                                     </span>
                                     <div><small class="text-muted">{{ stats.clay.compliant }}/{{ stats.clay.total }}</small></div>
@@ -139,7 +139,7 @@
                                     <small class="text-muted">Format & Defects</small>
                                 </div>
                                 <div class="text-end">
-                                    <span class="badge bg-{{ 'success' if stats.press.compliance_rate > 95 else 'warning' if stats.press.compliance_rate > 80 else 'danger' }}">
+                                    <span class="badge bg-{{ 'success' if ((stats.press.compliant / stats.press.total * 100) if stats.press.total > 0 else 0) > 95 else 'warning' if ((stats.press.compliant / stats.press.total * 100) if stats.press.total > 0 else 0) > 80 else 'danger' }}">
                                         {{ "%.1f"|format((stats.press.compliant / stats.press.total * 100) if stats.press.total > 0 else 0) }}%
                                     </span>
                                     <div><small class="text-muted">{{ stats.press.compliant }}/{{ stats.press.total }}</small></div>
@@ -159,7 +159,7 @@
                                     <small class="text-muted">Séchoir</small>
                                 </div>
                                 <div class="text-end">
-                                    <span class="badge bg-{{ 'success' if stats.dryer.compliance_rate > 95 else 'warning' if stats.dryer.compliance_rate > 80 else 'danger' }}">
+                                    <span class="badge bg-{{ 'success' if ((stats.dryer.compliant / stats.dryer.total * 100) if stats.dryer.total > 0 else 0) > 95 else 'warning' if ((stats.dryer.compliant / stats.dryer.total * 100) if stats.dryer.total > 0 else 0) > 80 else 'danger' }}">
                                         {{ "%.1f"|format((stats.dryer.compliant / stats.dryer.total * 100) if stats.dryer.total > 0 else 0) }}%
                                     </span>
                                     <div><small class="text-muted">{{ stats.dryer.compliant }}/{{ stats.dryer.total }}</small></div>
@@ -179,7 +179,7 @@
                                     <small class="text-muted">Four Biscuit</small>
                                 </div>
                                 <div class="text-end">
-                                    <span class="badge bg-{{ 'success' if stats.biscuit_kiln.compliance_rate > 95 else 'warning' if stats.biscuit_kiln.compliance_rate > 80 else 'danger' }}">
+                                    <span class="badge bg-{{ 'success' if ((stats.biscuit_kiln.compliant / stats.biscuit_kiln.total * 100) if stats.biscuit_kiln.total > 0 else 0) > 95 else 'warning' if ((stats.biscuit_kiln.compliant / stats.biscuit_kiln.total * 100) if stats.biscuit_kiln.total > 0 else 0) > 80 else 'danger' }}">
                                         {{ "%.1f"|format((stats.biscuit_kiln.compliant / stats.biscuit_kiln.total * 100) if stats.biscuit_kiln.total > 0 else 0) }}%
                                     </span>
                                     <div><small class="text-muted">{{ stats.biscuit_kiln.compliant }}/{{ stats.biscuit_kiln.total }}</small></div>
@@ -199,7 +199,7 @@
                                     <small class="text-muted">Four Email</small>
                                 </div>
                                 <div class="text-end">
-                                    <span class="badge bg-{{ 'success' if stats.email_kiln.compliance_rate > 95 else 'warning' if stats.email_kiln.compliance_rate > 80 else 'danger' }}">
+                                    <span class="badge bg-{{ 'success' if ((stats.email_kiln.compliant / stats.email_kiln.total * 100) if stats.email_kiln.total > 0 else 0) > 95 else 'warning' if ((stats.email_kiln.compliant / stats.email_kiln.total * 100) if stats.email_kiln.total > 0 else 0) > 80 else 'danger' }}">
                                         {{ "%.1f"|format((stats.email_kiln.compliant / stats.email_kiln.total * 100) if stats.email_kiln.total > 0 else 0) }}%
                                     </span>
                                     <div><small class="text-muted">{{ stats.email_kiln.compliant }}/{{ stats.email_kiln.total }}</small></div>
@@ -219,7 +219,7 @@
                                     <small class="text-muted">PDE & Production</small>
                                 </div>
                                 <div class="text-end">
-                                    <span class="badge bg-{{ 'success' if stats.enamel.compliance_rate > 95 else 'warning' if stats.enamel.compliance_rate > 80 else 'danger' }}">
+                                    <span class="badge bg-{{ 'success' if ((stats.enamel.compliant / stats.enamel.total * 100) if stats.enamel.total > 0 else 0) > 95 else 'warning' if ((stats.enamel.compliant / stats.enamel.total * 100) if stats.enamel.total > 0 else 0) > 80 else 'danger' }}">
                                         {{ "%.1f"|format((stats.enamel.compliant / stats.enamel.total * 100) if stats.enamel.total > 0 else 0) }}%
                                     </span>
                                     <div><small class="text-muted">{{ stats.enamel.compliant }}/{{ stats.enamel.total }}</small></div>
