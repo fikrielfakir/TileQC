@@ -211,6 +211,38 @@ def calcium_carbonate():
 def r2_f1_labo_form():
     form = R2F1LaboForm()
     
+    if request.method == 'GET':
+        # Auto-fill form with recent measurements from today
+        today = date.today()
+        
+        # Find most recent measurements for each humidity type from today
+        humidity_before_prep_record = ClayControl.query.filter(
+            ClayControl.date == today,
+            ClayControl.humidity_before_prep.isnot(None)
+        ).order_by(ClayControl.id.desc()).first()
+        
+        humidity_after_sieving_record = ClayControl.query.filter(
+            ClayControl.date == today,
+            ClayControl.humidity_after_sieving.isnot(None)
+        ).order_by(ClayControl.id.desc()).first()
+        
+        humidity_after_prep_record = ClayControl.query.filter(
+            ClayControl.date == today,
+            ClayControl.humidity_after_prep.isnot(None)
+        ).order_by(ClayControl.id.desc()).first()
+        
+        # Pre-fill form with found measurements
+        if humidity_before_prep_record:
+            form.humidity_before_prep.data = humidity_before_prep_record.humidity_before_prep
+            form.measurement_time_1.data = humidity_before_prep_record.measurement_time_1
+        
+        if humidity_after_sieving_record:
+            form.humidity_after_sieving.data = humidity_after_sieving_record.humidity_after_sieving
+            form.measurement_time_2.data = humidity_after_sieving_record.measurement_time_2
+        
+        if humidity_after_prep_record:
+            form.humidity_after_prep.data = humidity_after_prep_record.humidity_after_prep
+    
     if form.validate_on_submit():
         # Create a comprehensive clay control record from the R2-F1-LABO form
         clay_control = ClayControl(
