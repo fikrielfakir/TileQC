@@ -1,0 +1,359 @@
+# Complete Ceramic Tile Quality Control Application - Replit Implementation Guide
+
+## Project Overview
+Build a comprehensive web-based quality control system for ceramic tile manufacturing based on the R2-LABO control plan. The application will track all quality parameters across the entire production process from clay preparation to final product classification.
+
+## Technical Stack
+- **Backend**: Flask (Python)
+- **Database**: SQLite (local file-based)
+- **Frontend**: HTML5, CSS3, JavaScript, Bootstrap 5
+- **Charts**: Chart.js for analytics
+- **Deployment**: Replit
+
+## Project Structure
+```
+ceramic-qc-app/
+├── main.py                 # Flask application entry point
+├── requirements.txt        # Python dependencies
+├── database/
+│   ├── __init__.py
+│   ├── models.py          # Database models and schemas
+│   └── init_db.py         # Database initialization
+├── routes/
+│   ├── __init__.py
+│   ├── main.py            # Main dashboard routes
+│   ├── clay.py            # Clay control routes
+│   ├── press.py           # Press control routes
+│   ├── dryer.py           # Dryer control routes
+│   ├── kilns.py           # Kiln control routes
+│   ├── enamel.py          # Enamel control routes
+│   ├── tests.py           # Testing routes
+│   └── reports.py         # Reporting routes
+├── static/
+│   ├── css/
+│   │   ├── main.css       # Main stylesheet
+│   │   └── dashboard.css  # Dashboard specific styles
+│   ├── js/
+│   │   ├── main.js        # Main JavaScript
+│   │   ├── charts.js      # Chart configurations
+│   │   └── validation.js  # Form validation
+│   └── img/               # Images and icons
+├── templates/
+│   ├── base.html          # Base template
+│   ├── dashboard.html     # Main dashboard
+│   ├── clay/              # Clay control templates
+│   ├── press/             # Press control templates
+│   ├── dryer/             # Dryer control templates
+│   ├── kilns/             # Kiln control templates
+│   ├── enamel/            # Enamel control templates
+│   ├── tests/             # Testing templates
+│   └── reports/           # Report templates
+└── utils/
+    ├── __init__.py
+    ├── helpers.py         # Helper functions
+    └── validators.py      # Data validation functions
+```
+
+## Database Schema Design
+
+### Core Tables Based on Control Plan:
+
+1. **clay_controls** - PDM Argile controls
+   - humidity_before_prep (2.5-4.1%)
+   - humidity_after_sieving (2-3.5%)
+   - humidity_after_prep (5.3-6.3%)
+   - granulometry_refusal (10-20%)
+   - calcium_carbonate (15-25%)
+
+2. **press_controls** - Press stage controls
+   - Multiple formats (20x20, 25x40, 25x50)
+   - thickness, wet_weight specifications
+   - Surface defect percentages (grains, cracks, cleaning, foliage, chipping)
+
+3. **dryer_controls** - Drying stage controls
+   - residual_humidity (0.1-1.5%)
+   - Surface quality parameters
+
+4. **biscuit_kiln_controls** - Biscuit firing controls
+   - Defect percentages (cracks ≤5%, chipping ≤5%, etc.)
+   - thermal_shock testing
+   - shrinkage_expansion (-0.2% to +0.4%)
+   - fire_loss (10-19%)
+
+5. **email_kiln_controls** - Email firing controls
+   - rupture_resistance and module
+   - dimensional_characteristics
+   - water_absorption (E>10%, individual min 9%)
+   - color_nuance, cooking, flatness
+
+6. **dimensional_tests** - Dimensional and surface quality
+   - central_curvature (±0.5%, ±2mm)
+   - veil, angularity, edge_straightness
+   - lateral_curvature
+   - surface_quality (95% defect-free requirement)
+
+7. **enamel_controls** - Enamel preparation and application
+   - density specifications by type (engobe, email, mate)
+   - viscosity (25-55 seconds)
+   - grammage by format
+   - sieve_refusal limits
+
+8. **digital_decoration** - Digital printing controls
+   - sharpness, offset, tonality checks
+
+9. **external_tests** - CETEMCO laboratory tests
+   - thermal_shock_resistance (ISO 10545-11)
+   - chemical_resistance (ISO 10545-13/14)
+
+## Key Features to Implement
+
+### 1. Dashboard Module
+- Real-time production statistics
+- Daily/weekly/monthly test summaries
+- Quality trends and alerts
+- Non-conformity tracking
+- Controller performance metrics
+
+### 2. Data Entry Modules (One per production stage)
+
+#### Clay Control Module
+- Daily humidity measurements (3 different stages)
+- Weekly granulometry and CaCO3 testing
+- Automatic specification compliance checking
+- Historical trend analysis
+
+#### Press Control Module
+- 6x daily thickness and weight measurements
+- Surface defect percentage tracking
+- Format-specific specifications
+- Real-time compliance alerts
+
+#### Kiln Control Modules
+- Biscuit kiln: thermal shock, defects, shrinkage
+- Email kiln: mechanical properties, dimensions, absorption
+- Automatic pass/fail determination
+- Temperature curve integration
+
+#### Enamel Control Module
+- PDE preparation controls (density, viscosity)
+- Production line controls (12x daily)
+- Grammage tracking by format
+- Viscosity trend monitoring
+
+### 3. Quality Reporting System
+- Daily production reports
+- Non-conformity reports
+- Statistical process control charts
+- Trend analysis and predictions
+- Export capabilities (PDF, Excel)
+
+### 4. Specification Management
+- Dynamic specification limits
+- Format-specific parameters
+- Historical specification changes
+- Tolerance monitoring
+
+### 5. User Management
+- Controller access levels
+- Quality manager oversight
+- Laboratory technician roles
+- Audit trail functionality
+
+## Technical Implementation Details
+
+### Flask Application Structure
+```python
+# main.py
+from flask import Flask
+from database.init_db import init_database
+from routes import register_blueprints
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your-secret-key'
+app.config['DATABASE'] = 'ceramic_qc.db'
+
+# Initialize database
+init_database()
+
+# Register route blueprints
+register_blueprints(app)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
+```
+
+### Database Models
+```python
+# database/models.py
+import sqlite3
+from datetime import datetime
+
+class QualityControl:
+    def __init__(self, db_path):
+        self.db_path = db_path
+    
+    def get_connection(self):
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
+        return conn
+    
+    # Model methods for each control type
+    def add_clay_control(self, data):
+        # Implementation with validation
+        pass
+    
+    def get_clay_controls(self, date_range=None):
+        # Retrieve with filtering
+        pass
+```
+
+### Form Validation
+```python
+# utils/validators.py
+def validate_clay_humidity(value, stage):
+    """Validate humidity based on stage requirements"""
+    limits = {
+        'before_prep': (2.5, 4.1),
+        'after_sieving': (2.0, 3.5),
+        'after_prep': (5.3, 6.3)
+    }
+    min_val, max_val = limits.get(stage, (0, 100))
+    return min_val <= value <= max_val
+
+def validate_press_thickness(value, format_type):
+    """Validate thickness based on tile format"""
+    limits = {
+        '20x20': (6.2, 7.2),
+        '25x40': (6.8, 7.4),
+        '25x50': (7.1, 7.7)
+    }
+    min_val, max_val = limits.get(format_type, (0, 100))
+    return min_val <= value <= max_val
+```
+
+### Frontend Features
+- Responsive Bootstrap 5 design
+- Real-time validation feedback
+- Interactive charts using Chart.js
+- Progressive Web App capabilities
+- Mobile-optimized data entry forms
+
+### Charts and Analytics
+- SPC (Statistical Process Control) charts
+- Trend analysis graphs
+- Distribution histograms
+- Correlation matrices
+- Predictive analytics
+
+## Replit Configuration
+
+### requirements.txt
+```
+Flask==2.3.3
+sqlite3
+pandas==2.0.3
+numpy==1.24.3
+plotly==5.15.0
+python-dateutil==2.8.2
+Werkzeug==2.3.7
+```
+
+### .replit configuration
+```toml
+modules = ["python-3.10"]
+
+[nix]
+channel = "stable-23_05"
+
+[deployment]
+run = ["sh", "-c", "python main.py"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+```
+
+## Implementation Steps
+
+### Phase 1: Core Infrastructure (Week 1)
+1. Set up Replit project structure
+2. Implement database schema and models
+3. Create base Flask application
+4. Build authentication system
+5. Design responsive UI framework
+
+### Phase 2: Data Entry Modules (Week 2-3)
+1. Clay control module with validation
+2. Press control module with format handling
+3. Dryer control integration
+4. Kiln control modules (biscuit and email)
+5. Enamel control system
+
+### Phase 3: Analytics and Reporting (Week 4)
+1. Dashboard with real-time metrics
+2. SPC charts implementation
+3. Report generation system
+4. Trend analysis features
+5. Export functionality
+
+### Phase 4: Advanced Features (Week 5)
+1. Mobile optimization
+2. Notification system
+3. Data backup and restore
+4. Performance optimization
+5. Security enhancements
+
+## Quality Control Logic Implementation
+
+### Automatic Compliance Checking
+```python
+def check_compliance(measurement, spec_min, spec_max, tolerance=0):
+    """Check if measurement complies with specifications"""
+    actual_min = spec_min - tolerance
+    actual_max = spec_max + tolerance
+    return actual_min <= measurement <= actual_max
+
+def generate_alerts(measurements, specifications):
+    """Generate alerts for out-of-spec measurements"""
+    alerts = []
+    for param, value in measurements.items():
+        spec = specifications.get(param)
+        if spec and not check_compliance(value, spec['min'], spec['max']):
+            alerts.append({
+                'parameter': param,
+                'value': value,
+                'specification': f"{spec['min']}-{spec['max']}",
+                'severity': 'high' if abs(value - spec['target']) > spec['critical'] else 'medium'
+            })
+    return alerts
+```
+
+### Statistical Analysis
+- Control charts (X-bar, R-charts)
+- Process capability indices (Cp, Cpk)
+- Trend detection algorithms
+- Outlier identification
+- Correlation analysis between parameters
+
+## Security Considerations
+- Input validation and sanitization
+- SQL injection prevention
+- Session management
+- Access control by user roles
+- Data backup and recovery procedures
+
+## Testing Strategy
+- Unit tests for validation functions
+- Integration tests for database operations
+- End-to-end testing for critical workflows
+- Performance testing under load
+- Security vulnerability testing
+
+## Deployment and Maintenance
+- Replit automatic deployment
+- Database backup procedures
+- Log monitoring and analysis
+- Performance monitoring
+- Regular security updates
+
+This comprehensive application will provide complete quality control coverage for ceramic tile manufacturing, ensuring compliance with all specifications in the R2-LABO control plan while providing valuable analytics and reporting capabilities for continuous improvement.

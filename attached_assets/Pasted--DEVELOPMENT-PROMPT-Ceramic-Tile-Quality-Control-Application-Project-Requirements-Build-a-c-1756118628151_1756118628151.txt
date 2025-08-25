@@ -1,0 +1,250 @@
+# DEVELOPMENT PROMPT: Ceramic Tile Quality Control Application
+
+## Project Requirements
+Build a complete Flask web application for ceramic tile quality control management based on the provided R2-LABO control plan document. Deploy on Replit with SQLite database.
+
+## EXACT SPECIFICATIONS FROM CONTROL PLAN
+
+### 1. PDM ARGILE (Clay Controls)
+**Frequency**: Daily/Weekly measurements
+**Parameters**:
+- Humidity before preparation: 2.5% ≤ H ≤ 4.1% (1x/day)
+- Humidity after sieving: 2% ≤ H ≤ 3.5% (1x/week)
+- Humidity after preparation: 5.3% ≤ H ≤ 6.3% (4x/day)
+- Granulometry refusal: 10% ≤ Refus ≤ 20% (1x/week)
+- Calcium carbonate: 15% ≤ CaCo3 ≤ 25% (1x/week)
+
+### 2. PRESSES (Press Controls)
+**Frequency**: 6x/day measurements
+**Format-specific specifications**:
+- **20x20**: thickness 6.2-7.2mm, weight 480-580g
+- **25x40**: thickness 6.8-7.4mm, weight 1150-1550g  
+- **25x50**: thickness 7.1-7.7mm, weight 1800-2000g
+**Surface defects** (all ≤1% except grains ≤15%):
+- Grains ≤ 15%, Cracks ≤ 1%, Cleaning ≤ 1%, Foliage ≤ 1%, Chipping ≤ 1%
+
+### 3. SECHOIR (Dryer Controls)
+**Frequency**: Daily + 6x/day visual
+**Parameters**:
+- Residual humidity: 0.1% ≤ HR ≤ 1.5%
+- Same surface defect criteria as press
+
+### 4. FOUR BISCUIT (Biscuit Kiln)
+**Frequency**: 6x/day + weekly tests
+**Parameters**:
+- Cracks ≤ 5%, Chipping ≤ 5%, Cooking ≤ 1%, Foliage ≤ 1%, Flatness ≤ 5%
+- Thermal shock: Pass/Fail (6x/day)
+- Shrinkage/expansion: -0.2% to +0.4% (1x/week)
+- Fire loss: 10%-19% (1x/week)
+
+### 5. FOUR EMAIL (Email Kiln)
+**Frequency**: Daily measurements
+**Parameters**:
+- Thermal shock ≤ 5%
+- **Rupture resistance**: ≥600N (thickness ≥7.5mm) or ≥200N (thickness <7.5mm)
+- **Rupture module**: ≥12 N/mm² (thickness ≥7.5mm) or ≥15 N/mm² (thickness <7.5mm)
+- **Dimensional deviation**: Length/Width ±0.5%, Thickness ±10%
+- **Water absorption**: E>10% (individual minimum 9%)
+- Color nuance ≤1%, Cooking ≤1%, Flatness ≤5%
+
+### 6. DIMENSIONAL TESTS
+**Frequency**: Daily measurements
+**Specifications** (all ±0.5% ±2mm except edge straightness):
+- Central curvature: ±0.5% ±2mm
+- Veil: ±0.5% ±2mm  
+- Angularity: ±0.5% ±2mm
+- Edge straightness: ±0.3% ±1.5mm
+- Lateral curvature: ±0.5% ±2mm
+- **Surface quality**: 95% tiles defect-free (min 1m², 30 tiles, 300 lux lighting)
+
+### 7. ENAMEL CONTROLS
+**PDE (1x/day)** and **Production Lines (12x/day)**:
+**Density specifications**:
+- Engobe: 1780-1830 g/l
+- Email: 1730-1780 g/l  
+- Mate: 1780-1830 g/l
+**Viscosity**: 25-55 seconds (all types)
+**Grammage by format**:
+- Water: 20x20 (0.5-3g), 25x40 (1-5g), 25x50 (3-7g)
+- Engobe: 20x20 (20-23g), 25x40 (50-55g), 25x50 (70-75g)
+- Email: Same as engobe
+- Mate: Same as engobe
+
+### 8. DIGITAL DECORATION
+**Frequency**: 12x/day
+**Parameters**: Sharpness, Offset, Tonality (Pass/Fail visual inspection)
+
+### 9. EXTERNAL TESTS (CETEMCO Lab)
+- Thermal shock resistance (ISO 10545-11V2000)
+- Chemical resistance (ISO 10545-13V2017)
+- Stain resistance (ISO 10545-14V2017)
+
+## TECHNICAL IMPLEMENTATION REQUIREMENTS
+
+### Flask Application Structure
+```
+main.py (entry point)
+├── app/
+│   ├── __init__.py
+│   ├── models.py (SQLite database models)
+│   ├── forms.py (WTForms for validation)
+│   └── routes/
+│       ├── __init__.py
+│       ├── main.py (dashboard)
+│       ├── clay.py
+│       ├── press.py
+│       ├── kilns.py
+│       ├── enamel.py
+│       ├── tests.py
+│       └── reports.py
+├── templates/ (Jinja2 HTML templates)
+├── static/ (CSS, JS, images)
+└── requirements.txt
+```
+
+### Database Schema (SQLite)
+Create tables for each control type with:
+- Primary key (auto-increment)
+- Date/timestamp fields
+- All measurement parameters
+- Controller name
+- Compliance status (auto-calculated)
+- Created/updated timestamps
+
+### Key Features to Implement
+
+1. **Data Entry Forms**:
+   - Format-specific validation
+   - Real-time compliance checking
+   - Batch entry for multiple measurements
+   - Mobile-responsive design
+
+2. **Dashboard**:
+   - Today's test summary
+   - Compliance status overview
+   - Recent non-conformities
+   - Weekly/monthly statistics
+   - Live charts (Chart.js)
+
+3. **Validation Logic**:
+   - Automatic spec compliance checking
+   - Format-based parameter validation
+   - Alert generation for out-of-spec values
+   - Historical trend analysis
+
+4. **Reporting System**:
+   - Daily production reports
+   - Non-conformity tracking
+   - Statistical summaries
+   - Export to PDF/Excel
+   - SPC charts
+
+5. **User Management**:
+   - Controller login system
+   - Role-based access (Controller, Quality Manager, Admin)
+   - Audit trails
+
+### Frontend Requirements
+- Bootstrap 5 for responsive design
+- Chart.js for data visualization
+- Form validation with immediate feedback
+- Mobile-optimized data entry
+- Print-friendly reports
+
+### Replit Configuration
+```python
+# requirements.txt
+Flask==2.3.3
+WTForms==3.0.1
+Flask-WTF==1.1.1
+sqlite3
+pandas==2.0.3
+matplotlib==3.7.2
+reportlab==4.0.4
+
+# .replit
+modules = ["python-3.10"]
+run = "python main.py"
+
+[deployment]
+run = ["sh", "-c", "python main.py"]
+```
+
+## DEVELOPMENT CHECKLIST
+
+### Phase 1: Core Setup
+- [ ] Replit project initialization
+- [ ] Flask app configuration
+- [ ] SQLite database setup with all tables
+- [ ] Base HTML template with Bootstrap
+- [ ] User authentication system
+
+### Phase 2: Data Entry Modules
+- [ ] Clay control forms with validation
+- [ ] Press control forms (format-specific)
+- [ ] Dryer control integration
+- [ ] Biscuit kiln controls
+- [ ] Email kiln controls with mechanical tests
+- [ ] Dimensional testing module
+- [ ] Enamel control system (PDE + production lines)
+- [ ] Digital decoration tracking
+
+### Phase 3: Analytics & Reporting
+- [ ] Real-time dashboard
+- [ ] Compliance monitoring
+- [ ] SPC charts implementation
+- [ ] Report generation (daily/weekly/monthly)
+- [ ] Export functionality
+- [ ] Non-conformity alerts
+
+### Phase 4: Advanced Features
+- [ ] Trend analysis
+- [ ] Predictive analytics
+- [ ] Mobile optimization
+- [ ] Data backup/restore
+- [ ] Performance monitoring
+
+## SPECIFIC CODING REQUIREMENTS
+
+### Model Example (Clay Controls)
+```python
+class ClayControl(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.Date, required=True)
+    humidity_before_prep = db.Column(db.Float)  # 2.5-4.1%
+    humidity_after_sieving = db.Column(db.Float)  # 2-3.5%
+    humidity_after_prep = db.Column(db.Float)  # 5.3-6.3%
+    granulometry_refusal = db.Column(db.Float)  # 10-20%
+    calcium_carbonate = db.Column(db.Float)  # 15-25%
+    controller = db.Column(db.String(100))
+    compliance_status = db.Column(db.String(20))  # AUTO-CALCULATED
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+```
+
+### Validation Functions
+```python
+def validate_clay_specs(data):
+    """Validate clay control measurements against specifications"""
+    results = {}
+    if data['humidity_before_prep']:
+        results['humidity_before_prep'] = 2.5 <= data['humidity_before_prep'] <= 4.1
+    # ... implement all validations
+    return results
+```
+
+### Chart Integration
+- Real-time SPC charts using Chart.js
+- Trend analysis graphs
+- Distribution histograms
+- Process capability studies
+
+## SUCCESS CRITERIA
+1. All control plan parameters implemented with exact specifications
+2. Real-time data validation and compliance checking
+3. Comprehensive reporting system
+4. Mobile-responsive interface
+5. Successful Replit deployment
+6. Complete audit trail functionality
+7. Statistical process control capabilities
+
+This application must fully implement the R2-LABO control plan with all specifications, frequencies, and quality parameters exactly as documented.
