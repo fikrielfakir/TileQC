@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}Weekly Report - Ceramic QC{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-calendar-week text-success"></i> Weekly Quality Control Report
+            </h1>
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-primary" onclick="window.print()">
+                    <i class="bi bi-printer"></i> Print
+                </button>
+                <button class="btn btn-outline-success">
+                    <i class="bi bi-download"></i> Export
+                </button>
+            </div>
+        </div>
+        <p class="text-muted">7-day quality control performance analysis</p>
+    </div>
+</div>
+
+<!-- Weekly Overview -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Weekly Overview</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Clay</th>
+                                <th>Press</th>
+                                <th>Dryer</th>
+                                <th>Biscuit Kiln</th>
+                                <th>Email Kiln</th>
+                                <th>Enamel</th>
+                                <th>Overall</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for day_stat in weekly_stats %}
+                            <tr>
+                                <td>
+                                    <strong>{{ day_stat.date.strftime('%a, %b %d') }}</strong>
+                                </td>
+                                <td>
+                                    {% set clay_rate = (day_stat.stats.clay.compliant / day_stat.stats.clay.total * 100) if day_stat.stats.clay.total > 0 else 0 %}
+                                    <span class="badge bg-{{ 'success' if clay_rate >= 95 else 'warning' if clay_rate >= 80 else 'danger' }}">
+                                        {{ "%.0f"|format(clay_rate) }}%
+                                    </span>
+                                    <br><small class="text-muted">{{ day_stat.stats.clay.total }} tests</small>
+                                </td>
+                                <td>
+                                    {% set press_rate = (day_stat.stats.press.compliant / day_stat.stats.press.total * 100) if day_stat.stats.press.total > 0 else 0 %}
+                                    <span class="badge bg-{{ 'success' if press_rate >= 95 else 'warning' if press_rate >= 80 else 'danger' }}">
+                                        {{ "%.0f"|format(press_rate) }}%
+                                    </span>
+                                    <br><small class="text-muted">{{ day_stat.stats.press.total }} tests</small>
+                                </td>
+                                <td>
+                                    {% set dryer_rate = (day_stat.stats.dryer.compliant / day_stat.stats.dryer.total * 100) if day_stat.stats.dryer.total > 0 else 0 %}
+                                    <span class="badge bg-{{ 'success' if dryer_rate >= 95 else 'warning' if dryer_rate >= 80 else 'danger' }}">
+                                        {{ "%.0f"|format(dryer_rate) }}%
+                                    </span>
+                                    <br><small class="text-muted">{{ day_stat.stats.dryer.total }} tests</small>
+                                </td>
+                                <td>
+                                    {% set biscuit_rate = (day_stat.stats.biscuit_kiln.compliant / day_stat.stats.biscuit_kiln.total * 100) if day_stat.stats.biscuit_kiln.total > 0 else 0 %}
+                                    <span class="badge bg-{{ 'success' if biscuit_rate >= 95 else 'warning' if biscuit_rate >= 80 else 'danger' }}">
+                                        {{ "%.0f"|format(biscuit_rate) }}%
+                                    </span>
+                                    <br><small class="text-muted">{{ day_stat.stats.biscuit_kiln.total }} tests</small>
+                                </td>
+                                <td>
+                                    {% set email_rate = (day_stat.stats.email_kiln.compliant / day_stat.stats.email_kiln.total * 100) if day_stat.stats.email_kiln.total > 0 else 0 %}
+                                    <span class="badge bg-{{ 'success' if email_rate >= 95 else 'warning' if email_rate >= 80 else 'danger' }}">
+                                        {{ "%.0f"|format(email_rate) }}%
+                                    </span>
+                                    <br><small class="text-muted">{{ day_stat.stats.email_kiln.total }} tests</small>
+                                </td>
+                                <td>
+                                    {% set enamel_rate = (day_stat.stats.enamel.compliant / day_stat.stats.enamel.total * 100) if day_stat.stats.enamel.total > 0 else 0 %}
+                                    <span class="badge bg-{{ 'success' if enamel_rate >= 95 else 'warning' if enamel_rate >= 80 else 'danger' }}">
+                                        {{ "%.0f"|format(enamel_rate) }}%
+                                    </span>
+                                    <br><small class="text-muted">{{ day_stat.stats.enamel.total }} tests</small>
+                                </td>
+                                <td>
+                                    <strong class="text-{{ 'success' if day_stat.stats.overall.compliance_rate >= 95 else 'warning' if day_stat.stats.overall.compliance_rate >= 80 else 'danger' }}">
+                                        {{ "%.1f"|format(day_stat.stats.overall.compliance_rate) }}%
+                                    </strong>
+                                    <br><small class="text-muted">{{ day_stat.stats.overall.total }} total</small>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Weekly Trend Chart -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="bi bi-graph-up text-primary"></i> Weekly Compliance Trends</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="weeklyTrendChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Weekly Summary Statistics -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="bi bi-bar-chart text-info"></i> Weekly Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 text-center">
+                        {% set total_tests = weekly_stats|sum(attribute='stats.overall.total') %}
+                        <div class="display-6 text-info">{{ total_tests }}</div>
+                        <small class="text-muted">Total Tests</small>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        {% set total_compliant = weekly_stats|sum(attribute='stats.overall.compliant') %}
+                        <div class="display-6 text-success">{{ total_compliant }}</div>
+                        <small class="text-muted">Compliant</small>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        {% set total_non_compliant = weekly_stats|sum(attribute='stats.overall.non_compliant') %}
+                        <div class="display-6 text-danger">{{ total_non_compliant }}</div>
+                        <small class="text-muted">Non-Compliant</small>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        {% set weekly_compliance = (total_compliant / total_tests * 100) if total_tests > 0 else 0 %}
+                        <div class="display-6 text-primary">{{ "%.1f"|format(weekly_compliance) }}%</div>
+                        <small class="text-muted">Weekly Average</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Weekly trend chart
+const weeklyData = [
+    {% for day_stat in weekly_stats %}
+    {
+        date: '{{ day_stat.date.strftime('%a %m/%d') }}',
+        compliance: {{ day_stat.stats.overall.compliance_rate }}
+    }{{ ',' if not loop.last }}
+    {% endfor %}
+];
+
+const ctx = document.getElementById('weeklyTrendChart').getContext('2d');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: weeklyData.map(d => d.date),
+        datasets: [{
+            label: 'Overall Compliance %',
+            data: weeklyData.map(d => d.compliance),
+            borderColor: '#28a745',
+            backgroundColor: 'rgba(40, 167, 69, 0.1)',
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100,
+                ticks: {
+                    callback: function(value) {
+                        return value + '%';
+                    }
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

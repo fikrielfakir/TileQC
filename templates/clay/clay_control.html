@@ -1,0 +1,364 @@
+{% extends "base.html" %}
+
+{% block title %}Clay Control - Ceramic QC{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-layers text-warning"></i> Clay Control (PDM Argile)
+            </h1>
+            {% if not form %}
+            <a href="{{ url_for('clay.add_clay_control') }}" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> Add Clay Control
+            </a>
+            {% endif %}
+        </div>
+        <p class="text-muted">Monitor clay preparation parameters according to R2-LABO specifications</p>
+    </div>
+</div>
+
+<!-- Specifications Reference -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="bi bi-info-circle text-info"></i> Specification Limits</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Humidity Controls:</strong>
+                        <ul class="list-unstyled mt-2">
+                            <li><span class="badge bg-secondary">Before Prep:</span> 2.5% - 4.1%</li>
+                            <li><span class="badge bg-secondary">After Sieving:</span> 2.0% - 3.5%</li>
+                            <li><span class="badge bg-secondary">After Prep:</span> 5.3% - 6.3%</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Chemical Analysis:</strong>
+                        <ul class="list-unstyled mt-2">
+                            <li><span class="badge bg-secondary">Granulometry:</span> 10% - 20%</li>
+                            <li><span class="badge bg-secondary">CaCO₃:</span> 15% - 25%</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Testing Frequency:</strong>
+                        <ul class="list-unstyled mt-2">
+                            <li><span class="badge bg-info">Daily:</span> Humidity controls</li>
+                            <li><span class="badge bg-info">Weekly:</span> Granulometry & CaCO₃</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if form %}
+<!-- Add/Edit Form -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    {% if edit %}
+                        <i class="bi bi-pencil"></i> Edit Clay Control Record
+                    {% else %}
+                        <i class="bi bi-plus-lg"></i> Add New Clay Control Record
+                    {% endif %}
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" id="clayControlForm">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.date.label(class="form-label") }}
+                            {{ form.date(class="form-control") }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.shift.label(class="form-label") }}
+                            {{ form.shift(class="form-control") }}
+                        </div>
+                    </div>
+                    
+                    <h6 class="text-muted border-bottom pb-2 mb-3">Humidity Measurements</h6>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            {{ form.humidity_before_prep.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.humidity_before_prep(class="form-control", **{"data-min": "2.5", "data-max": "4.1"}) }}
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <small class="text-muted">Spec: 2.5% - 4.1%</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            {{ form.humidity_after_sieving.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.humidity_after_sieving(class="form-control", **{"data-min": "2.0", "data-max": "3.5"}) }}
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <small class="text-muted">Spec: 2.0% - 3.5%</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            {{ form.humidity_after_prep.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.humidity_after_prep(class="form-control", **{"data-min": "5.3", "data-max": "6.3"}) }}
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <small class="text-muted">Spec: 5.3% - 6.3%</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    
+                    <h6 class="text-muted border-bottom pb-2 mb-3">Chemical Analysis (Weekly)</h6>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.granulometry_refusal.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.granulometry_refusal(class="form-control", **{"data-min": "10", "data-max": "20"}) }}
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <small class="text-muted">Spec: 10% - 20%</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            {{ form.calcium_carbonate.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.calcium_carbonate(class="form-control", **{"data-min": "15", "data-max": "25"}) }}
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <small class="text-muted">Spec: 15% - 25%</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.notes.label(class="form-label") }}
+                        {{ form.notes(class="form-control", rows="3") }}
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg"></i> {% if edit %}Update{% else %}Save{% endif %} Record
+                        </button>
+                        <a href="{{ url_for('clay.clay_controls') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="bi bi-lightbulb text-warning"></i> Guidelines</h6>
+            </div>
+            <div class="card-body">
+                <h6>Daily Measurements:</h6>
+                <ul class="list-unstyled">
+                    <li><i class="bi bi-check text-success"></i> Humidity before prep (1x/day)</li>
+                    <li><i class="bi bi-check text-success"></i> Humidity after prep (4x/day)</li>
+                </ul>
+                
+                <h6 class="mt-3">Weekly Measurements:</h6>
+                <ul class="list-unstyled">
+                    <li><i class="bi bi-check text-success"></i> Humidity after sieving</li>
+                    <li><i class="bi bi-check text-success"></i> Granulometry refusal</li>
+                    <li><i class="bi bi-check text-success"></i> Calcium carbonate</li>
+                </ul>
+                
+                <div class="alert alert-info mt-3">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>Note:</strong> All measurements are automatically validated against R2-LABO specifications.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<!-- List View -->
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Clay Control Records</h5>
+                <div class="d-flex gap-2">
+                    <select class="form-select form-select-sm" style="width: auto;">
+                        <option>All Records</option>
+                        <option>Today</option>
+                        <option>This Week</option>
+                        <option>This Month</option>
+                    </select>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if controls.items %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Shift</th>
+                                <th>Humidity Before Prep</th>
+                                <th>Humidity After Sieving</th>
+                                <th>Humidity After Prep</th>
+                                <th>Granulometry</th>
+                                <th>CaCO₃</th>
+                                <th>Status</th>
+                                <th>Controller</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for control in controls.items %}
+                            <tr>
+                                <td>{{ control.date.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    {% if control.shift %}
+                                        <span class="badge bg-secondary">{{ control.shift|title }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if control.humidity_before_prep %}
+                                        {{ "%.2f"|format(control.humidity_before_prep) }}%
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if control.humidity_after_sieving %}
+                                        {{ "%.2f"|format(control.humidity_after_sieving) }}%
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if control.humidity_after_prep %}
+                                        {{ "%.2f"|format(control.humidity_after_prep) }}%
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if control.granulometry_refusal %}
+                                        {{ "%.2f"|format(control.granulometry_refusal) }}%
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if control.calcium_carbonate %}
+                                        {{ "%.2f"|format(control.calcium_carbonate) }}%
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if control.compliance_status == 'compliant' %}
+                                        <span class="badge bg-success">Compliant</span>
+                                    {% elif control.compliance_status == 'non_compliant' %}
+                                        <span class="badge bg-danger">Non-Compliant</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Partial</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ control.controller.full_name if control.controller else 'Unknown' }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ url_for('clay.edit_clay_control', id=control.id) }}" 
+                                           class="btn btn-outline-primary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        {% if current_user.role in ['admin', 'quality_manager'] %}
+                                        <form method="POST" action="{{ url_for('clay.delete_clay_control', id=control.id) }}" 
+                                              style="display: inline;" onsubmit="return confirm('Are you sure?')">
+                                            <button type="submit" class="btn btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                {% if controls.pages > 1 %}
+                <nav aria-label="Clay controls pagination">
+                    <ul class="pagination justify-content-center">
+                        {% if controls.has_prev %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('clay.clay_controls', page=controls.prev_num) }}">Previous</a>
+                            </li>
+                        {% endif %}
+                        
+                        {% for page_num in controls.iter_pages() %}
+                            {% if page_num %}
+                                {% if page_num != controls.page %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('clay.clay_controls', page=page_num) }}">{{ page_num }}</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ page_num }}</span>
+                                    </li>
+                                {% endif %}
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if controls.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('clay.clay_controls', page=controls.next_num) }}">Next</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+                
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-clipboard text-muted display-4"></i>
+                    <h5 class="text-muted mt-3">No clay control records found</h5>
+                    <p class="text-muted">Start by adding your first clay control measurement.</p>
+                    <a href="{{ url_for('clay.add_clay_control') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-lg"></i> Add First Record
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+<script>
+// Initialize clay control validation
+document.addEventListener('DOMContentLoaded', function() {
+    initializeValidation('clayControlForm');
+});
+</script>
+{% endblock %}

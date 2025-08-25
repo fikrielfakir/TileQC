@@ -1,0 +1,424 @@
+{% extends "base.html" %}
+
+{% block title %}Press Control - Ceramic QC{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-hammer text-info"></i> Press Control
+            </h1>
+            {% if not form %}
+            <a href="{{ url_for('press.add_press_control') }}" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> Add Press Control
+            </a>
+            {% endif %}
+        </div>
+        <p class="text-muted">Monitor press stage parameters and surface defects (6x daily measurements)</p>
+    </div>
+</div>
+
+<!-- Format Specifications -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="bi bi-info-circle text-info"></i> Format Specifications</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>20x20 Format:</strong>
+                        <ul class="list-unstyled mt-2">
+                            <li><span class="badge bg-primary">Thickness:</span> 6.2 - 7.2 mm</li>
+                            <li><span class="badge bg-primary">Weight:</span> 480 - 580 g</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>25x40 Format:</strong>
+                        <ul class="list-unstyled mt-2">
+                            <li><span class="badge bg-success">Thickness:</span> 6.8 - 7.4 mm</li>
+                            <li><span class="badge bg-success">Weight:</span> 1150 - 1550 g</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>25x50 Format:</strong>
+                        <ul class="list-unstyled mt-2">
+                            <li><span class="badge bg-warning">Thickness:</span> 7.1 - 7.7 mm</li>
+                            <li><span class="badge bg-warning">Weight:</span> 1800 - 2000 g</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <strong>Surface Defect Limits:</strong>
+                        <span class="ms-3">
+                            <span class="badge bg-secondary">Grains ≤ 15%</span>
+                            <span class="badge bg-secondary">Cracks ≤ 1%</span>
+                            <span class="badge bg-secondary">Cleaning ≤ 1%</span>
+                            <span class="badge bg-secondary">Foliage ≤ 1%</span>
+                            <span class="badge bg-secondary">Chipping ≤ 1%</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if form %}
+<!-- Add/Edit Form -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    {% if edit %}
+                        <i class="bi bi-pencil"></i> Edit Press Control Record
+                    {% else %}
+                        <i class="bi bi-plus-lg"></i> Add New Press Control Record
+                    {% endif %}
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" id="pressControlForm">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            {{ form.date.label(class="form-label") }}
+                            {{ form.date(class="form-control") }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {{ form.shift.label(class="form-label") }}
+                            {{ form.shift(class="form-control") }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {{ form.measurement_number.label(class="form-label") }}
+                            {{ form.measurement_number(class="form-control") }}
+                            <small class="text-muted">Daily measurement sequence (1-6)</small>
+                        </div>
+                    </div>
+                    
+                    <h6 class="text-muted border-bottom pb-2 mb-3">Format & Dimensions</h6>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            {{ form.format_type.label(class="form-label") }}
+                            {{ form.format_type(class="form-control", id="formatSelect") }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {{ form.thickness.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.thickness(class="form-control", id="thicknessInput") }}
+                                <span class="input-group-text">mm</span>
+                            </div>
+                            <small class="text-muted" id="thicknessSpec">Select format to see specification</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {{ form.wet_weight.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.wet_weight(class="form-control", id="weightInput") }}
+                                <span class="input-group-text">g</span>
+                            </div>
+                            <small class="text-muted" id="weightSpec">Select format to see specification</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    
+                    <h6 class="text-muted border-bottom pb-2 mb-3">Surface Defects (%)</h6>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.defect_grains.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.defect_grains(class="form-control", **{"data-max": "15"}) }}
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <small class="text-muted">Limit: ≤ 15%</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.defect_cracks.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.defect_cracks(class="form-control", **{"data-max": "1"}) }}
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <small class="text-muted">Limit: ≤ 1%</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.defect_cleaning.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.defect_cleaning(class="form-control", **{"data-max": "1"}) }}
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <small class="text-muted">Limit: ≤ 1%</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.defect_foliage.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.defect_foliage(class="form-control", **{"data-max": "1"}) }}
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <small class="text-muted">Limit: ≤ 1%</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.defect_chipping.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.defect_chipping(class="form-control", **{"data-max": "1"}) }}
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <small class="text-muted">Limit: ≤ 1%</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.notes.label(class="form-label") }}
+                        {{ form.notes(class="form-control", rows="3") }}
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg"></i> {% if edit %}Update{% else %}Save{% endif %} Record
+                        </button>
+                        <a href="{{ url_for('press.press_controls') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="bi bi-lightbulb text-warning"></i> Press Guidelines</h6>
+            </div>
+            <div class="card-body">
+                <h6>Measurement Frequency:</h6>
+                <ul class="list-unstyled">
+                    <li><i class="bi bi-clock text-info"></i> 6 measurements per day</li>
+                    <li><i class="bi bi-rulers text-info"></i> Thickness & weight for each</li>
+                    <li><i class="bi bi-eye text-info"></i> Visual defect inspection</li>
+                </ul>
+                
+                <div class="alert alert-warning mt-3">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>Important:</strong> Surface defects must be measured as percentage of inspected area.
+                </div>
+                
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i>
+                    Specifications will auto-validate based on selected format.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<!-- List View -->
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Press Control Records</h5>
+                <div class="d-flex gap-2">
+                    <select class="form-select form-select-sm" style="width: auto;" 
+                            onchange="window.location.href='{{ url_for('press.press_controls') }}?format=' + this.value">
+                        <option value="">All Formats</option>
+                        <option value="20x20" {{ 'selected' if format_filter == '20x20' }}>20x20</option>
+                        <option value="25x40" {{ 'selected' if format_filter == '25x40' }}>25x40</option>
+                        <option value="25x50" {{ 'selected' if format_filter == '25x50' }}>25x50</option>
+                    </select>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if controls.items %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Measurement #</th>
+                                <th>Format</th>
+                                <th>Thickness</th>
+                                <th>Weight</th>
+                                <th>Defects</th>
+                                <th>Status</th>
+                                <th>Controller</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for control in controls.items %}
+                            <tr>
+                                <td>{{ control.date.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    <span class="badge bg-info">#{{ control.measurement_number }}</span>
+                                    {% if control.shift %}
+                                        <span class="badge bg-secondary">{{ control.shift|title }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge bg-{{ 'primary' if control.format_type == '20x20' else 'success' if control.format_type == '25x40' else 'warning' }}">
+                                        {{ control.format_type }}
+                                    </span>
+                                </td>
+                                <td>{{ "%.2f"|format(control.thickness) }} mm</td>
+                                <td>{{ "%.1f"|format(control.wet_weight) }} g</td>
+                                <td>
+                                    <small>
+                                        G:{{ control.defect_grains or 0 }}% 
+                                        C:{{ control.defect_cracks or 0 }}% 
+                                        Cl:{{ control.defect_cleaning or 0 }}% 
+                                        F:{{ control.defect_foliage or 0 }}% 
+                                        Ch:{{ control.defect_chipping or 0 }}%
+                                    </small>
+                                </td>
+                                <td>
+                                    {% if control.compliance_status == 'compliant' %}
+                                        <span class="badge bg-success">Compliant</span>
+                                    {% elif control.compliance_status == 'non_compliant' %}
+                                        <span class="badge bg-danger">Non-Compliant</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Partial</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ control.controller.full_name if control.controller else 'Unknown' }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ url_for('press.edit_press_control', id=control.id) }}" 
+                                           class="btn btn-outline-primary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        {% if current_user.role in ['admin', 'quality_manager'] %}
+                                        <button type="button" class="btn btn-outline-danger" 
+                                                onclick="confirmDelete({{ control.id }})">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                {% if controls.pages > 1 %}
+                <nav aria-label="Press controls pagination">
+                    <ul class="pagination justify-content-center">
+                        {% if controls.has_prev %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('press.press_controls', page=controls.prev_num, format=format_filter) }}">Previous</a>
+                            </li>
+                        {% endif %}
+                        
+                        {% for page_num in controls.iter_pages() %}
+                            {% if page_num %}
+                                {% if page_num != controls.page %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('press.press_controls', page=page_num, format=format_filter) }}">{{ page_num }}</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ page_num }}</span>
+                                    </li>
+                                {% endif %}
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if controls.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('press.press_controls', page=controls.next_num, format=format_filter) }}">Next</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+                
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-hammer text-muted display-4"></i>
+                    <h5 class="text-muted mt-3">No press control records found</h5>
+                    <p class="text-muted">Start by adding your first press control measurement.</p>
+                    <a href="{{ url_for('press.add_press_control') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-lg"></i> Add First Record
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+<script>
+// Format specifications
+const formatSpecs = {
+    '20x20': {thickness: [6.2, 7.2], weight: [480, 580]},
+    '25x40': {thickness: [6.8, 7.4], weight: [1150, 1550]},
+    '25x50': {thickness: [7.1, 7.7], weight: [1800, 2000]}
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeValidation('pressControlForm');
+    
+    const formatSelect = document.getElementById('formatSelect');
+    const thicknessInput = document.getElementById('thicknessInput');
+    const weightInput = document.getElementById('weightInput');
+    const thicknessSpec = document.getElementById('thicknessSpec');
+    const weightSpec = document.getElementById('weightSpec');
+    
+    if (formatSelect) {
+        formatSelect.addEventListener('change', function() {
+            const format = this.value;
+            if (format && formatSpecs[format]) {
+                const specs = formatSpecs[format];
+                
+                // Update specification display
+                thicknessSpec.textContent = `Spec: ${specs.thickness[0]} - ${specs.thickness[1]} mm`;
+                weightSpec.textContent = `Spec: ${specs.weight[0]} - ${specs.weight[1]} g`;
+                
+                // Update validation attributes
+                thicknessInput.setAttribute('data-min', specs.thickness[0]);
+                thicknessInput.setAttribute('data-max', specs.thickness[1]);
+                weightInput.setAttribute('data-min', specs.weight[0]);
+                weightInput.setAttribute('data-max', specs.weight[1]);
+            } else {
+                thicknessSpec.textContent = 'Select format to see specification';
+                weightSpec.textContent = 'Select format to see specification';
+            }
+        });
+        
+        // Trigger change event if format is already selected
+        if (formatSelect.value) {
+            formatSelect.dispatchEvent(new Event('change'));
+        }
+    }
+});
+
+function confirmDelete(id) {
+    if (confirm('Are you sure you want to delete this press control record?')) {
+        fetch(`/press/delete/${id}`, {method: 'POST'})
+            .then(() => location.reload());
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}SPC Charts - Ceramic QC{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3 mb-0">
+            <i class="bi bi-graph-up text-primary"></i> Statistical Process Control Charts
+        </h1>
+        <p class="text-muted">Control charts for key quality parameters</p>
+    </div>
+</div>
+
+<!-- Clay Humidity Chart -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Clay Humidity After Preparation</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="clayHumidityChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Press Thickness Chart -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Press Thickness Control</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="pressThicknessChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dryer Humidity Chart -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Dryer Residual Humidity</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="dryerHumidityChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// SPC Chart data from backend
+const clayHumidityData = {{ clay_humidity|safe }};
+const pressThicknessData = {{ press_thickness|safe }};
+const dryerHumidityData = {{ dryer_humidity|safe }};
+
+// Clay Humidity Chart
+const clayCtx = document.getElementById('clayHumidityChart').getContext('2d');
+new Chart(clayCtx, {
+    type: 'line',
+    data: {
+        labels: clayHumidityData.map(d => d.date),
+        datasets: [{
+            label: 'Humidity %',
+            data: clayHumidityData.map(d => d.value),
+            borderColor: '#0d6efd',
+            backgroundColor: clayHumidityData.map(d => d.compliance === 'compliant' ? 'rgba(13, 110, 253, 0.1)' : 'rgba(220, 53, 69, 0.1)'),
+            pointBackgroundColor: clayHumidityData.map(d => d.compliance === 'compliant' ? '#28a745' : '#dc3545'),
+            tension: 0.1
+        }, {
+            label: 'Upper Limit',
+            data: Array(clayHumidityData.length).fill(6.3),
+            borderColor: '#dc3545',
+            borderDash: [5, 5],
+            pointRadius: 0,
+            fill: false
+        }, {
+            label: 'Lower Limit',
+            data: Array(clayHumidityData.length).fill(5.3),
+            borderColor: '#dc3545',
+            borderDash: [5, 5],
+            pointRadius: 0,
+            fill: false
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: false,
+                min: 4.5,
+                max: 7.0
+            }
+        }
+    }
+});
+
+// Similar charts for press thickness and dryer humidity...
+</script>
+{% endblock %}

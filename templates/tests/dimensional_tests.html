@@ -1,0 +1,369 @@
+{% extends "base.html" %}
+
+{% block title %}Dimensional Tests - Ceramic QC{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-rulers text-info"></i> Dimensional Tests
+            </h1>
+            {% if not form %}
+            <a href="{{ url_for('tests.add_dimensional_test') }}" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> Add Dimensional Test
+            </a>
+            {% endif %}
+        </div>
+        <p class="text-muted">Monitor dimensional accuracy and surface quality (Daily measurements)</p>
+    </div>
+</div>
+
+<!-- Specifications Reference -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="bi bi-info-circle text-info"></i> Dimensional Test Specifications</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Dimensional Tolerances:</strong>
+                        <ul class="list-unstyled mt-2">
+                            <li><span class="badge bg-primary">Central Curvature:</span> ±0.5% ±2mm</li>
+                            <li><span class="badge bg-primary">Veil:</span> ±0.5% ±2mm</li>
+                            <li><span class="badge bg-primary">Angularity:</span> ±0.5% ±2mm</li>
+                            <li><span class="badge bg-warning">Edge Straightness:</span> ±0.3% ±1.5mm</li>
+                            <li><span class="badge bg-primary">Lateral Curvature:</span> ±0.5% ±2mm</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Surface Quality Requirements:</strong>
+                        <ul class="list-unstyled mt-2">
+                            <li><span class="badge bg-success">Defect-free:</span> 95% minimum</li>
+                            <li><span class="badge bg-info">Min Testing:</span> 30 tiles, 1m²</li>
+                            <li><span class="badge bg-info">Lighting:</span> 300 lux minimum</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if form %}
+<!-- Add/Edit Form -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    {% if edit %}
+                        <i class="bi bi-pencil"></i> Edit Dimensional Test Record
+                    {% else %}
+                        <i class="bi bi-plus-lg"></i> Add New Dimensional Test Record
+                    {% endif %}
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" id="dimensionalTestForm">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.date.label(class="form-label") }}
+                            {{ form.date(class="form-control") }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.format_type.label(class="form-label") }}
+                            {{ form.format_type(class="form-control") }}
+                        </div>
+                    </div>
+                    
+                    <h6 class="text-muted border-bottom pb-2 mb-3">Dimensional Measurements (mm)</h6>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.central_curvature.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.central_curvature(class="form-control", **{"data-min": "-2", "data-max": "2"}) }}
+                                <span class="input-group-text">mm</span>
+                            </div>
+                            <small class="text-muted">Tolerance: ±0.5% ±2mm</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.veil.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.veil(class="form-control", **{"data-min": "-2", "data-max": "2"}) }}
+                                <span class="input-group-text">mm</span>
+                            </div>
+                            <small class="text-muted">Tolerance: ±0.5% ±2mm</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.angularity.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.angularity(class="form-control", **{"data-min": "-2", "data-max": "2"}) }}
+                                <span class="input-group-text">mm</span>
+                            </div>
+                            <small class="text-muted">Tolerance: ±0.5% ±2mm</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.edge_straightness.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.edge_straightness(class="form-control", **{"data-min": "-1.5", "data-max": "1.5"}) }}
+                                <span class="input-group-text">mm</span>
+                            </div>
+                            <small class="text-muted">Tolerance: ±0.3% ±1.5mm</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.lateral_curvature.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.lateral_curvature(class="form-control", **{"data-min": "-2", "data-max": "2"}) }}
+                                <span class="input-group-text">mm</span>
+                            </div>
+                            <small class="text-muted">Tolerance: ±0.5% ±2mm</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    
+                    <h6 class="text-muted border-bottom pb-2 mb-3">Surface Quality Assessment</h6>
+                    
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            {{ form.tiles_tested.label(class="form-label") }}
+                            {{ form.tiles_tested(class="form-control", **{"data-min": "30"}) }}
+                            <small class="text-muted">Minimum: 30 tiles</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            {{ form.defect_free_tiles.label(class="form-label") }}
+                            {{ form.defect_free_tiles(class="form-control", id="defectFreeTiles") }}
+                            <small class="text-muted" id="defectFreePercent">95% minimum required</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            {{ form.surface_area_tested.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.surface_area_tested(class="form-control", **{"data-min": "1"}) }}
+                                <span class="input-group-text">m²</span>
+                            </div>
+                            <small class="text-muted">Minimum: 1m²</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            {{ form.lighting_level.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.lighting_level(class="form-control", **{"data-min": "300"}) }}
+                                <span class="input-group-text">lux</span>
+                            </div>
+                            <small class="text-muted">Minimum: 300 lux</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.notes.label(class="form-label") }}
+                        {{ form.notes(class="form-control", rows="3") }}
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg"></i> {% if edit %}Update{% else %}Save{% endif %} Record
+                        </button>
+                        <a href="{{ url_for('tests.dimensional_tests') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="bi bi-lightbulb text-warning"></i> Testing Guidelines</h6>
+            </div>
+            <div class="card-body">
+                <h6>Measurement Protocol:</h6>
+                <ul class="list-unstyled">
+                    <li><i class="bi bi-rulers text-info"></i> Dimensional accuracy check</li>
+                    <li><i class="bi bi-eye text-info"></i> Visual surface inspection</li>
+                    <li><i class="bi bi-lightbulb text-warning"></i> Proper lighting (300 lux)</li>
+                </ul>
+                
+                <div class="alert alert-info mt-3">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>Critical:</strong> Edge straightness has tighter tolerance (±0.3% ±1.5mm) than other parameters.
+                </div>
+                
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle"></i>
+                    Surface quality must achieve 95% defect-free tiles for compliance.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<!-- List View -->
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Dimensional Test Records</h5>
+                <div class="d-flex gap-2">
+                    <select class="form-select form-select-sm" style="width: auto;" 
+                            onchange="window.location.href='{{ url_for('tests.dimensional_tests') }}?format=' + this.value">
+                        <option value="">All Formats</option>
+                        <option value="20x20" {{ 'selected' if format_filter == '20x20' }}>20x20</option>
+                        <option value="25x40" {{ 'selected' if format_filter == '25x40' }}>25x40</option>
+                        <option value="25x50" {{ 'selected' if format_filter == '25x50' }}>25x50</option>
+                    </select>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if tests.items %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Format</th>
+                                <th>Dimensional Measurements</th>
+                                <th>Surface Quality</th>
+                                <th>Testing Conditions</th>
+                                <th>Status</th>
+                                <th>Controller</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for test in tests.items %}
+                            <tr>
+                                <td>{{ test.date.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    <span class="badge bg-{{ 'primary' if test.format_type == '20x20' else 'success' if test.format_type == '25x40' else 'warning' }}">
+                                        {{ test.format_type }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <small>
+                                        {% if test.central_curvature is not none %}CC:{{ "%.2f"|format(test.central_curvature) }}mm{% endif %}
+                                        {% if test.veil is not none %}<br>V:{{ "%.2f"|format(test.veil) }}mm{% endif %}
+                                        {% if test.angularity is not none %}<br>A:{{ "%.2f"|format(test.angularity) }}mm{% endif %}
+                                        {% if test.edge_straightness is not none %}<br>ES:{{ "%.2f"|format(test.edge_straightness) }}mm{% endif %}
+                                        {% if test.lateral_curvature is not none %}<br>LC:{{ "%.2f"|format(test.lateral_curvature) }}mm{% endif %}
+                                    </small>
+                                </td>
+                                <td>
+                                    {% if test.tiles_tested and test.defect_free_tiles %}
+                                        {% set quality_percent = (test.defect_free_tiles / test.tiles_tested * 100) %}
+                                        <strong class="text-{{ 'success' if quality_percent >= 95 else 'danger' }}">
+                                            {{ "%.1f"|format(quality_percent) }}%
+                                        </strong>
+                                        <br><small>{{ test.defect_free_tiles }}/{{ test.tiles_tested }} tiles</small>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <small>
+                                        {% if test.surface_area_tested %}Area: {{ "%.1f"|format(test.surface_area_tested) }}m²{% endif %}
+                                        {% if test.lighting_level %}<br>Light: {{ "%.0f"|format(test.lighting_level) }} lux{% endif %}
+                                    </small>
+                                </td>
+                                <td>
+                                    {% if test.compliance_status == 'compliant' %}
+                                        <span class="badge bg-success">Compliant</span>
+                                    {% elif test.compliance_status == 'non_compliant' %}
+                                        <span class="badge bg-danger">Non-Compliant</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Partial</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ test.controller.full_name if test.controller else 'Unknown' }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ url_for('tests.edit_dimensional_test', id=test.id) }}" 
+                                           class="btn btn-outline-primary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        {% if current_user.role in ['admin', 'quality_manager'] %}
+                                        <button type="button" class="btn btn-outline-danger" 
+                                                onclick="confirmDelete({{ test.id }})">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-rulers text-muted display-4"></i>
+                    <h5 class="text-muted mt-3">No dimensional test records found</h5>
+                    <p class="text-muted">Start by adding your first dimensional test measurement.</p>
+                    <a href="{{ url_for('tests.add_dimensional_test') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-lg"></i> Add First Record
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    initializeValidation('dimensionalTestForm');
+    
+    // Calculate and display defect-free percentage
+    const tilesTestedInput = document.querySelector('input[name="tiles_tested"]');
+    const defectFreeTilesInput = document.getElementById('defectFreeTiles');
+    const defectFreePercent = document.getElementById('defectFreePercent');
+    
+    function updateDefectFreePercentage() {
+        const tilesTotal = parseInt(tilesTestedInput.value) || 0;
+        const defectFree = parseInt(defectFreeTilesInput.value) || 0;
+        
+        if (tilesTotal > 0 && defectFree >= 0) {
+            const percentage = (defectFree / tilesTotal * 100);
+            const isCompliant = percentage >= 95;
+            defectFreePercent.innerHTML = `${percentage.toFixed(1)}% ${isCompliant ? '<span class="text-success">(✓)</span>' : '<span class="text-danger">(Below 95%)</span>'}`;
+        } else {
+            defectFreePercent.textContent = '95% minimum required';
+        }
+    }
+    
+    if (tilesTestedInput && defectFreeTilesInput) {
+        tilesTestedInput.addEventListener('input', updateDefectFreePercentage);
+        defectFreeTilesInput.addEventListener('input', updateDefectFreePercentage);
+        
+        // Update on page load if values exist
+        updateDefectFreePercentage();
+    }
+});
+
+function confirmDelete(id) {
+    if (confirm('Are you sure you want to delete this dimensional test record?')) {
+        fetch(`/tests/dimensional/delete/${id}`, {method: 'POST'})
+            .then(() => location.reload());
+    }
+}
+</script>
+{% endblock %}

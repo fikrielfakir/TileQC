@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Non-Conformities - Ceramic QC{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3 mb-0">
+            <i class="bi bi-exclamation-triangle text-warning"></i> Non-Conformities Report
+        </h1>
+        <p class="text-muted">Recent quality control failures requiring attention</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                {% if non_conformities %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Controller</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for nc in non_conformities %}
+                            <tr>
+                                <td>{{ nc.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>{{ nc.type }}</td>
+                                <td>{{ nc.controller }}</td>
+                                <td>
+                                    <span class="badge bg-danger">{{ nc.status|title }}</span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary">View Details</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-check-circle text-success display-4"></i>
+                    <h5 class="text-success mt-3">No Non-Conformities</h5>
+                    <p class="text-muted">All recent measurements are within specifications.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
