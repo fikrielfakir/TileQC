@@ -10,29 +10,37 @@
     box-sizing: border-box;
 }
 
+body {
+    background-color: white;
+    color: black;
+}
+
 .r2-form-container {
     max-width: 800px;
     margin: 20px auto;
     background-color: white;
-    border: 2px solid #000;
+    border: 3px solid black;
     padding: 0;
     font-family: Arial, sans-serif;
     font-size: 12px;
+    color: black;
 }
 
 /* Header Section */
 .header-section {
     display: flex;
-    border-bottom: 2px solid #000;
+    border-bottom: 3px solid black;
+    background-color: white;
 }
 
 .header-item {
     flex: 1;
-    padding: 10px;
-    border-right: 2px solid #000;
+    padding: 12px;
+    border-right: 3px solid black;
     display: flex;
     align-items: center;
     gap: 10px;
+    background-color: white;
 }
 
 .header-item:last-child {
@@ -42,11 +50,13 @@
 .header-item label {
     font-weight: bold;
     white-space: nowrap;
+    color: black;
 }
 
 /* Section Styles */
 .section {
-    border-bottom: 2px solid #000;
+    border-bottom: 3px solid black;
+    background-color: white;
 }
 
 .section:last-of-type {
@@ -54,18 +64,22 @@
 }
 
 .section-header {
-    background-color: #d3d3d3;
-    padding: 8px 12px;
+    background-color: white;
+    border: 2px solid black;
+    padding: 10px 12px;
     font-weight: bold;
     text-align: center;
-    border-bottom: 1px solid #000;
-    font-size: 11px;
+    font-size: 13px;
+    color: black;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .section-content {
     display: table;
     width: 100%;
     border-collapse: collapse;
+    background-color: white;
 }
 
 .row {
@@ -74,12 +88,14 @@
 
 .cell {
     display: table-cell;
-    border: 1px solid #000;
-    padding: 6px 8px;
+    border: 2px solid black;
+    padding: 8px 10px;
     vertical-align: middle;
     text-align: center;
     position: relative;
-    min-height: 30px;
+    min-height: 35px;
+    background-color: white;
+    color: black;
 }
 
 .cell:first-child {
@@ -92,14 +108,18 @@
 
 /* Specific styling for different sections */
 .specification {
-    background-color: #f0f0f0;
+    background-color: white;
     font-weight: bold;
+    border: 3px solid black;
+    color: black;
 }
 
 .specification-value {
-    background-color: #f8f8f8;
+    background-color: white;
     font-weight: bold;
-    font-size: 11px;
+    font-size: 12px;
+    border: 3px solid black;
+    color: black;
 }
 
 /* Input styles */
@@ -111,34 +131,43 @@ input[type="text"], input[type="time"], input[type="number"] {
     font-family: inherit;
     text-align: center;
     width: 100%;
+    color: black;
+    font-weight: bold;
 }
 
 .dotted-line {
-    border-bottom: 1px dotted #000 !important;
+    border-bottom: 2px dotted black !important;
     min-width: 200px;
-    padding: 2px 5px;
+    padding: 3px 5px;
+    color: black;
+    font-weight: bold;
 }
 
 .dotted-line-small {
-    border-bottom: 1px dotted #000 !important;
+    border-bottom: 2px dotted black !important;
     min-width: 60px;
-    padding: 2px 5px;
+    padding: 3px 5px;
     display: inline-block;
+    color: black;
+    font-weight: bold;
 }
 
 /* Footer Section */
 .footer-section {
     display: flex;
-    border-top: 2px solid #000;
+    border-top: 3px solid black;
     margin-top: 0;
+    background-color: white;
 }
 
 .footer-item {
     flex: 1;
-    padding: 15px;
-    border-right: 2px solid #000;
+    padding: 20px;
+    border-right: 3px solid black;
     text-align: center;
     font-weight: bold;
+    color: black;
+    background-color: white;
 }
 
 .footer-item:last-child {
@@ -147,25 +176,71 @@ input[type="text"], input[type="time"], input[type="number"] {
 
 /* Header row styling */
 .header-row .cell {
-    background-color: #e8e8e8;
+    background-color: white;
     font-weight: bold;
-    font-size: 10px;
+    font-size: 11px;
+    border: 3px solid black;
+    color: black;
 }
 
 /* Special styling for merged cells effect */
 .colspan-5 {
     text-align: center;
     font-weight: bold;
-    background-color: #f0f0f0;
+    background-color: white;
+    border: 3px solid black;
+    color: black;
 }
 
 /* Silo section specific styling */
 .silo-specification {
-    background-color: #f8f8f8;
+    background-color: white;
     font-weight: bold;
-    font-size: 10px;
+    font-size: 11px;
     writing-mode: vertical-lr;
     text-orientation: mixed;
+    border: 3px solid black;
+    color: black;
+}
+
+/* Remove all Bootstrap colors */
+.alert-info {
+    background-color: white;
+    border: 2px solid black;
+    color: black;
+}
+
+.btn-primary {
+    background-color: white;
+    border: 2px solid black;
+    color: black;
+}
+
+.btn-primary:hover {
+    background-color: black;
+    color: white;
+}
+
+.btn-outline-secondary {
+    background-color: white;
+    border: 2px solid black;
+    color: black;
+}
+
+.btn-outline-secondary:hover {
+    background-color: black;
+    color: white;
+}
+
+.btn-info {
+    background-color: white;
+    border: 2px solid black;
+    color: black;
+}
+
+.btn-info:hover {
+    background-color: black;
+    color: white;
 }
 
 @media (max-width: 768px) {
@@ -176,7 +251,7 @@ input[type="text"], input[type="time"], input[type="number"] {
     
     .cell {
         font-size: 10px;
-        padding: 4px;
+        padding: 6px;
     }
     
     .header-item {
@@ -189,6 +264,10 @@ input[type="text"], input[type="time"], input[type="number"] {
     .r2-form-container {
         margin: 0;
         box-shadow: none;
+    }
+    
+    .no-print {
+        display: none;
     }
 }
 </style>
