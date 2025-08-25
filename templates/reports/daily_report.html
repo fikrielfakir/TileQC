@@ -324,11 +324,11 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body text-center py-5">
                 <i class="bi bi-calendar-x text-muted display-4"></i>
-                <h5 class="text-muted mt-3">No Data Available</h5>
-                <p class="text-muted">No quality control measurements found for {{ selected_date.strftime('%B %d, %Y') if selected_date else 'the selected date' }}.</p>
+                <h5 class="text-muted mt-3">Aucune Donnée Disponible</h5>
+                <p class="text-muted">Aucune mesure de contrôle qualité trouvée pour {{ selected_date.strftime('%d %B %Y') if selected_date else 'la date sélectionnée' }}.</p>
                 <div class="mt-3">
                     <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">
-                        <i class="bi bi-plus-lg"></i> Start Adding Measurements
+                        <i class="bi bi-plus-lg"></i> Commencer à Ajouter des Mesures
                     </a>
                 </div>
             </div>
@@ -343,9 +343,9 @@
         <div class="card border-0 bg-light">
             <div class="card-body text-center">
                 <small class="text-muted">
-                    Report generated on {{ 'now'|strftime('%Y-%m-%d %H:%M:%S') }} | 
-                    Ceramic Tile Quality Control System - R2-LABO Implementation | 
-                    <a href="{{ url_for('reports.daily_report') }}">Refresh Report</a>
+                    Rapport généré le {{ 'now'|strftime('%d/%m/%Y à %H:%M:%S') }} | 
+                    Système de Contrôle Qualité Carreaux Céramiques - Implémentation R2-LABO | 
+                    <a href="{{ url_for('reports.daily_report') }}">Actualiser le Rapport</a>
                 </small>
             </div>
         </div>

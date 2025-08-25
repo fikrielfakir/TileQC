@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
+from datetime import datetime
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -31,6 +32,22 @@ db.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'auth.login'
+
+# Add custom Jinja2 filters
+@app.template_filter('strftime')
+def strftime_filter(date_str, fmt='%Y-%m-%d %H:%M:%S'):
+    """Format datetime string or 'now' for current datetime"""
+    if date_str == 'now':
+        return datetime.now().strftime(fmt)
+    elif isinstance(date_str, datetime):
+        return date_str.strftime(fmt)
+    else:
+        try:
+            # Try to parse string as datetime
+            dt = datetime.fromisoformat(str(date_str))
+            return dt.strftime(fmt)
+        except:
+            return str(date_str)
 
 @login_manager.user_loader
 def load_user(user_id):
