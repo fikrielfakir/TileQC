@@ -21,19 +21,19 @@ def add_clay_control():
     form = ClayControlForm()
     
     if form.validate_on_submit():
-        clay_control = ClayControl(
-            date=form.date.data,
-            shift=form.shift.data,
-            measurement_time_1=form.measurement_time_1.data,
-            measurement_time_2=form.measurement_time_2.data,
-            humidity_before_prep=form.humidity_before_prep.data,
-            humidity_after_sieving=form.humidity_after_sieving.data,
-            humidity_after_prep=form.humidity_after_prep.data,
-            granulometry_refusal=form.granulometry_refusal.data,
-            calcium_carbonate=form.calcium_carbonate.data,
-            notes=form.notes.data,
-            controller_id=current_user.id
-        )
+        clay_control = ClayControl()
+        clay_control.date = form.date.data
+        clay_control.shift = form.shift.data
+        clay_control.measurement_time_1 = form.measurement_time_1.data
+        clay_control.measurement_time_2 = form.measurement_time_2.data
+        clay_control.humidity_before_prep = form.humidity_before_prep.data
+        clay_control.humidity_after_sieving = form.humidity_after_sieving.data
+        clay_control.humidity_after_prep = form.humidity_after_prep.data
+        clay_control.granulometry_refusal = form.granulometry_refusal.data
+        clay_control.calcium_carbonate = form.calcium_carbonate.data
+        clay_control.notes = form.notes.data
+        clay_control.controller_id = current_user.id
+        clay_control.compliance_status = 'compliant'  # Default
         
         db.session.add(clay_control)
         db.session.commit()
@@ -97,14 +97,21 @@ def humidity_before_prep():
     form = HumidityBeforePrepForm()
     
     if form.validate_on_submit():
-        clay_control = ClayControl(
-            date=form.date.data,
-            shift=form.shift.data,
-            measurement_time_1=form.measurement_time.data,
-            humidity_before_prep=form.humidity_before_prep.data,
-            notes=form.notes.data,
-            controller_id=current_user.id
-        )
+        clay_control = ClayControl()
+        clay_control.date = form.date.data
+        clay_control.shift = form.shift.data
+        clay_control.measurement_time_1 = form.measurement_time.data
+        clay_control.humidity_before_prep = form.humidity_before_prep.data
+        clay_control.notes = form.notes.data
+        clay_control.controller_id = current_user.id
+        
+        # Check compliance
+        humidity_value = form.humidity_before_prep.data
+        if humidity_value < 2.5 or humidity_value > 4.1:
+            clay_control.compliance_status = 'non_compliant'
+            flash(f'⚠️ Valeur hors spécification ({humidity_value}%) - F.N.C. requis (Spéc: 2.5%-4.1%)', 'warning')
+        else:
+            clay_control.compliance_status = 'compliant'
         
         db.session.add(clay_control)
         db.session.commit()
@@ -120,14 +127,21 @@ def humidity_after_sieving():
     form = HumidityAfterSievingForm()
     
     if form.validate_on_submit():
-        clay_control = ClayControl(
-            date=form.date.data,
-            shift=form.shift.data,
-            measurement_time_1=form.measurement_time.data,
-            humidity_after_sieving=form.humidity_after_sieving.data,
-            notes=form.notes.data,
-            controller_id=current_user.id
-        )
+        clay_control = ClayControl()
+        clay_control.date = form.date.data
+        clay_control.shift = form.shift.data
+        clay_control.measurement_time_1 = form.measurement_time.data
+        clay_control.humidity_after_sieving = form.humidity_after_sieving.data
+        clay_control.notes = form.notes.data
+        clay_control.controller_id = current_user.id
+        
+        # Check compliance
+        humidity_value = form.humidity_after_sieving.data
+        if humidity_value < 2.0 or humidity_value > 3.5:
+            clay_control.compliance_status = 'non_compliant'
+            flash(f'⚠️ Valeur hors spécification ({humidity_value}%) - F.N.C. requis (Spéc: 2%-3.5%)', 'warning')
+        else:
+            clay_control.compliance_status = 'compliant'
         
         db.session.add(clay_control)
         db.session.commit()
@@ -143,14 +157,21 @@ def humidity_after_prep():
     form = HumidityAfterPrepForm()
     
     if form.validate_on_submit():
-        clay_control = ClayControl(
-            date=form.date.data,
-            shift=form.shift.data,
-            measurement_time_1=form.measurement_time.data,
-            humidity_after_prep=form.humidity_after_prep.data,
-            notes=form.notes.data,
-            controller_id=current_user.id
-        )
+        clay_control = ClayControl()
+        clay_control.date = form.date.data
+        clay_control.shift = form.shift.data
+        clay_control.measurement_time_1 = form.measurement_time.data
+        clay_control.humidity_after_prep = form.humidity_after_prep.data
+        clay_control.notes = form.notes.data
+        clay_control.controller_id = current_user.id
+        
+        # Check compliance
+        humidity_value = form.humidity_after_prep.data
+        if humidity_value < 5.3 or humidity_value > 6.3:
+            clay_control.compliance_status = 'non_compliant'
+            flash(f'⚠️ Valeur hors spécification ({humidity_value}%) - F.N.C. requis (Spéc: 5.3%-6.3%)', 'warning')
+        else:
+            clay_control.compliance_status = 'compliant'
         
         db.session.add(clay_control)
         db.session.commit()
@@ -166,14 +187,21 @@ def granulometry():
     form = GranulometryForm()
     
     if form.validate_on_submit():
-        clay_control = ClayControl(
-            date=form.date.data,
-            shift=form.shift.data,
-            measurement_time_1=form.measurement_time.data,
-            granulometry_refusal=form.granulometry_refusal.data,
-            notes=form.notes.data,
-            controller_id=current_user.id
-        )
+        clay_control = ClayControl()
+        clay_control.date = form.date.data
+        clay_control.shift = form.shift.data
+        clay_control.measurement_time_1 = form.measurement_time.data
+        clay_control.granulometry_refusal = form.granulometry_refusal.data
+        clay_control.notes = form.notes.data
+        clay_control.controller_id = current_user.id
+        
+        # Check compliance
+        granulo_value = form.granulometry_refusal.data
+        if granulo_value < 10 or granulo_value > 20:
+            clay_control.compliance_status = 'non_compliant'
+            flash(f'⚠️ Valeur hors spécification ({granulo_value}%) - F.N.C. requis (Spéc: 10%-20%)', 'warning')
+        else:
+            clay_control.compliance_status = 'compliant'
         
         db.session.add(clay_control)
         db.session.commit()
@@ -189,14 +217,21 @@ def calcium_carbonate():
     form = CalciumCarbonateForm()
     
     if form.validate_on_submit():
-        clay_control = ClayControl(
-            date=form.date.data,
-            shift=form.shift.data,
-            measurement_time_1=form.measurement_time.data,
-            calcium_carbonate=form.calcium_carbonate.data,
-            notes=form.notes.data,
-            controller_id=current_user.id
-        )
+        clay_control = ClayControl()
+        clay_control.date = form.date.data
+        clay_control.shift = form.shift.data
+        clay_control.measurement_time_1 = form.measurement_time.data
+        clay_control.calcium_carbonate = form.calcium_carbonate.data
+        clay_control.notes = form.notes.data
+        clay_control.controller_id = current_user.id
+        
+        # Check compliance
+        calcium_value = form.calcium_carbonate.data
+        if calcium_value < 15 or calcium_value > 25:
+            clay_control.compliance_status = 'non_compliant'
+            flash(f'⚠️ Valeur hors spécification ({calcium_value}%) - F.N.C. requis (Spéc: 15%-25%)', 'warning')
+        else:
+            clay_control.compliance_status = 'compliant'
         
         db.session.add(clay_control)
         db.session.commit()
@@ -245,16 +280,16 @@ def r2_f1_labo_form():
     
     if form.validate_on_submit():
         # Create a comprehensive clay control record from the R2-F1-LABO form
-        clay_control = ClayControl(
-            date=form.date.data,
-            measurement_time_1=form.measurement_time_1.data,
-            measurement_time_2=form.measurement_time_2.data,
-            humidity_before_prep=form.humidity_before_prep.data,
-            humidity_after_sieving=form.humidity_after_sieving.data,
-            humidity_after_prep=form.humidity_after_prep.data,
-            notes=form.notes.data,
-            controller_id=current_user.id
-        )
+        clay_control = ClayControl()
+        clay_control.date = form.date.data
+        clay_control.measurement_time_1 = form.measurement_time_1.data
+        clay_control.measurement_time_2 = form.measurement_time_2.data
+        clay_control.humidity_before_prep = form.humidity_before_prep.data
+        clay_control.humidity_after_sieving = form.humidity_after_sieving.data
+        clay_control.humidity_after_prep = form.humidity_after_prep.data
+        clay_control.notes = form.notes.data
+        clay_control.controller_id = current_user.id
+        clay_control.compliance_status = 'compliant'  # Default for R2-F1-LABO
         
         db.session.add(clay_control)
         db.session.commit()
