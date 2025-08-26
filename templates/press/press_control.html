@@ -333,7 +333,7 @@
                 <h5 class="mb-0">Enregistrements Contrôle Presse</h5>
                 <div class="d-flex gap-2">
                     <select class="form-select form-select-sm" style="width: auto;" 
-                            onchange="window.location.href='{{ url_for('press.press_controls') }}?format=' + this.value">
+                            onchange="window.location.href='{{ url_for('press.press_controls') }}?format=' + this.value;"
                         <option value="">Tous Formats</option>
                         <option value="20x20" {{ 'selected' if format_filter == '20x20' }}>20x20</option>
                         <option value="25x40" {{ 'selected' if format_filter == '25x40' }}>25x40</option>
@@ -373,8 +373,8 @@
                                         {{ control.format_type }}
                                     </span>
                                 </td>
-                                <td>{{ "%.2f"|format(control.thickness) }} mm</td>
-                                <td>{{ "%.1f"|format(control.wet_weight) }} g</td>
+                                <td>{{ ("%.2f"|format(control.thickness)) if control.thickness is not none else 'N/A' }} mm</td>
+                                <td>{{ ("%.1f"|format(control.wet_weight)) if control.wet_weight is not none else 'N/A' }} g</td>
                                 <td>
                                     <small>
                                         G:{{ control.defect_grains or 0 }}% 
@@ -402,7 +402,7 @@
                                         </a>
                                         {% if current_user.role in ['admin', 'quality_manager'] %}
                                         <button type="button" class="btn btn-outline-danger" 
-                                                onclick="confirmDelete({{ control.id }})">
+                                                onclick="confirmDelete({{ control.id }});">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                         {% endif %}

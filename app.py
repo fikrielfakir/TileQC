@@ -31,7 +31,7 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
 db.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'auth.login'
+login_manager.login_view = 'auth.login'  # type: ignore
 
 # Add custom Jinja2 filters
 @app.template_filter('strftime')
@@ -67,13 +67,12 @@ with app.app_context():
     
     admin = User.query.filter_by(username='admin').first()
     if not admin:
-        admin = User(
-            username='admin',
-            email='admin@ceramic-qc.com',
-            password_hash=generate_password_hash('admin123'),
-            role='admin',
-            full_name='System Administrator'
-        )
+        admin = User()
+        admin.username = 'admin'
+        admin.email = 'admin@ceramic-qc.com'
+        admin.password_hash = generate_password_hash('admin123')
+        admin.role = 'admin'
+        admin.full_name = 'System Administrator'
         db.session.add(admin)
         db.session.commit()
     
