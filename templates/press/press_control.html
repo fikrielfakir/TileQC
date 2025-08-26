@@ -67,6 +67,107 @@
     </div>
 </div>
 
+<!-- Individual Press Control Navigation -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="bi bi-list text-primary"></i> Contrôles Individuels</h6>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card h-100 border-primary">
+                            <div class="card-body text-center p-3">
+                                <i class="bi bi-rulers text-primary fs-1 mb-2"></i>
+                                <h6 class="card-title">Épaisseur</h6>
+                                <p class="card-text small text-muted">Pied à coulisse<br>6.2-7.2mm selon format</p>
+                                <a href="{{ url_for('press.press_thickness') }}" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-plus-lg"></i> Contrôler
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card h-100 border-success">
+                            <div class="card-body text-center p-3">
+                                <i class="bi bi-speedometer text-success fs-1 mb-2"></i>
+                                <h6 class="card-title">Poids Humide</h6>
+                                <p class="card-text small text-muted">Balance<br>480-2000g selon format</p>
+                                <a href="{{ url_for('press.press_wet_weight') }}" class="btn btn-outline-success btn-sm">
+                                    <i class="bi bi-plus-lg"></i> Contrôler
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card h-100 border-info">
+                            <div class="card-body text-center p-3">
+                                <i class="bi bi-eye text-info fs-1 mb-2"></i>
+                                <h6 class="card-title">Aspect</h6>
+                                <p class="card-text small text-muted">Visuel<br>Grains ≤15%, défauts ≤1%</p>
+                                <a href="{{ url_for('press.press_aspect') }}" class="btn btn-outline-info btn-sm">
+                                    <i class="bi bi-plus-lg"></i> Contrôler
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card h-100 border-warning">
+                            <div class="card-body text-center p-3">
+                                <i class="bi bi-droplet text-warning fs-1 mb-2"></i>
+                                <h6 class="card-title">Humidité Argile</h6>
+                                <p class="card-text small text-muted">Balance + Étuve<br>5.2% ≤ H ≤ 6%</p>
+                                <a href="{{ url_for('press.press_clay_humidity') }}" class="btn btn-outline-warning btn-sm">
+                                    <i class="bi bi-plus-lg"></i> Contrôler
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Combined Control Navigation -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="bi bi-layers text-secondary"></i> Contrôle Combiné</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card h-100 border-secondary">
+                            <div class="card-body text-center p-4">
+                                <i class="bi bi-hammer text-secondary fs-1 mb-2"></i>
+                                <h6 class="card-title">Épaisseur + Poids Humide</h6>
+                                <p class="card-text small text-muted">Contrôle combiné avec validation automatique selon format</p>
+                                <a href="{{ url_for('press.combined_press') }}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-plus-lg"></i> Contrôle Combiné
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 d-flex align-items-center">
+                        <div class="text-muted">
+                            <h6><i class="bi bi-info-circle"></i> Contrôle Combiné</h6>
+                            <p class="small mb-2">Le contrôle combiné permet de saisir simultanément :</p>
+                            <ul class="small">
+                                <li><strong>Épaisseur</strong> avec pied à coulisse</li>
+                                <li><strong>Poids humide</strong> avec balance</li>
+                            </ul>
+                            <p class="small">Les deux mesures sont validées automatiquement selon le format sélectionné.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% if form %}
 <!-- Add/Edit Form -->
 <div class="row">

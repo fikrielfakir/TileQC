@@ -111,6 +111,61 @@ class PressControlForm(FlaskForm):
     
     notes = TextAreaField('Notes')
 
+# Individual Press Control Forms as requested by user
+class PressThicknessForm(FlaskForm):
+    """Individual thickness control form"""
+    date = DateField('Date', default=date.today, validators=[DataRequired()])
+    shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
+    measurement_time = TimeField('Temps de Mesure', validators=[Optional()])
+    format_type = SelectField('Format', choices=[('20x20', '20x20'), ('25x40', '25x40'), ('25x50', '25x50')], validators=[DataRequired()])
+    thickness = FloatField('Épaisseur (mm)', validators=[DataRequired(), NumberRange(min=0)])
+    notes = TextAreaField('Notes')
+
+class PressWetWeightForm(FlaskForm):
+    """Individual wet weight control form"""
+    date = DateField('Date', default=date.today, validators=[DataRequired()])
+    shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
+    measurement_time = TimeField('Temps de Mesure', validators=[Optional()])
+    format_type = SelectField('Format', choices=[('20x20', '20x20'), ('25x40', '25x40'), ('25x50', '25x50')], validators=[DataRequired()])
+    wet_weight = FloatField('Poids Humide (g)', validators=[DataRequired(), NumberRange(min=0)])
+    notes = TextAreaField('Notes')
+
+class PressAspectForm(FlaskForm):
+    """Individual visual aspect control form"""
+    date = DateField('Date', default=date.today, validators=[DataRequired()])
+    shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
+    measurement_time = TimeField('Temps de Mesure', validators=[Optional()])
+    defect_grains = FloatField('Grains (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
+    defect_cracks = FloatField('Fissures (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
+    defect_cleaning = FloatField('Nettoyage (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
+    defect_foliage = FloatField('Feuillage (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
+    defect_chipping = FloatField('Écornage (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
+    notes = TextAreaField('Notes')
+
+class PressClayHumidityForm(FlaskForm):
+    """Individual press clay humidity control form"""
+    date = DateField('Date', default=date.today, validators=[DataRequired()])
+    shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
+    measurement_time = TimeField('Temps de Mesure', validators=[Optional()])
+    clay_humidity = FloatField('Humidité Argile Presse (%)', validators=[DataRequired(), NumberRange(min=0, max=100)])
+    notes = TextAreaField('Notes')
+
+class CombinedPressForm(FlaskForm):
+    """Combined thickness and wet weight control form"""
+    date = DateField('Date', default=date.today, validators=[DataRequired()])
+    shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
+    format_type = SelectField('Format', choices=[('20x20', '20x20'), ('25x40', '25x40'), ('25x50', '25x50')], validators=[DataRequired()])
+    
+    # Thickness measurement
+    thickness_time = TimeField('Temps de Mesure Épaisseur', validators=[Optional()])
+    thickness = FloatField('Épaisseur (mm)', validators=[Optional(), NumberRange(min=0)])
+    
+    # Wet weight measurement  
+    weight_time = TimeField('Temps de Mesure Poids', validators=[Optional()])
+    wet_weight = FloatField('Poids Humide (g)', validators=[Optional(), NumberRange(min=0)])
+    
+    notes = TextAreaField('Notes')
+
 class DryerControlForm(FlaskForm):
     date = DateField('Date', default=date.today, validators=[DataRequired()])
     shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
