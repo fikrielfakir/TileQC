@@ -98,10 +98,14 @@
                                 <div class="col-md-6 mb-3">
                                     {{ form.humidity_before_prep.label(class="form-label") }}
                                     <div class="input-group">
-                                        {{ form.humidity_before_prep(class="form-control", **{"data-min": "2.5", "data-max": "4.1"}) }}
+                                        {{ form.humidity_before_prep(class="form-control", **{"data-min": "2.5", "data-max": "4.1", "id": "humidity_before_prep"}) }}
                                         <span class="input-group-text">%</span>
+                                        <span class="input-group-text" id="status_before_prep">
+                                            <i class="bi bi-dash-circle text-muted"></i>
+                                        </span>
                                     </div>
                                     <small class="text-muted">Spéc: 2.5% ≤ H ≤ 4.1%</small>
+                                    <div id="compliance_before_prep" class="mt-1"></div>
                                 </div>
                             </div>
                         </div>
@@ -121,10 +125,14 @@
                                 <div class="col-md-6 mb-3">
                                     {{ form.humidity_after_sieving.label(class="form-label") }}
                                     <div class="input-group">
-                                        {{ form.humidity_after_sieving(class="form-control", **{"data-min": "2.0", "data-max": "3.5"}) }}
+                                        {{ form.humidity_after_sieving(class="form-control", **{"data-min": "2.0", "data-max": "3.5", "id": "humidity_after_sieving"}) }}
                                         <span class="input-group-text">%</span>
+                                        <span class="input-group-text" id="status_after_sieving">
+                                            <i class="bi bi-dash-circle text-muted"></i>
+                                        </span>
                                     </div>
                                     <small class="text-muted">Spéc: 2% ≤ H ≤ 3.5%</small>
+                                    <div id="compliance_after_sieving" class="mt-1"></div>
                                 </div>
                             </div>
                         </div>
@@ -144,10 +152,14 @@
                                 <div class="col-md-6 mb-3">
                                     {{ form.humidity_after_prep.label(class="form-label") }}
                                     <div class="input-group">
-                                        {{ form.humidity_after_prep(class="form-control", **{"data-min": "5.3", "data-max": "6.3"}) }}
+                                        {{ form.humidity_after_prep(class="form-control", **{"data-min": "5.3", "data-max": "6.3", "id": "humidity_after_prep"}) }}
                                         <span class="input-group-text">%</span>
+                                        <span class="input-group-text" id="status_after_prep">
+                                            <i class="bi bi-dash-circle text-muted"></i>
+                                        </span>
                                     </div>
                                     <small class="text-muted">Spéc: 5.3% ≤ H ≤ 6.3% (R2-MA-LABO-01)</small>
+                                    <div id="compliance_after_prep" class="mt-1"></div>
                                 </div>
                             </div>
                         </div>
@@ -199,26 +211,43 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Add real-time validation for humidity fields
-    const humidityFields = document.querySelectorAll('input[data-min][data-max]');
-    
-    humidityFields.forEach(field => {
+    // Add real-time compliance checking for each humidity measurement
+    function checkCompliance(fieldId, statusId, complianceId, min, max, name) {
+        const field = document.getElementById(fieldId);
+        const status = document.getElementById(statusId);
+        const compliance = document.getElementById(complianceId);
+        
         field.addEventListener('input', function() {
             const value = parseFloat(this.value);
-            const min = parseFloat(this.dataset.min);
-            const max = parseFloat(this.dataset.max);
             
-            if (value && (value < min || value > max)) {
+            if (!value || isNaN(value)) {
+                // No value entered
+                status.innerHTML = '<i class="bi bi-dash-circle text-muted"></i>';
+                compliance.innerHTML = '';
+                this.classList.remove('is-valid', 'is-invalid');
+                return;
+            }
+            
+            if (value < min || value > max) {
+                // Non-compliant
+                status.innerHTML = '<i class="bi bi-x-circle text-danger"></i>';
+                compliance.innerHTML = `<small class="text-danger"><strong>NON CONFORME</strong> - ${name}: ${value}% (Spéc: ${min}%-${max}%)</small>`;
                 this.classList.add('is-invalid');
                 this.classList.remove('is-valid');
-            } else if (value) {
+            } else {
+                // Compliant
+                status.innerHTML = '<i class="bi bi-check-circle text-success"></i>';
+                compliance.innerHTML = `<small class="text-success"><strong>CONFORME</strong> - ${name}: ${value}%</small>`;
                 this.classList.add('is-valid');
                 this.classList.remove('is-invalid');
-            } else {
-                this.classList.remove('is-valid', 'is-invalid');
             }
         });
-    });
+    }
+    
+    // Set up compliance checking for each measurement
+    checkCompliance('humidity_before_prep', 'status_before_prep', 'compliance_before_prep', 2.5, 4.1, 'Trémie générale');
+    checkCompliance('humidity_after_sieving', 'status_after_sieving', 'compliance_after_sieving', 2.0, 3.5, 'Après tamisage');
+    checkCompliance('humidity_after_prep', 'status_after_prep', 'compliance_after_prep', 5.3, 6.3, 'Niveau silo');
 });
 </script>
 {% endblock %}

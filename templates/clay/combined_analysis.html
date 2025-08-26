@@ -85,10 +85,14 @@
                                 <div class="col-md-6 mb-3">
                                     {{ form.granulometry_refusal.label(class="form-label") }}
                                     <div class="input-group">
-                                        {{ form.granulometry_refusal(class="form-control", **{"data-min": "10", "data-max": "20"}) }}
+                                        {{ form.granulometry_refusal(class="form-control", **{"data-min": "10", "data-max": "20", "id": "granulometry_refusal"}) }}
                                         <span class="input-group-text">% Refus</span>
+                                        <span class="input-group-text" id="status_granulometry">
+                                            <i class="bi bi-dash-circle text-muted"></i>
+                                        </span>
                                     </div>
                                     <small class="text-muted">Spéc: 10% ≤ Refus ≤ 20% (R2-MA-LABO-03)</small>
+                                    <div id="compliance_granulometry" class="mt-1"></div>
                                 </div>
                             </div>
                         </div>
@@ -108,10 +112,14 @@
                                 <div class="col-md-6 mb-3">
                                     {{ form.calcium_carbonate.label(class="form-label") }}
                                     <div class="input-group">
-                                        {{ form.calcium_carbonate(class="form-control", **{"data-min": "15", "data-max": "25"}) }}
+                                        {{ form.calcium_carbonate(class="form-control", **{"data-min": "15", "data-max": "25", "id": "calcium_carbonate"}) }}
                                         <span class="input-group-text">% CaCO₃</span>
+                                        <span class="input-group-text" id="status_calcium">
+                                            <i class="bi bi-dash-circle text-muted"></i>
+                                        </span>
                                     </div>
                                     <small class="text-muted">Spéc: 15% ≤ CaCO₃ ≤ 25%</small>
+                                    <div id="compliance_calcium" class="mt-1"></div>
                                 </div>
                             </div>
                         </div>
@@ -164,26 +172,42 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Add real-time validation for analysis fields
-    const analysisFields = document.querySelectorAll('input[data-min][data-max]');
-    
-    analysisFields.forEach(field => {
+    // Add real-time compliance checking for each analysis measurement
+    function checkCompliance(fieldId, statusId, complianceId, min, max, name) {
+        const field = document.getElementById(fieldId);
+        const status = document.getElementById(statusId);
+        const compliance = document.getElementById(complianceId);
+        
         field.addEventListener('input', function() {
             const value = parseFloat(this.value);
-            const min = parseFloat(this.dataset.min);
-            const max = parseFloat(this.dataset.max);
             
-            if (value && (value < min || value > max)) {
+            if (!value || isNaN(value)) {
+                // No value entered
+                status.innerHTML = '<i class="bi bi-dash-circle text-muted"></i>';
+                compliance.innerHTML = '';
+                this.classList.remove('is-valid', 'is-invalid');
+                return;
+            }
+            
+            if (value < min || value > max) {
+                // Non-compliant
+                status.innerHTML = '<i class="bi bi-x-circle text-danger"></i>';
+                compliance.innerHTML = `<small class="text-danger"><strong>NON CONFORME</strong> - ${name}: ${value}% (Spéc: ${min}%-${max}%)</small>`;
                 this.classList.add('is-invalid');
                 this.classList.remove('is-valid');
-            } else if (value) {
+            } else {
+                // Compliant
+                status.innerHTML = '<i class="bi bi-check-circle text-success"></i>';
+                compliance.innerHTML = `<small class="text-success"><strong>CONFORME</strong> - ${name}: ${value}%</small>`;
                 this.classList.add('is-valid');
                 this.classList.remove('is-invalid');
-            } else {
-                this.classList.remove('is-valid', 'is-invalid');
             }
         });
-    });
+    }
+    
+    // Set up compliance checking for each measurement
+    checkCompliance('granulometry_refusal', 'status_granulometry', 'compliance_granulometry', 10, 20, 'Granulométrie');
+    checkCompliance('calcium_carbonate', 'status_calcium', 'compliance_calcium', 15, 25, 'CaCO₃');
 });
 </script>
 {% endblock %}
