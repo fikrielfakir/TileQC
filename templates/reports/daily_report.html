@@ -10,6 +10,23 @@
                 <i class="bi bi-calendar-day text-primary"></i> Daily Quality Control Report
             </h1>
             <div class="d-flex gap-2">
+                <select id="reportType" class="form-select" onchange="changeReportType()" style="min-width: 250px;">
+                    <option value="humidity" selected>FICHE CONTROLE HUMIDITE</option>
+                    <option value="clay">FICHE DE CONTRÔLE ARGILE</option>
+                    <option value="thickness">FICHE CONTRÔLE D'EPAISSEUR & POIDS DU CARREAU</option>
+                    <option value="digital">CONTROLE DES LIGNES & MACHINE DIGITAL</option>
+                    <option value="thermal">CONTRÔLE CHOC THERMIQUE VISUEL CARREAU BISCUIT</option>
+                    <option value="dilatation">CONTRÔLE PERTE AU FEU & DILATATION DU CARREAU BISCUIT</option>
+                    <option value="resistance">CONTRÔLE DE RESISTANCE</option>
+                    <option value="absorption">CONTRÔLE ABSORPTION D'EAU PRODUIT FINI</option>
+                    <option value="viscosity">FICHE CONTRÔLE DE VISCOSITE & DENSITE</option>
+                    <option value="grammage">FICHE CONTRÔLE DU GRAMMAGE</option>
+                    <option value="classification">FICHE CONTRÔLE DE CLASSIFICATION PRODUITS FINIS</option>
+                    <option value="discharge">FICHE CONTRÔLE DE DECHARGE P.D.E.</option>
+                    <option value="visual">CONTRÔLE VISUEL CARREAU BISCUIT PRESSE & SECHOIR</option>
+                    <option value="dimensional">FICHE DE CONTROLE CARACTERISTIQUES DIMENSIONNELLES</option>
+                    <option value="surface">RESULTATS DES ESSAIS DIMENSIONNELLES ET QUALITE DE SURFACE</option>
+                </select>
                 <input type="date" id="reportDate" class="form-control" 
                        value="{{ selected_date if selected_date else '' }}"
                        onchange="window.location.href='{{ url_for('reports.daily_report') }}?date=' + this.value">
@@ -38,13 +55,13 @@
                         <div><small class="fw-bold">CERAMICA DERSA</small></div>
                     </div>
                     <div class="col-md-6 text-center">
-                        <h4 class="mb-1 fw-bold">FICHE CONTROLE QUALITÉ</h4>
+                        <h4 class="mb-1 fw-bold" id="reportTitle">FICHE CONTROLE HUMIDITE</h4>
                         <h5 class="mb-0">RAPPORT QUOTIDIEN</h5>
                     </div>
                     <div class="col-md-4">
                         <table class="table table-bordered table-sm mb-0">
                             <tr><td class="fw-bold bg-light">SERVICE LABORATOIRE</td></tr>
-                            <tr><td><strong>CODE:</strong> R2-F1-LABO</td></tr>
+                            <tr><td><strong>CODE:</strong> <span id="reportCode">R2-F1-LABO</span></td></tr>
                             <tr><td><strong>VERSION:</strong> 00</td></tr>
                             <tr><td><strong>DATE:</strong> {{ selected_date.strftime('%d/%m/%Y') }}</td></tr>
                         </table>
@@ -65,203 +82,10 @@
     </div>
 </div>
 
-<!-- HUMIDITE TREMIE GENERALE -->
-{% if report_data.clay_controls %}
-<div class="row mb-4">
-    <div class="col-12">
-        <table class="table table-bordered control-table">
-            <thead>
-                <tr class="table-secondary">
-                    <th class="fw-bold">HUMIDITE TREMIE GENERALE</th>
-                    <th>Contrôleur: {{ current_user.username }}</th>
-                    <th>Heure: {{ report_data.clay_controls[0].measurement_time_1.strftime('%H:%M') if report_data.clay_controls[0].measurement_time_1 else 'N/A' }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="table-light">
-                    <td class="fw-bold">% Humidité</td>
-                    <td class="fw-bold">Spécifications</td>
-                    <td class="fw-bold">N° F.N.C.</td>
-                </tr>
-                <tr>
-                    <td>{{ "%.2f"|format(report_data.clay_controls[0].humidity_before_prep) if report_data.clay_controls[0].humidity_before_prep else 'N/A' }}%</td>
-                    <td>2,5% ≤ %H ≤ 4,1%</td>
-                    <td class="text-center">
-                        {% if report_data.clay_controls[0].compliance_status != 'compliant' %}
-                            <span class="badge bg-danger">NC</span>
-                        {% else %}
-                            <span class="text-success">✓</span>
-                        {% endif %}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- HUMIDITE APRES TAMISAGE -->
-<div class="row mb-4">
-    <div class="col-12">
-        <table class="table table-bordered control-table">
-            <thead>
-                <tr class="table-secondary">
-                    <th class="fw-bold">HUMIDITE APRES TAMISAGE</th>
-                    <th>Contrôleur: {{ current_user.username }}</th>
-                    <th>Heure: {{ report_data.clay_controls[0].measurement_time_1.strftime('%H:%M') if report_data.clay_controls[0].measurement_time_1 else 'N/A' }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="table-light">
-                    <td class="fw-bold">% Humidité</td>
-                    <td class="fw-bold">Spécifications</td>
-                    <td class="fw-bold">N° F.N.C.</td>
-                </tr>
-                <tr>
-                    <td>{{ "%.2f"|format(report_data.clay_controls[0].humidity_after_sieving) if report_data.clay_controls[0].humidity_after_sieving else 'N/A' }}%</td>
-                    <td>2% ≤ H ≤ 3,5%</td>
-                    <td class="text-center">
-                        {% if report_data.clay_controls[0].compliance_status != 'compliant' %}
-                            <span class="badge bg-danger">NC</span>
-                        {% else %}
-                            <span class="text-success">✓</span>
-                        {% endif %}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- HUMIDITE SILOS -->
-<div class="row mb-4">
-    <div class="col-12">
-        <table class="table table-bordered control-table">
-            <thead>
-                <tr class="table-secondary">
-                    <th class="fw-bold">HUMIDITE SILOS</th>
-                    <th colspan="2">Contrôleur: {{ current_user.username }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="table-light">
-                    <td class="fw-bold">Heure</td>
-                    <td class="fw-bold">N° Silo</td>
-                    <td class="fw-bold">% humidité</td>
-                    <td class="fw-bold">Spécifications</td>
-                    <td class="fw-bold">N° F.N.C.</td>
-                </tr>
-                {% for control in report_data.clay_controls[:4] %}
-                <tr>
-                    <td>{{ control.measurement_time_1.strftime('%H:%M') if control.measurement_time_1 else 'N/A' }}</td>
-                    <td>Silo {{ loop.index }}</td>
-                    <td>{{ "%.1f"|format(control.humidity_after_prep) if control.humidity_after_prep else 'N/A' }}%</td>
-                    <td>5,3% ≤ H ≤ 6,3%</td>
-                    <td class="text-center">
-                        {% if control.compliance_status != 'compliant' %}
-                            <span class="badge bg-danger">NC</span>
-                        {% else %}
-                            <span class="text-success">✓</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-                <tr class="table-light">
-                    <td colspan="5" class="fw-bold text-center">Humidité Moyenne</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-{% endif %}
-
-<!-- HUMIDITE ARGILE PRESSE -->
-{% if report_data.press_controls %}
-<div class="row mb-4">
-    <div class="col-12">
-        <table class="table table-bordered control-table">
-            <thead>
-                <tr class="table-secondary">
-                    <th class="fw-bold">HUMIDITE ARGILE PRESSE</th>
-                    <th>Contrôleur: {{ current_user.username }}</th>
-                    <th>Heure: {{ report_data.press_controls[0].measurement_time.strftime('%H:%M') if report_data.press_controls[0].measurement_time else 'N/A' }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="table-light">
-                    <td class="fw-bold">N° Silo</td>
-                    <td class="fw-bold">% Humidité</td>
-                    <td class="fw-bold">Spécifications</td>
-                    <td class="fw-bold">N° F.N.C.</td>
-                </tr>
-                <tr>
-                    <td>{{ report_data.press_controls[0].format_type or 'N/A' }}</td>
-                    <td>{{ "%.1f"|format(report_data.press_controls[0].thickness) if report_data.press_controls[0].thickness else 'N/A' }}%</td>
-                    <td>5,2 ≤ % Humidité ≤ 6%</td>
-                    <td class="text-center">
-                        {% if report_data.press_controls[0].compliance_status != 'compliant' %}
-                            <span class="badge bg-danger">NC</span>
-                        {% else %}
-                            <span class="text-success">✓</span>
-                        {% endif %}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-{% endif %}
-
-<!-- HUMIDITE RESIDUELLE SECHOIR -->
-{% if report_data.dryer_controls %}
-<div class="row mb-4">
-    <div class="col-12">
-        <table class="table table-bordered control-table">
-            <thead>
-                <tr class="table-secondary">
-                    <th class="fw-bold">HUMIDITE RESIDUELLE SECHOIR</th>
-                    <th>Contrôleur: {{ current_user.username }}</th>
-                    <th>Heure: {{ report_data.dryer_controls[0].measurement_time.strftime('%H:%M') if report_data.dryer_controls[0].measurement_time else 'N/A' }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="table-light">
-                    <td class="fw-bold">% Humidité</td>
-                    <td class="fw-bold">Spécifications</td>
-                    <td class="fw-bold">N° F.N.C.</td>
-                </tr>
-                <tr>
-                    <td>{{ "%.2f"|format(report_data.dryer_controls[0].residual_humidity) if report_data.dryer_controls[0].residual_humidity else 'N/A' }}%</td>
-                    <td>0,1%≤ % HRM ≤1,5%</td>
-                    <td class="text-center">
-                        {% if report_data.dryer_controls[0].compliance_status != 'compliant' %}
-                            <span class="badge bg-danger">NC</span>
-                        {% else %}
-                            <span class="text-success">✓</span>
-                        {% endif %}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-{% endif %}
-
-<!-- SIGNATURE SECTION -->
-<div class="row mb-4">
-    <div class="col-12">
-        <table class="table table-borderless">
-            <tbody>
-                <tr>
-                    <td class="text-start"><strong>Visa Contrôleur</strong></td>
-                    <td class="text-end"><strong>Visa Service Laboratoire</strong></td>
-                </tr>
-                <tr>
-                    <td style="height: 60px; border-bottom: 1px solid #000; width: 50%;"></td>
-                    <td style="height: 60px; border-bottom: 1px solid #000; width: 50%;"></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<!-- DYNAMIC CONTENT AREA -->
+<div id="reportContent">
+    <!-- Content will be loaded based on selected report type -->
+    {% include 'reports/forms/humidity_form.html' %}
 </div>
 
 <!-- Non-Conformities Section -->
@@ -423,6 +247,64 @@ function exportReport() {
         window.open(`{{ url_for('reports.export_daily_json', date_str='DATE_PLACEHOLDER') }}`.replace('DATE_PLACEHOLDER', date), '_blank');
     } else {
         alert('Please select a date first.');
+    }
+}
+
+function changeReportType() {
+    const reportType = document.getElementById('reportType').value;
+    const reportTitle = document.getElementById('reportTitle');
+    const reportCode = document.getElementById('reportCode');
+    const reportContent = document.getElementById('reportContent');
+    
+    // Update title and code based on selection
+    const reportData = {
+        'humidity': { title: 'FICHE CONTROLE HUMIDITE', code: 'R2-F1-LABO' },
+        'clay': { title: 'FICHE DE CONTRÔLE ARGILE', code: 'R2-F2-LABO' },
+        'thickness': { title: 'FICHE CONTRÔLE D\'EPAISSEUR & POIDS DU CARREAU', code: 'R2-F3-LABO' },
+        'digital': { title: 'CONTROLE DES LIGNES & MACHINE DIGITAL', code: 'R2-F4-LABO' },
+        'thermal': { title: 'CONTRÔLE CHOC THERMIQUE VISUEL CARREAU BISCUIT', code: 'R2-F5-LABO' },
+        'dilatation': { title: 'CONTRÔLE PERTE AU FEU & DILATATION DU CARREAU BISCUIT', code: 'R2-F6-LABO' },
+        'resistance': { title: 'CONTRÔLE DE RESISTANCE', code: 'R2-F7-LABO' },
+        'absorption': { title: 'CONTRÔLE ABSORPTION D\'EAU PRODUIT FINI', code: 'R2-F8-LABO' },
+        'viscosity': { title: 'FICHE CONTRÔLE DE VISCOSITE & DENSITE', code: 'R2-F9-LABO' },
+        'grammage': { title: 'FICHE CONTRÔLE DU GRAMMAGE', code: 'R2-F10-LABO' },
+        'classification': { title: 'FICHE CONTRÔLE DE CLASSIFICATION PRODUITS FINIS', code: 'R2-F11-LABO' },
+        'discharge': { title: 'FICHE CONTRÔLE DE DECHARGE P.D.E.', code: 'R2-F14-LABO' },
+        'visual': { title: 'CONTRÔLE VISUEL CARREAU BISCUIT PRESSE & SECHOIR', code: 'R2-F16-LABO' },
+        'dimensional': { title: 'FICHE DE CONTROLE CARACTERISTIQUES DIMENSIONNELLES', code: 'R2-F20-LABO' },
+        'surface': { title: 'RESULTATS DES ESSAIS DIMENSIONNELLES ET QUALITE DE SURFACE', code: 'R2-F23-LABO' }
+    };
+    
+    if (reportData[reportType]) {
+        reportTitle.textContent = reportData[reportType].title;
+        reportCode.textContent = reportData[reportType].code;
+    }
+    
+    // Load appropriate content
+    loadReportContent(reportType);
+}
+
+function loadReportContent(reportType) {
+    // This would typically load different form templates
+    // For now, we'll show different placeholder content
+    const reportContent = document.getElementById('reportContent');
+    
+    if (reportType === 'humidity') {
+        // Show humidity form (already loaded)
+        location.reload();
+    } else {
+        // Show placeholder for other forms
+        reportContent.innerHTML = `
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <h5>Form Template: ${document.getElementById('reportTitle').textContent}</h5>
+                        <p>This form template is being developed. Please select "FICHE CONTROLE HUMIDITE" to see the implemented version.</p>
+                        <p><strong>Code:</strong> ${document.getElementById('reportCode').textContent}</p>
+                    </div>
+                </div>
+            </div>
+        `;
     }
 }
 

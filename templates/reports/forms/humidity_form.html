@@ -1,0 +1,198 @@
+<!-- HUMIDITE TREMIE GENERALE -->
+{% if report_data.clay_controls %}
+<div class="row mb-4">
+    <div class="col-12">
+        <table class="table table-bordered control-table">
+            <thead>
+                <tr class="table-secondary">
+                    <th class="fw-bold">HUMIDITE TREMIE GENERALE</th>
+                    <th>Contrôleur: {{ current_user.username }}</th>
+                    <th>Heure: {{ report_data.clay_controls[0].measurement_time_1.strftime('%H:%M') if report_data.clay_controls[0].measurement_time_1 else 'N/A' }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-light">
+                    <td class="fw-bold">% Humidité</td>
+                    <td class="fw-bold">Spécifications</td>
+                    <td class="fw-bold">N° F.N.C.</td>
+                </tr>
+                <tr>
+                    <td>{{ "%.2f"|format(report_data.clay_controls[0].humidity_before_prep) if report_data.clay_controls[0].humidity_before_prep else 'N/A' }}%</td>
+                    <td>2,5% ≤ %H ≤ 4,1%</td>
+                    <td class="text-center">
+                        {% if report_data.clay_controls[0].compliance_status != 'compliant' %}
+                            <span class="badge bg-danger">NC</span>
+                        {% else %}
+                            <span class="text-success">✓</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- HUMIDITE APRES TAMISAGE -->
+<div class="row mb-4">
+    <div class="col-12">
+        <table class="table table-bordered control-table">
+            <thead>
+                <tr class="table-secondary">
+                    <th class="fw-bold">HUMIDITE APRES TAMISAGE</th>
+                    <th>Contrôleur: {{ current_user.username }}</th>
+                    <th>Heure: {{ report_data.clay_controls[0].measurement_time_1.strftime('%H:%M') if report_data.clay_controls[0].measurement_time_1 else 'N/A' }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-light">
+                    <td class="fw-bold">% Humidité</td>
+                    <td class="fw-bold">Spécifications</td>
+                    <td class="fw-bold">N° F.N.C.</td>
+                </tr>
+                <tr>
+                    <td>{{ "%.2f"|format(report_data.clay_controls[0].humidity_after_sieving) if report_data.clay_controls[0].humidity_after_sieving else 'N/A' }}%</td>
+                    <td>2% ≤ H ≤ 3,5%</td>
+                    <td class="text-center">
+                        {% if report_data.clay_controls[0].compliance_status != 'compliant' %}
+                            <span class="badge bg-danger">NC</span>
+                        {% else %}
+                            <span class="text-success">✓</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- HUMIDITE SILOS -->
+<div class="row mb-4">
+    <div class="col-12">
+        <table class="table table-bordered control-table">
+            <thead>
+                <tr class="table-secondary">
+                    <th class="fw-bold">HUMIDITE SILOS</th>
+                    <th colspan="2">Contrôleur: {{ current_user.username }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-light">
+                    <td class="fw-bold">Heure</td>
+                    <td class="fw-bold">N° Silo</td>
+                    <td class="fw-bold">% humidité</td>
+                    <td class="fw-bold">Spécifications</td>
+                    <td class="fw-bold">N° F.N.C.</td>
+                </tr>
+                {% for control in report_data.clay_controls[:4] %}
+                <tr>
+                    <td>{{ control.measurement_time_1.strftime('%H:%M') if control.measurement_time_1 else 'N/A' }}</td>
+                    <td>Silo {{ loop.index }}</td>
+                    <td>{{ "%.1f"|format(control.humidity_after_prep) if control.humidity_after_prep else 'N/A' }}%</td>
+                    <td>5,3% ≤ H ≤ 6,3%</td>
+                    <td class="text-center">
+                        {% if control.compliance_status != 'compliant' %}
+                            <span class="badge bg-danger">NC</span>
+                        {% else %}
+                            <span class="text-success">✓</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr class="table-light">
+                    <td colspan="5" class="fw-bold text-center">Humidité Moyenne</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<!-- HUMIDITE ARGILE PRESSE -->
+{% if report_data.press_controls %}
+<div class="row mb-4">
+    <div class="col-12">
+        <table class="table table-bordered control-table">
+            <thead>
+                <tr class="table-secondary">
+                    <th class="fw-bold">HUMIDITE ARGILE PRESSE</th>
+                    <th>Contrôleur: {{ current_user.username }}</th>
+                    <th>Heure: {{ report_data.press_controls[0].measurement_time.strftime('%H:%M') if report_data.press_controls[0].measurement_time else 'N/A' }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-light">
+                    <td class="fw-bold">N° Silo</td>
+                    <td class="fw-bold">% Humidité</td>
+                    <td class="fw-bold">Spécifications</td>
+                    <td class="fw-bold">N° F.N.C.</td>
+                </tr>
+                <tr>
+                    <td>{{ report_data.press_controls[0].format_type or 'N/A' }}</td>
+                    <td>{{ "%.1f"|format(report_data.press_controls[0].thickness) if report_data.press_controls[0].thickness else 'N/A' }}%</td>
+                    <td>5,2 ≤ % Humidité ≤ 6%</td>
+                    <td class="text-center">
+                        {% if report_data.press_controls[0].compliance_status != 'compliant' %}
+                            <span class="badge bg-danger">NC</span>
+                        {% else %}
+                            <span class="text-success">✓</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<!-- HUMIDITE RESIDUELLE SECHOIR -->
+{% if report_data.dryer_controls %}
+<div class="row mb-4">
+    <div class="col-12">
+        <table class="table table-bordered control-table">
+            <thead>
+                <tr class="table-secondary">
+                    <th class="fw-bold">HUMIDITE RESIDUELLE SECHOIR</th>
+                    <th>Contrôleur: {{ current_user.username }}</th>
+                    <th>Heure: {{ report_data.dryer_controls[0].measurement_time.strftime('%H:%M') if report_data.dryer_controls[0].measurement_time else 'N/A' }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-light">
+                    <td class="fw-bold">% Humidité</td>
+                    <td class="fw-bold">Spécifications</td>
+                    <td class="fw-bold">N° F.N.C.</td>
+                </tr>
+                <tr>
+                    <td>{{ "%.2f"|format(report_data.dryer_controls[0].residual_humidity) if report_data.dryer_controls[0].residual_humidity else 'N/A' }}%</td>
+                    <td>0,1%≤ % HRM ≤1,5%</td>
+                    <td class="text-center">
+                        {% if report_data.dryer_controls[0].compliance_status != 'compliant' %}
+                            <span class="badge bg-danger">NC</span>
+                        {% else %}
+                            <span class="text-success">✓</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<!-- SIGNATURE SECTION -->
+<div class="row mb-4">
+    <div class="col-12">
+        <table class="table table-borderless">
+            <tbody>
+                <tr>
+                    <td class="text-start"><strong>Visa Contrôleur</strong></td>
+                    <td class="text-end"><strong>Visa Service Laboratoire</strong></td>
+                </tr>
+                <tr>
+                    <td style="height: 60px; border-bottom: 1px solid #000; width: 50%;"></td>
+                    <td style="height: 60px; border-bottom: 1px solid #000; width: 50%;"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
