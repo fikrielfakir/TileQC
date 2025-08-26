@@ -218,3 +218,20 @@ def edit_dryer_aspect(id):
         return redirect(url_for('dryer.dryer_aspect'))
     
     return render_template('dryer/dryer_aspect.html', form=form, edit=True, control=dryer_control)
+
+# Delete routes
+@dryer_bp.route('/humidity/delete/<int:id>', methods=['POST'])
+@login_required
+def delete_dryer_humidity(id):
+    dryer_control = DryerControl.query.get_or_404(id)
+    db.session.delete(dryer_control)
+    db.session.commit()
+    return '', 204
+
+@dryer_bp.route('/aspect/delete/<int:id>', methods=['POST'])
+@login_required
+def delete_dryer_aspect(id):
+    dryer_control = DryerControl.query.get_or_404(id)
+    db.session.delete(dryer_control)
+    db.session.commit()
+    return '', 204

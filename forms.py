@@ -197,15 +197,15 @@ class DryerAspectForm(FlaskForm):
     measurement_number = IntegerField('Numéro de Mesure', validators=[DataRequired(), NumberRange(min=1, max=6)])
     
     defect_grains = FloatField('Grains (%)', validators=[Optional(), NumberRange(min=0, max=15)], default=0,
-                              render_kw={"placeholder": "≤ 15%"})
+                              render_kw={"placeholder": "<= 15%"})
     defect_cracks = FloatField('Fissures (%)', validators=[Optional(), NumberRange(min=0, max=1)], default=0,
-                              render_kw={"placeholder": "≤ 1%"})
+                              render_kw={"placeholder": "<= 1%"})
     defect_cleaning = FloatField('Nettoyage (%)', validators=[Optional(), NumberRange(min=0, max=1)], default=0,
-                                render_kw={"placeholder": "≤ 1%"})
+                                render_kw={"placeholder": "<= 1%"})
     defect_foliage = FloatField('Feuillage (%)', validators=[Optional(), NumberRange(min=0, max=1)], default=0,
-                               render_kw={"placeholder": "≤ 1%"})
+                               render_kw={"placeholder": "<= 1%"})
     defect_chipping = FloatField('Écornage (%)', validators=[Optional(), NumberRange(min=0, max=1)], default=0,
-                                render_kw={"placeholder": "≤ 1%"})
+                                render_kw={"placeholder": "<= 1%"})
     
     notes = TextAreaField('Notes')
 
