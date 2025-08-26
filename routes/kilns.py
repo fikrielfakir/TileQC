@@ -72,6 +72,14 @@ def add_email_control():
             color_nuance=form.color_nuance.data,
             cooking_defects=form.cooking_defects.data,
             flatness_defects=form.flatness_defects.data,
+            central_curvature=form.central_curvature.data,
+            veil=form.veil.data,
+            angularity=form.angularity.data,
+            edge_straightness=form.edge_straightness.data,
+            lateral_curvature=form.lateral_curvature.data,
+            surface_quality_area=form.surface_quality_area.data,
+            surface_quality_tiles=form.surface_quality_tiles.data,
+            defect_free_percentage=form.defect_free_percentage.data,
             notes=form.notes.data,
             controller_id=current_user.id
         )
@@ -131,6 +139,14 @@ def edit_email_control(id):
         email_control.color_nuance = form.color_nuance.data
         email_control.cooking_defects = form.cooking_defects.data
         email_control.flatness_defects = form.flatness_defects.data
+        email_control.central_curvature = form.central_curvature.data
+        email_control.veil = form.veil.data
+        email_control.angularity = form.angularity.data
+        email_control.edge_straightness = form.edge_straightness.data
+        email_control.lateral_curvature = form.lateral_curvature.data
+        email_control.surface_quality_area = form.surface_quality_area.data
+        email_control.surface_quality_tiles = form.surface_quality_tiles.data
+        email_control.defect_free_percentage = form.defect_free_percentage.data
         email_control.notes = form.notes.data
         
         db.session.commit()

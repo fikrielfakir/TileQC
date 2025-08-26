@@ -214,15 +214,26 @@ class BiscuitKilnForm(FlaskForm):
     shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
     measurement_number = IntegerField('Numéro de Mesure (1-6)', validators=[DataRequired(), NumberRange(min=1, max=6)])
     
-    defect_cracks = FloatField('Fissures (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
-    defect_chipping = FloatField('Ébrochage (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
-    defect_cooking = FloatField('Cuisson (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
-    defect_foliage = FloatField('Feuillage (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
-    defect_flatness = FloatField('Planéité (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
+    # Defects with exact specification limits
+    defect_cracks = FloatField('Fissures (%)', validators=[Optional(), NumberRange(min=0, max=5)], default=0,
+                              render_kw={"placeholder": "≤ 5%"})
+    defect_chipping = FloatField('Écorne (%)', validators=[Optional(), NumberRange(min=0, max=5)], default=0,
+                                render_kw={"placeholder": "≤ 5%"})
+    defect_cooking = FloatField('Cuisson (%)', validators=[Optional(), NumberRange(min=0, max=1)], default=0,
+                               render_kw={"placeholder": "≤ 1%"})
+    defect_foliage = FloatField('Feuilleté (%)', validators=[Optional(), NumberRange(min=0, max=1)], default=0,
+                               render_kw={"placeholder": "≤ 1%"})
+    defect_flatness = FloatField('Planéité (%)', validators=[Optional(), NumberRange(min=0, max=5)], default=0,
+                                render_kw={"placeholder": "≤ 5%"})
     
+    # Thermal shock test (6x daily)
     thermal_shock = SelectField('Choc Thermique', choices=[('pass', 'Réussi'), ('fail', 'Échec')])
-    shrinkage_expansion = FloatField('Retrait/Dilatation (%)', validators=[Optional(), NumberRange(min=-5, max=5)])
-    fire_loss = FloatField('Perte au Feu (%)', validators=[Optional(), NumberRange(min=0, max=100)])
+    
+    # Weekly tests
+    shrinkage_expansion = FloatField('% Retrait ou dilatation', validators=[Optional(), NumberRange(min=-0.2, max=0.4)],
+                                    render_kw={"placeholder": "-0.2% à +0.4%"})
+    fire_loss = FloatField('% Perte au feu', validators=[Optional(), NumberRange(min=10, max=19)],
+                          render_kw={"placeholder": "10% - 19%"})
     
     notes = TextAreaField('Notes')
 
@@ -230,21 +241,44 @@ class EmailKilnForm(FlaskForm):
     date = DateField('Date', default=date.today, validators=[DataRequired()])
     shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
     
-    thermal_shock = FloatField('Choc Thermique (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
+    # Thermal shock (6x daily)
+    thermal_shock = FloatField('Choc Thermique (%)', validators=[Optional(), NumberRange(min=0, max=5)], default=0,
+                              render_kw={"placeholder": "≤ 5%"})
     
+    # Mechanical properties (daily)
+    thickness_for_resistance = FloatField('Épaisseur (mm)', validators=[Optional(), NumberRange(min=0)])
     rupture_resistance = FloatField('Résistance à la Rupture (N)', validators=[Optional(), NumberRange(min=0)])
     rupture_module = FloatField('Module de Rupture (N/mm²)', validators=[Optional(), NumberRange(min=0)])
-    thickness_for_resistance = FloatField('Épaisseur pour Résistance (mm)', validators=[Optional(), NumberRange(min=0)])
     
-    length_deviation = FloatField('Déviation Longueur (%)', validators=[Optional(), NumberRange(min=-100, max=100)])
-    width_deviation = FloatField('Déviation Largeur (%)', validators=[Optional(), NumberRange(min=-100, max=100)])
-    thickness_deviation = FloatField('Déviation Épaisseur (%)', validators=[Optional(), NumberRange(min=-100, max=100)])
+    # Dimensional characteristics (daily)
+    length_deviation = FloatField('Longueur - Écart max % (±0.5)', validators=[Optional(), NumberRange(min=-0.5, max=0.5)])
+    width_deviation = FloatField('Largeur - Écart max % (±0.5)', validators=[Optional(), NumberRange(min=-0.5, max=0.5)])
+    thickness_deviation = FloatField('Épaisseur - Écart % (±10)', validators=[Optional(), NumberRange(min=-10, max=10)])
     
-    water_absorption = FloatField('Absorption d\'Eau (%)', validators=[Optional(), NumberRange(min=0, max=100)])
+    # Water absorption (daily)
+    water_absorption = FloatField('Absorption d\'eau (%)', validators=[Optional(), NumberRange(min=9)],
+                                 render_kw={"placeholder": "E > 10%, min individuel 9%"})
     
-    color_nuance = FloatField('Nuance de Couleur (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
-    cooking_defects = FloatField('Défauts de Cuisson (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
-    flatness_defects = FloatField('Défauts de Planéité (%)', validators=[Optional(), NumberRange(min=0, max=100)], default=0)
+    # Visual quality (6x daily)
+    color_nuance = FloatField('Nuance des couleurs (Tonalité) (%)', validators=[Optional(), NumberRange(min=0, max=1)], default=0,
+                             render_kw={"placeholder": "≤ 1%"})
+    cooking_defects = FloatField('Cuisson (%)', validators=[Optional(), NumberRange(min=0, max=1)], default=0,
+                               render_kw={"placeholder": "≤ 1%"})
+    flatness_defects = FloatField('Planéité (%)', validators=[Optional(), NumberRange(min=0, max=5)], default=0,
+                                 render_kw={"placeholder": "≤ 5%"})
+    
+    # Dimensional test results (daily)
+    central_curvature = FloatField('Courbure centrale (±0.5% / ±2mm)', validators=[Optional(), NumberRange(min=-2, max=2)])
+    veil = FloatField('Voile (±0.5% / ±2mm)', validators=[Optional(), NumberRange(min=-2, max=2)])
+    angularity = FloatField('Angularité (±0.5% / ±2mm)', validators=[Optional(), NumberRange(min=-2, max=2)])
+    edge_straightness = FloatField('Rectitude des arrêtes (±0.3% / ±1.5mm)', validators=[Optional(), NumberRange(min=-1.5, max=1.5)])
+    lateral_curvature = FloatField('Courbure latérale (±0.5% / ±2mm)', validators=[Optional(), NumberRange(min=-2, max=2)])
+    
+    # Surface quality (minimum 1m² and 30 tiles)
+    surface_quality_area = FloatField('Surface testée (m²)', validators=[Optional(), NumberRange(min=1)])
+    surface_quality_tiles = IntegerField('Carreaux testés', validators=[Optional(), NumberRange(min=30)])
+    defect_free_percentage = FloatField('% Carreaux exempts de défauts', validators=[Optional(), NumberRange(min=95, max=100)],
+                                       render_kw={"placeholder": "≥ 95%"})
     
     notes = TextAreaField('Notes')
 

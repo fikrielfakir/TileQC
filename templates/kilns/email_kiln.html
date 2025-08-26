@@ -202,6 +202,88 @@
                             <div class="invalid-feedback"></div>
                         </div>
                     </div>
+
+                    <h6 class="text-muted border-bottom pb-2 mb-3">Tests Dimensionnels et Qualité de Surface (Daily)</h6>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.central_curvature.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.central_curvature(class="form-control", **{"data-min": "-2", "data-max": "2"}) }}
+                                <span class="input-group-text">mm</span>
+                            </div>
+                            <small class="text-muted">±0.5% / ±2mm</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.veil.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.veil(class="form-control", **{"data-min": "-2", "data-max": "2"}) }}
+                                <span class="input-group-text">mm</span>
+                            </div>
+                            <small class="text-muted">±0.5% / ±2mm</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.angularity.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.angularity(class="form-control", **{"data-min": "-2", "data-max": "2"}) }}
+                                <span class="input-group-text">mm</span>
+                            </div>
+                            <small class="text-muted">±0.5% / ±2mm</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.edge_straightness.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.edge_straightness(class="form-control", **{"data-min": "-1.5", "data-max": "1.5"}) }}
+                                <span class="input-group-text">mm</span>
+                            </div>
+                            <small class="text-muted">±0.3% / ±1.5mm</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.lateral_curvature.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.lateral_curvature(class="form-control", **{"data-min": "-2", "data-max": "2"}) }}
+                                <span class="input-group-text">mm</span>
+                            </div>
+                            <small class="text-muted">±0.5% / ±2mm</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+
+                    <h6 class="text-muted border-bottom pb-2 mb-3">Qualité de Surface (95% exempts de défauts)</h6>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            {{ form.surface_quality_area.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.surface_quality_area(class="form-control", **{"data-min": "1"}) }}
+                                <span class="input-group-text">m²</span>
+                            </div>
+                            <small class="text-muted">Minimum 1m²</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {{ form.surface_quality_tiles.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.surface_quality_tiles(class="form-control", **{"data-min": "30"}) }}
+                                <span class="input-group-text">pcs</span>
+                            </div>
+                            <small class="text-muted">Minimum 30 carreaux</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {{ form.defect_free_percentage.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.defect_free_percentage(class="form-control", **{"data-min": "95", "data-max": "100"}) }}
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <small class="text-muted">≥95% exempts de défauts</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
                     
                     <div class="mb-3">
                         {{ form.notes.label(class="form-label") }}

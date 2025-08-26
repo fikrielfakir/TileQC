@@ -146,6 +146,18 @@ class EmailKilnControl(db.Model):
     cooking_defects = db.Column(db.Float, default=0)  # ≤1%
     flatness_defects = db.Column(db.Float, default=0)  # ≤5%
     
+    # Dimensional test results (daily)
+    central_curvature = db.Column(db.Float)  # mm (±0.5% / ±2mm)
+    veil = db.Column(db.Float)  # mm (±0.5% / ±2mm)
+    angularity = db.Column(db.Float)  # mm (±0.5% / ±2mm)
+    edge_straightness = db.Column(db.Float)  # mm (±0.3% / ±1.5mm)
+    lateral_curvature = db.Column(db.Float)  # mm (±0.5% / ±2mm)
+    
+    # Surface quality testing
+    surface_quality_area = db.Column(db.Float)  # m² (min 1m²)
+    surface_quality_tiles = db.Column(db.Integer)  # number (min 30 tiles)
+    defect_free_percentage = db.Column(db.Float)  # % (≥95%)
+    
     # Metadata
     controller_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     compliance_status = db.Column(db.String(20))
