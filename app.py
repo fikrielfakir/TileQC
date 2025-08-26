@@ -28,10 +28,14 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_pre_ping": True,
 }
 
-# Ensure SQLite uses UTF-8 encoding
+# Ensure proper encoding for both SQLite and PostgreSQL
 if database_url.startswith('sqlite:'):
     app.config["SQLALCHEMY_ENGINE_OPTIONS"]["connect_args"] = {
         "check_same_thread": False
+    }
+elif database_url.startswith('postgresql'):
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"]["connect_args"] = {
+        "client_encoding": "utf8"
     }
 
 # Initialize extensions

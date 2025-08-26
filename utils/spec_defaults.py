@@ -125,18 +125,17 @@ def initialize_default_specifications(control_type=None):
             ).first()
             
             if not existing:
-                spec = Specification(
-                    control_type=ct,
-                    parameter_name=spec_data['parameter_name'],
-                    format_type=spec_data.get('format_type'),
-                    enamel_type=spec_data.get('enamel_type'),
-                    min_value=spec_data.get('min_value'),
-                    max_value=spec_data.get('max_value'),
-                    target_value=spec_data.get('target_value'),
-                    unit=spec_data['unit'],
-                    description=spec_data['description'],
-                    is_active=True
-                )
+                spec = Specification()
+                spec.control_type = ct
+                spec.parameter_name = spec_data['parameter_name']
+                spec.format_type = spec_data.get('format_type')
+                spec.enamel_type = spec_data.get('enamel_type')
+                spec.min_value = spec_data.get('min_value')
+                spec.max_value = spec_data.get('max_value')
+                spec.target_value = spec_data.get('target_value')
+                spec.unit = spec_data['unit']
+                spec.description = spec_data['description']
+                spec.is_active = True
                 db.session.add(spec)
                 created_count += 1
     
