@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+
+{% block title %}Humidité Résiduelle - Contrôle Séchoir{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-droplet text-primary"></i> Humidité Résiduelle
+            </h1>
+            <a href="{{ url_for('dryer.dryer_controls') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Retour Séchoir
+            </a>
+        </div>
+        <p class="text-muted">Contrôle de l'humidité résiduelle après séchage (Balance - Méthode R2-MA-LABO-02)</p>
+    </div>
+</div>
+
+<!-- Specifications -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="bi bi-info-circle text-info"></i> Spécifications Humidité Résiduelle</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Caractéristique:</strong>
+                        <ul class="list-unstyled mt-2">
+                            <li><span class="badge bg-primary">Humidité Résiduelle</span></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Moyen:</strong>
+                        <ul class="list-unstyled mt-2">
+                            <li><span class="badge bg-success">Balance</span></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Spécifications:</strong>
+                        <ul class="list-unstyled mt-2">
+                            <li><span class="badge bg-warning">0.1% ≤ HR ≤ 1.5%</span></li>
+                            <li><span class="badge bg-info">Méthode: R2-MA-LABO-02</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if form %}
+<!-- Add/Edit Form -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-plus-lg"></i> Contrôle Humidité Résiduelle
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" id="humidityControlForm">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            {{ form.date.label(class="form-label") }}
+                            {{ form.date(class="form-control") }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {{ form.shift.label(class="form-label") }}
+                            {{ form.shift(class="form-control") }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {{ form.measurement_number.label(class="form-label") }}
+                            {{ form.measurement_number(class="form-control") }}
+                            <small class="text-muted">Numéro de mesure journalière</small>
+                        </div>
+                    </div>
+                    
+                    <h6 class="text-muted border-bottom pb-2 mb-3">Mesure Humidité</h6>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.residual_humidity.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.residual_humidity(class="form-control", **{"data-min": "0.1", "data-max": "1.5", "step": "0.01"}) }}
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <small class="text-muted">Spécification: 0.1% ≤ HR ≤ 1.5%</small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.notes.label(class="form-label") }}
+                        {{ form.notes(class="form-control", rows="3") }}
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg"></i> Enregistrer Mesure
+                        </button>
+                        <a href="{{ url_for('dryer.dryer_controls') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Retour
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="bi bi-lightbulb text-warning"></i> Directives Humidité</h6>
+            </div>
+            <div class="card-body">
+                <h6>Protocole de Mesure:</h6>
+                <ul class="list-unstyled">
+                    <li><i class="bi bi-thermometer text-danger"></i> Utiliser balance de précision</li>
+                    <li><i class="bi bi-clock text-info"></i> Suivre méthode R2-MA-LABO-02</li>
+                    <li><i class="bi bi-exclamation-triangle text-warning"></i> Mesure critique pour cuisson</li>
+                </ul>
+                
+                <div class="alert alert-warning mt-3">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>Critique:</strong> L'humidité résiduelle doit être entre 0.1-1.5% pour une cuisson correcte.
+                </div>
+                
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i>
+                    Respecter strictement la méthode d'analyse R2-MA-LABO-02.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<!-- List View -->
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Mesures Humidité Résiduelle</h5>
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('dryer.add_dryer_humidity') }}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-plus-lg"></i> Nouvelle Mesure
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if controls.items %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Mesure #</th>
+                                <th>Humidité Résiduelle</th>
+                                <th>Status</th>
+                                <th>Contrôleur</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for control in controls.items %}
+                            <tr>
+                                <td>{{ control.date.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    <span class="badge bg-info">#{{ control.measurement_number }}</span>
+                                    {% if control.shift %}
+                                        <span class="badge bg-secondary">{{ control.shift|title }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <strong>{{ ("%.2f"|format(control.residual_humidity)) if control.residual_humidity is not none else 'N/A' }}%</strong>
+                                    {% if control.residual_humidity and (control.residual_humidity < 0.1 or control.residual_humidity > 1.5) %}
+                                        <i class="bi bi-exclamation-triangle text-warning ms-1"></i>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if control.compliance_status == 'compliant' %}
+                                        <span class="badge bg-success">Conforme</span>
+                                    {% elif control.compliance_status == 'non_compliant' %}
+                                        <span class="badge bg-danger">Non-Conforme</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Partiel</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ control.controller.full_name if control.controller else 'Inconnu' }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ url_for('dryer.edit_dryer_humidity', id=control.id) }}" 
+                                           class="btn btn-outline-primary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        {% if current_user.role in ['admin', 'quality_manager'] %}
+                                        <button type="button" class="btn btn-outline-danger" 
+                                                onclick="confirmDelete({{ control.id }});">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-droplet text-muted display-4"></i>
+                    <h5 class="text-muted mt-3">Aucune mesure d'humidité trouvée</h5>
+                    <p class="text-muted">Commencez by adding your first humidity measurement.</p>
+                    <a href="{{ url_for('dryer.add_dryer_humidity') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-lg"></i> Première Mesure
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    initializeValidation('humidityControlForm');
+});
+
+function confirmDelete(id) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette mesure d\'humidité?')) {
+        fetch(`/dryer/humidity/delete/${id}`, {method: 'POST'})
+            .then(() => location.reload());
+    }
+}
+</script>
+{% endblock %}

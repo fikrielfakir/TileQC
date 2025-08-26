@@ -181,6 +181,34 @@ class DryerControlForm(FlaskForm):
     
     notes = TextAreaField('Notes')
 
+class DryerHumidityForm(FlaskForm):
+    date = DateField('Date', default=date.today, validators=[DataRequired()])
+    shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
+    measurement_number = IntegerField('Numéro de Mesure', validators=[DataRequired(), NumberRange(min=1, max=10)])
+    
+    residual_humidity = FloatField('Humidité Résiduelle (%)', validators=[DataRequired(), NumberRange(min=0.1, max=1.5)], 
+                                 render_kw={"placeholder": "0.1 - 1.5"})
+    
+    notes = TextAreaField('Notes')
+
+class DryerAspectForm(FlaskForm):
+    date = DateField('Date', default=date.today, validators=[DataRequired()])
+    shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
+    measurement_number = IntegerField('Numéro de Mesure', validators=[DataRequired(), NumberRange(min=1, max=6)])
+    
+    defect_grains = FloatField('Grains (%)', validators=[Optional(), NumberRange(min=0, max=15)], default=0,
+                              render_kw={"placeholder": "≤ 15%"})
+    defect_cracks = FloatField('Fissures (%)', validators=[Optional(), NumberRange(min=0, max=1)], default=0,
+                              render_kw={"placeholder": "≤ 1%"})
+    defect_cleaning = FloatField('Nettoyage (%)', validators=[Optional(), NumberRange(min=0, max=1)], default=0,
+                                render_kw={"placeholder": "≤ 1%"})
+    defect_foliage = FloatField('Feuillage (%)', validators=[Optional(), NumberRange(min=0, max=1)], default=0,
+                               render_kw={"placeholder": "≤ 1%"})
+    defect_chipping = FloatField('Écornage (%)', validators=[Optional(), NumberRange(min=0, max=1)], default=0,
+                                render_kw={"placeholder": "≤ 1%"})
+    
+    notes = TextAreaField('Notes')
+
 class BiscuitKilnForm(FlaskForm):
     date = DateField('Date', default=date.today, validators=[DataRequired()])
     shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])

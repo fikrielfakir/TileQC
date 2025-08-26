@@ -1,43 +1,45 @@
 {% extends "base.html" %}
 
-{% block title %}Contrôle Séchoir - Ceramic QC{% endblock %}
+{% block title %}Aspect - Contrôle Séchoir{% endblock %}
 
 {% block content %}
 <div class="row mb-4">
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center">
             <h1 class="h3 mb-0">
-                <i class="bi bi-thermometer-sun text-orange"></i> Dryer Control (Séchoir)
+                <i class="bi bi-eye text-info"></i> Aspect - Contrôle Visuel
             </h1>
-            {% if not form %}
-            <a href="{{ url_for('dryer.add_dryer_control') }}" class="btn btn-primary">
-                <i class="bi bi-plus-lg"></i> Ajouter Contrôle Séchoir
+            <a href="{{ url_for('dryer.dryer_controls') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Retour Séchoir
             </a>
-            {% endif %}
         </div>
-        <p class="text-muted">Surveillance paramètres étape séchage et qualité surface (Quotidien + 6x/jour visuel)</p>
+        <p class="text-muted">Inspection visuelle des défauts de surface du carreau après séchage</p>
     </div>
 </div>
 
-<!-- Format Specifications -->
+<!-- Specifications -->
 <div class="row mb-4">
     <div class="col-12">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-light">
-                <h6 class="mb-0"><i class="bi bi-info-circle text-info"></i> Spécifications Séchoir</h6>
+                <h6 class="mb-0"><i class="bi bi-info-circle text-info"></i> Spécifications Aspect</h6>
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-6">
-                        <strong>Humidité Résiduelle:</strong>
+                    <div class="col-md-4">
+                        <strong>Caractéristique:</strong>
                         <ul class="list-unstyled mt-2">
-                            <li><span class="badge bg-primary">Plage:</span> 0.1% ≤ HR ≤ 1.5%</li>
-                            <li><span class="badge bg-success">Moyen:</span> Balance</li>
-                            <li><span class="badge bg-info">Méthode:</span> R2-MA-LABO-02</li>
+                            <li><span class="badge bg-primary">Aspect</span></li>
                         </ul>
                     </div>
-                    <div class="col-md-6">
-                        <strong>Défauts Surface:</strong>
+                    <div class="col-md-4">
+                        <strong>Moyen:</strong>
+                        <ul class="list-unstyled mt-2">
+                            <li><span class="badge bg-success">Visuel</span></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Spécifications Surface:</strong>
                         <ul class="list-unstyled mt-2">
                             <li><span class="badge bg-secondary">Grains ≤ 15%</span></li>
                             <li><span class="badge bg-secondary">Fissures ≤ 1%</span></li>
@@ -52,45 +54,6 @@
     </div>
 </div>
 
-<!-- Individual Dryer Control Navigation -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-light">
-                <h6 class="mb-0"><i class="bi bi-list text-primary"></i> Contrôles Individuels</h6>
-            </div>
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-lg-6 col-md-6">
-                        <div class="card h-100 border-primary">
-                            <div class="card-body text-center p-3">
-                                <i class="bi bi-droplet text-primary fs-1 mb-2"></i>
-                                <h6 class="card-title">Humidité Résiduelle</h6>
-                                <p class="card-text small text-muted">Balance<br>0.1% ≤ HR ≤ 1.5%<br>Méthode R2-MA-LABO-02</p>
-                                <a href="{{ url_for('dryer.dryer_humidity') }}" class="btn btn-outline-primary btn-sm">
-                                    <i class="bi bi-plus-lg"></i> Contrôler
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="card h-100 border-info">
-                            <div class="card-body text-center p-3">
-                                <i class="bi bi-eye text-info fs-1 mb-2"></i>
-                                <h6 class="card-title">Aspect</h6>
-                                <p class="card-text small text-muted">Visuel<br>Grains ≤15%, autres défauts ≤1%</p>
-                                <a href="{{ url_for('dryer.dryer_aspect') }}" class="btn btn-outline-info btn-sm">
-                                    <i class="bi bi-plus-lg"></i> Contrôler
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 {% if form %}
 <!-- Add/Edit Form -->
 <div class="row">
@@ -98,15 +61,11 @@
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white">
                 <h5 class="mb-0">
-                    {% if edit %}
-                        <i class="bi bi-pencil"></i> Modifier Enregistrement Contrôle Séchoir
-                    {% else %}
-                        <i class="bi bi-plus-lg"></i> Ajouter Nouvel Enregistrement Contrôle Séchoir
-                    {% endif %}
+                    <i class="bi bi-plus-lg"></i> Contrôle Aspect
                 </h5>
             </div>
             <div class="card-body">
-                <form method="POST" id="dryerControlForm">
+                <form method="POST" id="aspectControlForm">
                     {{ form.hidden_tag() }}
                     
                     <div class="row">
@@ -121,31 +80,17 @@
                         <div class="col-md-4 mb-3">
                             {{ form.measurement_number.label(class="form-label") }}
                             {{ form.measurement_number(class="form-control") }}
-                            <small class="text-muted">Daily measurement sequence (1-6)</small>
+                            <small class="text-muted">Numéro de mesure journalière</small>
                         </div>
                     </div>
                     
-                    <h6 class="text-muted border-bottom pb-2 mb-3">Humidity Measurement</h6>
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            {{ form.residual_humidity.label(class="form-label") }}
-                            <div class="input-group">
-                                {{ form.residual_humidity(class="form-control", **{"data-min": "0.1", "data-max": "1.5"}) }}
-                                <span class="input-group-text">%</span>
-                            </div>
-                            <small class="text-muted">Specification: 0.1% - 1.5%</small>
-                            <div class="invalid-feedback"></div>
-                        </div>
-                    </div>
-                    
-                    <h6 class="text-muted border-bottom pb-2 mb-3">Surface Defects (Visual Inspection %)</h6>
+                    <h6 class="text-muted border-bottom pb-2 mb-3">Défauts Surface (%)</h6>
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             {{ form.defect_grains.label(class="form-label") }}
                             <div class="input-group">
-                                {{ form.defect_grains(class="form-control", **{"data-max": "15"}) }}
+                                {{ form.defect_grains(class="form-control", **{"data-max": "15", "step": "0.1"}) }}
                                 <span class="input-group-text">%</span>
                             </div>
                             <small class="text-muted">Limite: ≤ 15%</small>
@@ -154,7 +99,7 @@
                         <div class="col-md-6 mb-3">
                             {{ form.defect_cracks.label(class="form-label") }}
                             <div class="input-group">
-                                {{ form.defect_cracks(class="form-control", **{"data-max": "1"}) }}
+                                {{ form.defect_cracks(class="form-control", **{"data-max": "1", "step": "0.1"}) }}
                                 <span class="input-group-text">%</span>
                             </div>
                             <small class="text-muted">Limite: ≤ 1%</small>
@@ -163,7 +108,7 @@
                         <div class="col-md-6 mb-3">
                             {{ form.defect_cleaning.label(class="form-label") }}
                             <div class="input-group">
-                                {{ form.defect_cleaning(class="form-control", **{"data-max": "1"}) }}
+                                {{ form.defect_cleaning(class="form-control", **{"data-max": "1", "step": "0.1"}) }}
                                 <span class="input-group-text">%</span>
                             </div>
                             <small class="text-muted">Limite: ≤ 1%</small>
@@ -172,7 +117,7 @@
                         <div class="col-md-6 mb-3">
                             {{ form.defect_foliage.label(class="form-label") }}
                             <div class="input-group">
-                                {{ form.defect_foliage(class="form-control", **{"data-max": "1"}) }}
+                                {{ form.defect_foliage(class="form-control", **{"data-max": "1", "step": "0.1"}) }}
                                 <span class="input-group-text">%</span>
                             </div>
                             <small class="text-muted">Limite: ≤ 1%</small>
@@ -181,7 +126,7 @@
                         <div class="col-md-6 mb-3">
                             {{ form.defect_chipping.label(class="form-label") }}
                             <div class="input-group">
-                                {{ form.defect_chipping(class="form-control", **{"data-max": "1"}) }}
+                                {{ form.defect_chipping(class="form-control", **{"data-max": "1", "step": "0.1"}) }}
                                 <span class="input-group-text">%</span>
                             </div>
                             <small class="text-muted">Limite: ≤ 1%</small>
@@ -196,10 +141,10 @@
                     
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-lg"></i> {% if edit %}Modifier{% else %}Enregistrer{% endif %} Contrôle
+                            <i class="bi bi-check-lg"></i> Enregistrer Inspection
                         </button>
                         <a href="{{ url_for('dryer.dryer_controls') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left"></i> Retour à la Liste
+                            <i class="bi bi-arrow-left"></i> Retour
                         </a>
                     </div>
                 </form>
@@ -210,44 +155,40 @@
     <div class="col-lg-4">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-light">
-                <h6 class="mb-0"><i class="bi bi-lightbulb text-warning"></i> Directives Séchoir</h6>
+                <h6 class="mb-0"><i class="bi bi-lightbulb text-warning"></i> Directives Aspect</h6>
             </div>
             <div class="card-body">
-                <h6>Protocole de Mesure:</h6>
+                <h6>Protocole d'Inspection:</h6>
                 <ul class="list-unstyled">
-                    <li><i class="bi bi-thermometer text-danger"></i> Humidité résiduelle (quotidien)</li>
-                    <li><i class="bi bi-eye text-info"></i> Défauts surface (6x/jour)</li>
-                    <li><i class="bi bi-clock text-info"></i> Inspection visuelle à intervalles réguliers</li>
+                    <li><i class="bi bi-eye text-info"></i> Inspection visuelle systématique</li>
+                    <li><i class="bi bi-percent text-info"></i> Mesurer en % de surface affectée</li>
+                    <li><i class="bi bi-clock text-info"></i> 6 inspections par jour</li>
                 </ul>
                 
                 <div class="alert alert-warning mt-3">
                     <i class="bi bi-exclamation-triangle"></i>
-                    <strong>Critique:</strong> L'humidité résiduelle doit être entre 0.1-1.5% pour une cuisson correcte.
+                    <strong>Important:</strong> Les défauts de surface doivent être mesurés en pourcentage de la zone inspectée.
                 </div>
                 
                 <div class="alert alert-info">
                     <i class="bi bi-info-circle"></i>
-                    Les défauts de surface suivent les mêmes critères que l'étape presse.
+                    Grains: ≤15% | Autres défauts: ≤1% chacun.
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 {% else %}
 <!-- List View -->
 <div class="row">
     <div class="col-12">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Enregistrements Contrôle Séchoir</h5>
+                <h5 class="mb-0">Inspections Aspect</h5>
                 <div class="d-flex gap-2">
-                    <select class="form-select form-select-sm" style="width: auto;">
-                        <option>Tous Enregistrements</option>
-                        <option>Aujourd'hui</option>
-                        <option>Cette Semaine</option>
-                        <option>Ce Mois</option>
-                    </select>
+                    <a href="{{ url_for('dryer.add_dryer_aspect') }}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-plus-lg"></i> Nouvelle Inspection
+                    </a>
                 </div>
             </div>
             <div class="card-body">
@@ -258,9 +199,8 @@
                             <tr>
                                 <th>Date</th>
                                 <th>Mesure #</th>
-                                <th>Humidité Résiduelle</th>
                                 <th>Défauts Surface</th>
-                                <th>Statut</th>
+                                <th>Status</th>
                                 <th>Contrôleur</th>
                                 <th>Actions</th>
                             </tr>
@@ -276,18 +216,12 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <strong>{{ "%.2f"|format(control.residual_humidity) }}%</strong>
-                                    {% if control.residual_humidity < 0.1 or control.residual_humidity > 1.5 %}
-                                        <i class="bi bi-exclamation-triangle text-warning"></i>
-                                    {% endif %}
-                                </td>
-                                <td>
                                     <small>
                                         G:{{ control.defect_grains or 0 }}% 
                                         C:{{ control.defect_cracks or 0 }}% 
                                         Cl:{{ control.defect_cleaning or 0 }}% 
                                         F:{{ control.defect_foliage or 0 }}% 
-                                        Ch:{{ control.defect_chipping or 0 }}%
+                                        Éc:{{ control.defect_chipping or 0 }}%
                                     </small>
                                 </td>
                                 <td>
@@ -302,13 +236,13 @@
                                 <td>{{ control.controller.full_name if control.controller else 'Inconnu' }}</td>
                                 <td>
                                     <div class="btn-group btn-group-sm">
-                                        <a href="{{ url_for('dryer.edit_dryer_control', id=control.id) }}" 
+                                        <a href="{{ url_for('dryer.edit_dryer_aspect', id=control.id) }}" 
                                            class="btn btn-outline-primary">
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                         {% if current_user.role in ['admin', 'quality_manager'] %}
                                         <button type="button" class="btn btn-outline-danger" 
-                                                onclick="confirmDelete({{ control.id }})">
+                                                onclick="confirmDelete({{ control.id }});">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                         {% endif %}
@@ -319,51 +253,13 @@
                         </tbody>
                     </table>
                 </div>
-                
-                <!-- Pagination -->
-                {% if controls.pages > 1 %}
-                <nav aria-label="Dryer controls pagination">
-                    <ul class="pagination justify-content-center">
-                        {% if controls.has_prev %}
-                            <li class="page-item">
-                                <a class="page-link" href="{{ url_for('dryer.dryer_controls', page=controls.prev_num) }}">Previous</a>
-                            </li>
-                        {% endif %}
-                        
-                        {% for page_num in controls.iter_pages() %}
-                            {% if page_num %}
-                                {% if page_num != controls.page %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ url_for('dryer.dryer_controls', page=page_num) }}">{{ page_num }}</a>
-                                    </li>
-                                {% else %}
-                                    <li class="page-item active">
-                                        <span class="page-link">{{ page_num }}</span>
-                                    </li>
-                                {% endif %}
-                            {% else %}
-                                <li class="page-item disabled">
-                                    <span class="page-link">...</span>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                        
-                        {% if controls.has_next %}
-                            <li class="page-item">
-                                <a class="page-link" href="{{ url_for('dryer.dryer_controls', page=controls.next_num) }}">Next</a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </nav>
-                {% endif %}
-                
                 {% else %}
                 <div class="text-center py-5">
-                    <i class="bi bi-thermometer-sun text-muted display-4"></i>
-                    <h5 class="text-muted mt-3">No dryer control records found</h5>
-                    <p class="text-muted">Start by adding your first dryer control measurement.</p>
-                    <a href="{{ url_for('dryer.add_dryer_control') }}" class="btn btn-primary">
-                        <i class="bi bi-plus-lg"></i> Add First Record
+                    <i class="bi bi-eye text-muted display-4"></i>
+                    <h5 class="text-muted mt-3">Aucune inspection d'aspect trouvée</h5>
+                    <p class="text-muted">Commencez by adding your first aspect inspection.</p>
+                    <a href="{{ url_for('dryer.add_dryer_aspect') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-lg"></i> Première Inspection
                     </a>
                 </div>
                 {% endif %}
@@ -378,12 +274,12 @@
 <script src="{{ url_for('static', filename='js/validation.js') }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    initializeValidation('dryerControlForm');
+    initializeValidation('aspectControlForm');
 });
 
 function confirmDelete(id) {
-    if (confirm('Are you sure you want to delete this dryer control record?')) {
-        fetch(`/dryer/delete/${id}`, {method: 'POST'})
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette inspection d\'aspect?')) {
+        fetch(`/dryer/aspect/delete/${id}`, {method: 'POST'})
             .then(() => location.reload());
     }
 }
