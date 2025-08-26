@@ -46,6 +46,51 @@ def add_clay_control():
     
     return render_template('clay/clay_control.html', form=form)
 
+@clay_bp.route('/official', methods=['GET', 'POST'])
+@login_required
+def clay_control_official():
+    """Official R2-F2-LABO Clay Control Form"""
+    form = ClayControlForm()
+    
+    if form.validate_on_submit():
+        clay_control = ClayControl()
+        clay_control.date = form.date.data
+        clay_control.shift = form.shift.data
+        clay_control.measurement_time_1 = form.measurement_time_1.data
+        clay_control.measurement_time_2 = form.measurement_time_2.data
+        clay_control.humidity_before_prep = form.humidity_before_prep.data
+        clay_control.humidity_after_sieving = form.humidity_after_sieving.data
+        clay_control.humidity_after_prep = form.humidity_after_prep.data
+        clay_control.granulometry_refusal = form.granulometry_refusal.data
+        clay_control.calcium_carbonate = form.calcium_carbonate.data
+        clay_control.notes = form.notes.data
+        clay_control.controller_id = current_user.id
+        
+        # Check compliance based on specifications
+        compliance_issues = []
+        
+        # Check granulometry refusal (10≤Refus≤20%)
+        if clay_control.granulometry_refusal and (clay_control.granulometry_refusal < 10 or clay_control.granulometry_refusal > 20):
+            compliance_issues.append("Granulometry refusal out of range")
+        
+        # Check calcium carbonate (15% ≤ CaCO3 ≤ 25%)
+        if clay_control.calcium_carbonate and (clay_control.calcium_carbonate < 15 or clay_control.calcium_carbonate > 25):
+            compliance_issues.append("CaCO3 percentage out of range")
+        
+        clay_control.compliance_status = 'non_compliant' if compliance_issues else 'compliant'
+        
+        db.session.add(clay_control)
+        db.session.commit()
+        
+        if compliance_issues:
+            flash(f'Contrôle argile enregistré avec non-conformités: {", ".join(compliance_issues)}', 'warning')
+        else:
+            flash('Fiche de contrôle argile R2-F2-LABO enregistrée avec succès', 'success')
+        
+        return redirect(url_for('clay.clay_controls'))
+    
+    return render_template('clay/clay_control_official.html', form=form)
+
 @clay_bp.route('/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_clay_control(id):

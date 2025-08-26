@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+
+{% block title %}Fiche de Contrôle Argile - R2-F2-LABO{% endblock %}
+
+{% block content %}
+<style>
+.control-form-table {
+    font-size: 12px;
+}
+.control-form-table th,
+.control-form-table td {
+    padding: 8px 4px;
+    border: 1px solid #000;
+    text-align: center;
+    vertical-align: middle;
+}
+.control-form-table .spec-column {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    font-size: 10px;
+}
+.control-form-table input {
+    border: none;
+    background: transparent;
+    text-align: center;
+    width: 100%;
+    font-size: 11px;
+}
+.signature-section {
+    border: 1px solid #000;
+    height: 60px;
+}
+</style>
+
+<!-- Header Section -->
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light border-bottom-2">
+                <div class="row align-items-center">
+                    <div class="col-md-2 text-center">
+                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>" 
+                             alt="Logo" style="width: 60px; height: 60px;">
+                        <div><small class="fw-bold">CERAMICA DERSA</small></div>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <h4 class="mb-1 fw-bold">FICHE DE CONTRÔLE ARGILE</h4>
+                        <h5 class="mb-0">RAPPORT QUOTIDIEN</h5>
+                    </div>
+                    <div class="col-md-4">
+                        <table class="table table-bordered table-sm mb-0">
+                            <tr><td class="fw-bold bg-light">SERVICE LABORATOIRE</td></tr>
+                            <tr><td><strong>CODE:</strong> R2-F2-LABO</td></tr>
+                            <tr><td><strong>VERSION:</strong> 02</td></tr>
+                            <tr><td><strong>DATE:</strong> {{ form.date.data.strftime('%d/%m/%Y') if form.date.data else 'N/A' }}</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="POST" action="{{ url_for('clay.clay_control_official') }}">
+    {{ form.hidden_tag() }}
+    
+    <!-- Basic Info -->
+    <div class="row mb-3">
+        <div class="col-md-3">
+            {{ form.date.label(class="form-label") }}
+            {{ form.date(class="form-control") }}
+        </div>
+        <div class="col-md-3">
+            {{ form.shift.label(class="form-label") }}
+            {{ form.shift(class="form-control") }}
+        </div>
+        <div class="col-md-6">
+            <strong>Contrôleur:</strong> {{ current_user.full_name or current_user.username }}
+        </div>
+    </div>
+
+    <!-- Granulometry Control Table -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h5 class="mb-3">GRANULOMÉTRIE</h5>
+            <table class="table control-form-table">
+                <thead>
+                    <tr class="table-dark">
+                        <th style="width: 20%;">CONTRÔLE</th>
+                        <th style="width: 25%;">Spécifications techniques</th>
+                        <th style="width: 55%;" colspan="7">Mesures quotidiennes</th>
+                    </tr>
+                    <tr class="table-secondary">
+                        <th></th>
+                        <th></th>
+                        <th>Mes. 1</th>
+                        <th>Mes. 2</th>
+                        <th>Mes. 3</th>
+                        <th>Mes. 4</th>
+                        <th>Mes. 5</th>
+                        <th>Mes. 6</th>
+                        <th>Mes. 7</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-start">X1≥600 µ</td>
+                        <td class="spec-column">00≤ Granl.≤0,02%</td>
+                        <td><input type="number" step="0.001" name="granl_600_1" placeholder="0.000"></td>
+                        <td><input type="number" step="0.001" name="granl_600_2" placeholder="0.000"></td>
+                        <td><input type="number" step="0.001" name="granl_600_3" placeholder="0.000"></td>
+                        <td><input type="number" step="0.001" name="granl_600_4" placeholder="0.000"></td>
+                        <td><input type="number" step="0.001" name="granl_600_5" placeholder="0.000"></td>
+                        <td><input type="number" step="0.001" name="granl_600_6" placeholder="0.000"></td>
+                        <td><input type="number" step="0.001" name="granl_600_7" placeholder="0.000"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-start">425 µ ≤X2≤ 600 µ</td>
+                        <td class="spec-column">00≤ Granl.≤0,05%</td>
+                        <td><input type="number" step="0.001" name="granl_425_600_1" placeholder="0.000"></td>
+                        <td><input type="number" step="0.001" name="granl_425_600_2" placeholder="0.000"></td>
+                        <td><input type="number" step="0.001" name="granl_425_600_3" placeholder="0.000"></td>
+                        <td><input type="number" step="0.001" name="granl_425_600_4" placeholder="0.000"></td>
+                        <td><input type="number" step="0.001" name="granl_425_600_5" placeholder="0.000"></td>
+                        <td><input type="number" step="0.001" name="granl_425_600_6" placeholder="0.000"></td>
+                        <td><input type="number" step="0.001" name="granl_425_600_7" placeholder="0.000"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-start">300 µ ≤X3≤ 425 µ</td>
+                        <td class="spec-column">0,1≤ Granl.≤0,6%</td>
+                        <td><input type="number" step="0.1" name="granl_300_425_1" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_300_425_2" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_300_425_3" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_300_425_4" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_300_425_5" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_300_425_6" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_300_425_7" placeholder="0.0"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-start">250 µ ≤X4≤ 300 µ</td>
+                        <td class="spec-column">0,2≤ Granl.≤1%</td>
+                        <td><input type="number" step="0.1" name="granl_250_300_1" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_250_300_2" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_250_300_3" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_250_300_4" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_250_300_5" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_250_300_6" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_250_300_7" placeholder="0.0"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-start">180 µ ≤X5≤ 250 µ</td>
+                        <td class="spec-column">0,6≤ Granl.≤2%</td>
+                        <td><input type="number" step="0.1" name="granl_180_250_1" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_180_250_2" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_180_250_3" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_180_250_4" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_180_250_5" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_180_250_6" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_180_250_7" placeholder="0.0"></td>
+                    </tr>
+                    <tr class="table-light">
+                        <td colspan="9" class="fw-bold text-center">Total</td>
+                    </tr>
+                    <tr>
+                        <td class="text-start">125 µ ≤X6≤ 180 µ</td>
+                        <td class="spec-column">02≤ Granl.≤07%</td>
+                        <td><input type="number" step="0.1" name="granl_125_180_1" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_125_180_2" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_125_180_3" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_125_180_4" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_125_180_5" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_125_180_6" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_125_180_7" placeholder="0.0"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-start">63 µ ≤X7≤ 125 µ</td>
+                        <td class="spec-column">08≤ Granl.≤20%</td>
+                        <td><input type="number" step="0.1" name="granl_63_125_1" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_63_125_2" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_63_125_3" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_63_125_4" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_63_125_5" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_63_125_6" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_63_125_7" placeholder="0.0"></td>
+                    </tr>
+                    <tr class="table-light">
+                        <td colspan="9" class="fw-bold text-center">Total</td>
+                    </tr>
+                    <tr>
+                        <td class="text-start">≤X8≤ 63 µ</td>
+                        <td class="spec-column">60≤ Granl.≤90%</td>
+                        <td><input type="number" step="0.1" name="granl_under_63_1" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_under_63_2" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_under_63_3" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_under_63_4" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_under_63_5" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_under_63_6" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="granl_under_63_7" placeholder="0.0"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-start">Refus 63 µ</td>
+                        <td class="spec-column">10≤Refus≤20%</td>
+                        <td>{{ form.granulometry_refusal(class="form-control form-control-sm", placeholder="0.0") }}</td>
+                        <td><input type="number" step="0.1" name="refus_63_2" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="refus_63_3" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="refus_63_4" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="refus_63_5" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="refus_63_6" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="refus_63_7" placeholder="0.0"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-start fw-bold">N° Fiche de non-conformité :</td>
+                        <td></td>
+                        <td><input type="text" name="nc_granl_1" placeholder="NC #"></td>
+                        <td><input type="text" name="nc_granl_2" placeholder="NC #"></td>
+                        <td><input type="text" name="nc_granl_3" placeholder="NC #"></td>
+                        <td><input type="text" name="nc_granl_4" placeholder="NC #"></td>
+                        <td><input type="text" name="nc_granl_5" placeholder="NC #"></td>
+                        <td><input type="text" name="nc_granl_6" placeholder="NC #"></td>
+                        <td><input type="text" name="nc_granl_7" placeholder="NC #"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Calcium Carbonate Control -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h5 class="mb-3">CONTRÔLE % CaCO₃</h5>
+            <table class="table control-form-table">
+                <thead>
+                    <tr class="table-dark">
+                        <th style="width: 20%;">CONTRÔLE</th>
+                        <th style="width: 25%;">Spécifications techniques</th>
+                        <th style="width: 55%;" colspan="7">Mesures quotidiennes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-start fw-bold">% CaCO₃</td>
+                        <td class="spec-column">15 % ≤ % CaCO₃ ≤ 25 %</td>
+                        <td>{{ form.calcium_carbonate(class="form-control form-control-sm", placeholder="0.0") }}</td>
+                        <td><input type="number" step="0.1" name="caco3_2" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="caco3_3" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="caco3_4" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="caco3_5" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="caco3_6" placeholder="0.0"></td>
+                        <td><input type="number" step="0.1" name="caco3_7" placeholder="0.0"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-start fw-bold">N° Fiche de non-conformité :</td>
+                        <td></td>
+                        <td><input type="text" name="nc_caco3_1" placeholder="NC #"></td>
+                        <td><input type="text" name="nc_caco3_2" placeholder="NC #"></td>
+                        <td><input type="text" name="nc_caco3_3" placeholder="NC #"></td>
+                        <td><input type="text" name="nc_caco3_4" placeholder="NC #"></td>
+                        <td><input type="text" name="nc_caco3_5" placeholder="NC #"></td>
+                        <td><input type="text" name="nc_caco3_6" placeholder="NC #"></td>
+                        <td><input type="text" name="nc_caco3_7" placeholder="NC #"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Notes Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            {{ form.notes.label(class="form-label") }}
+            {{ form.notes(class="form-control", rows="3") }}
+        </div>
+    </div>
+
+    <!-- Signature Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td class="text-center fw-bold" style="width: 50%;">Nom & visa<br>Contrôleur</td>
+                        <td class="text-center fw-bold" style="width: 50%;">Visa Responsable<br>Laboratoire</td>
+                    </tr>
+                    <tr>
+                        <td class="signature-section text-center">
+                            <br><br>{{ current_user.full_name or current_user.username }}
+                        </td>
+                        <td class="signature-section"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="row">
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg"></i> Enregistrer Fiche de Contrôle Argile
+            </button>
+            <a href="{{ url_for('clay.clay_control') }}" class="btn btn-secondary ms-2">
+                <i class="bi bi-arrow-left"></i> Retour
+            </a>
+        </div>
+    </div>
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-calculation for totals could be added here
+    console.log('Fiche de Contrôle Argile R2-F2-LABO initialisée');
+});
+</script>
+{% endblock %}
