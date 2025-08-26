@@ -448,7 +448,13 @@ class OptimizedMeasurement(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     def __repr__(self):
-        return f'<OptimizedMeasurement {self.id}: {self.parameter.code if self.parameter else "Unknown"} - {self.measurement_date}>'
+        param_code = "Unknown"
+        try:
+            if hasattr(self, 'parameter') and self.parameter:
+                param_code = self.parameter.code
+        except:
+            pass
+        return f'<OptimizedMeasurement {self.id}: {param_code} - {self.measurement_date}>'
 
 class ScheduledControl(db.Model):
     __tablename__ = 'scheduled_controls'
@@ -467,7 +473,13 @@ class ScheduledControl(db.Model):
     measurement = db.relationship('OptimizedMeasurement', backref='scheduled_control')
     
     def __repr__(self):
-        return f'<ScheduledControl {self.id}: {self.parameter.code if self.parameter else "Unknown"} - {self.scheduled_date} - {self.status}>'
+        param_code = "Unknown"
+        try:
+            if hasattr(self, 'parameter') and self.parameter:
+                param_code = self.parameter.code
+        except:
+            pass
+        return f'<ScheduledControl {self.id}: {param_code} - {self.scheduled_date} - {self.status}>'
 
 class ControlSheet(db.Model):
     __tablename__ = 'control_sheets'
