@@ -85,8 +85,15 @@
 <!-- DYNAMIC CONTENT AREA -->
 <div id="reportContent">
     <!-- Content will be loaded based on selected report type -->
-    {% include 'reports/forms/humidity_form.html' %}
-    {% include 'reports/forms/clay_control_form.html' %}
+    <div id="humidityContent" style="display: block;">
+        {% include 'reports/forms/humidity_form.html' %}
+    </div>
+    <div id="clayContent" style="display: none;">
+        {% include 'reports/forms/clay_control_form.html' %}
+    </div>
+    <div id="otherContent" style="display: none;">
+        <!-- Placeholder for other forms -->
+    </div>
 </div>
 
 <!-- Non-Conformities Section -->
@@ -286,16 +293,24 @@ function changeReportType() {
 }
 
 function loadReportContent(reportType) {
-    // This would typically load different form templates
-    // For now, we'll show different placeholder content
-    const reportContent = document.getElementById('reportContent');
+    // Hide all content sections
+    const humidityContent = document.getElementById('humidityContent');
+    const clayContent = document.getElementById('clayContent');
+    const otherContent = document.getElementById('otherContent');
+    
+    humidityContent.style.display = 'none';
+    clayContent.style.display = 'none';
+    otherContent.style.display = 'none';
     
     if (reportType === 'humidity') {
-        // Show humidity form (already loaded)
-        location.reload();
+        // Show humidity forms
+        humidityContent.style.display = 'block';
+    } else if (reportType === 'clay') {
+        // Show clay control form (P.D.M. table)
+        clayContent.style.display = 'block';
     } else {
         // Show placeholder for other forms
-        reportContent.innerHTML = `
+        otherContent.innerHTML = `
             <div class="row mb-4">
                 <div class="col-12">
                     <div class="alert alert-info">
@@ -306,6 +321,7 @@ function loadReportContent(reportType) {
                 </div>
             </div>
         `;
+        otherContent.style.display = 'block';
     }
 }
 
@@ -316,6 +332,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const today = new Date().toISOString().split('T')[0];
         dateInput.value = today;
     }
+    
+    // Initialize the report display with the default selected value
+    const reportTypeSelect = document.getElementById('reportType');
+    const initialReportType = reportTypeSelect.value;
+    changeReportType(); // This will set the correct title and show the right content
 });
 </script>
 
