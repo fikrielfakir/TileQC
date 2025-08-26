@@ -42,6 +42,14 @@
                         <i class="bi bi-graph-up text-muted"></i> % Chaux (CaCO₃)
                     </a></li>
                     <li><hr class="dropdown-divider"></li>
+                    <li><h6 class="dropdown-header">Fiches de Contrôle</h6></li>
+                    <li><a class="dropdown-item" href="{{ url_for('clay.generate_humidity_sheet') }}" target="_blank">
+                        <i class="bi bi-file-earmark-text text-primary"></i> Fiche Contrôle Humidité
+                    </a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('clay.generate_clay_sheet') }}" target="_blank">
+                        <i class="bi bi-file-earmark-spreadsheet text-success"></i> Fiche de Contrôle Argile
+                    </a></li>
+                    <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="{{ url_for('clay.add_clay_control') }}">
                         <i class="bi bi-list-ul text-info"></i> Formulaire Simplifié
                     </a></li>

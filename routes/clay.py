@@ -109,7 +109,7 @@ def humidity_before_prep():
         
         # Check compliance
         humidity_value = form.humidity_before_prep.data
-        if humidity_value < 2.5 or humidity_value > 4.1:
+        if humidity_value is not None and (humidity_value < 2.5 or humidity_value > 4.1):
             clay_control.compliance_status = 'non_compliant'
             flash(f'⚠️ Valeur hors spécification ({humidity_value}%) - F.N.C. requis (Spéc: 2.5%-4.1%)', 'warning')
         else:
@@ -139,7 +139,7 @@ def humidity_after_sieving():
         
         # Check compliance
         humidity_value = form.humidity_after_sieving.data
-        if humidity_value < 2.0 or humidity_value > 3.5:
+        if humidity_value is not None and (humidity_value < 2.0 or humidity_value > 3.5):
             clay_control.compliance_status = 'non_compliant'
             flash(f'⚠️ Valeur hors spécification ({humidity_value}%) - F.N.C. requis (Spéc: 2%-3.5%)', 'warning')
         else:
@@ -169,7 +169,7 @@ def humidity_after_prep():
         
         # Check compliance
         humidity_value = form.humidity_after_prep.data
-        if humidity_value < 5.3 or humidity_value > 6.3:
+        if humidity_value is not None and (humidity_value < 5.3 or humidity_value > 6.3):
             clay_control.compliance_status = 'non_compliant'
             flash(f'⚠️ Valeur hors spécification ({humidity_value}%) - F.N.C. requis (Spéc: 5.3%-6.3%)', 'warning')
         else:
@@ -199,7 +199,7 @@ def granulometry():
         
         # Check compliance
         granulo_value = form.granulometry_refusal.data
-        if granulo_value < 10 or granulo_value > 20:
+        if granulo_value is not None and (granulo_value < 10 or granulo_value > 20):
             clay_control.compliance_status = 'non_compliant'
             flash(f'⚠️ Valeur hors spécification ({granulo_value}%) - F.N.C. requis (Spéc: 10%-20%)', 'warning')
         else:
@@ -229,7 +229,7 @@ def calcium_carbonate():
         
         # Check compliance
         calcium_value = form.calcium_carbonate.data
-        if calcium_value < 15 or calcium_value > 25:
+        if calcium_value is not None and (calcium_value < 15 or calcium_value > 25):
             clay_control.compliance_status = 'non_compliant'
             flash(f'⚠️ Valeur hors spécification ({calcium_value}%) - F.N.C. requis (Spéc: 15%-25%)', 'warning')
         else:
@@ -375,4 +375,17 @@ def combined_analysis():
         return redirect(url_for('clay.clay_controls'))
     
     return render_template('clay/combined_analysis.html', form=form)
+
+# Control Sheet Generation Routes
+@clay_bp.route('/generate-humidity-sheet')
+@login_required
+def generate_humidity_sheet():
+    """Generate Fiche Contrôle Humidité"""
+    return render_template('clay/humidity_control_sheet.html')
+
+@clay_bp.route('/generate-clay-sheet') 
+@login_required
+def generate_clay_sheet():
+    """Generate Fiche de Contrôle Argile"""
+    return render_template('clay/clay_control_sheet.html')
 
