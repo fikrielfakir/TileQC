@@ -29,38 +29,35 @@
 <!-- Report Header -->
 <div class="row mb-4">
     <div class="col-12">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-primary text-white">
+        <div class="card border-2 shadow-sm report-card">
+            <div class="card-header bg-light border-bottom-2">
                 <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h5 class="mb-0">Report Summary</h5>
-                        <small>Generated on {{ report_data.date }}</small>
+                    <div class="col-md-2 text-center">
+                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>" 
+                             alt="Logo" style="width: 60px; height: 60px;">
+                        <div><small class="fw-bold">CERAMICA DERSA</small></div>
                     </div>
-                    <div class="col-md-4 text-end">
-                        <div class="display-6">
-                            {{ report_data.stats.overall.compliance_rate }}%
-                        </div>
-                        <small>Overall Compliance</small>
+                    <div class="col-md-6 text-center">
+                        <h4 class="mb-1 fw-bold">FICHE CONTROLE QUALITÉ</h4>
+                        <h5 class="mb-0">RAPPORT QUOTIDIEN</h5>
+                    </div>
+                    <div class="col-md-4">
+                        <table class="table table-bordered table-sm mb-0">
+                            <tr><td class="fw-bold bg-light">SERVICE LABORATOIRE</td></tr>
+                            <tr><td><strong>CODE:</strong> R2-F1-LABO</td></tr>
+                            <tr><td><strong>VERSION:</strong> 00</td></tr>
+                            <tr><td><strong>DATE:</strong> {{ selected_date.strftime('%d/%m/%Y') }}</td></tr>
+                        </table>
                     </div>
                 </div>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-3 text-center">
-                        <div class="text-success display-6">{{ report_data.stats.overall.compliant }}</div>
-                        <small class="text-muted">Compliant Tests</small>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Contrôleur:</strong> {{ current_user.full_name or current_user.username }}
                     </div>
-                    <div class="col-md-3 text-center">
-                        <div class="text-danger display-6">{{ report_data.stats.overall.non_compliant }}</div>
-                        <small class="text-muted">Non-Compliant Tests</small>
-                    </div>
-                    <div class="col-md-3 text-center">
-                        <div class="text-info display-6">{{ report_data.stats.overall.total }}</div>
-                        <small class="text-muted">Total Tests</small>
-                    </div>
-                    <div class="col-md-3 text-center">
-                        <div class="text-secondary display-6">8</div>
-                        <small class="text-muted">Production Stages</small>
+                    <div class="col-md-6 text-end">
+                        <strong>Date:</strong> {{ selected_date.strftime('%d/%m/%Y') }}
                     </div>
                 </div>
             </div>
@@ -68,137 +65,202 @@
     </div>
 </div>
 
-<!-- Production Stage Details -->
+<!-- HUMIDITE TREMIE GENERALE -->
+{% if report_data.clay_controls %}
 <div class="row mb-4">
     <div class="col-12">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-light">
-                <h5 class="mb-0"><i class="bi bi-factory text-primary"></i> Production Stage Performance</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <!-- Clay Control -->
-                    <div class="col-lg-6 mb-3">
-                        <div class="card border-0 bg-light">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="mb-1"><i class="bi bi-layers text-warning"></i> Clay Control (PDM Argile)</h6>
-                                        <small class="text-muted">{{ report_data.clay_controls|length }} measurements</small>
-                                    </div>
-                                    <div class="text-end">
-                                        {% set clay_rate = (report_data.stats.clay.compliant / report_data.stats.clay.total * 100) if report_data.stats.clay.total > 0 else 0 %}
-                                        <div class="text-{{ 'success' if clay_rate >= 95 else 'warning' if clay_rate >= 80 else 'danger' }} h5">
-                                            {{ "%.1f"|format(clay_rate) }}%
-                                        </div>
-                                        <small class="text-muted">{{ report_data.stats.clay.compliant }}/{{ report_data.stats.clay.total }}</small>
-                                    </div>
-                                </div>
-                                {% if report_data.clay_controls %}
-                                <div class="mt-2">
-                                    <small><strong>Key Parameters:</strong></small>
-                                    {% for control in report_data.clay_controls[:3] %}
-                                    <div class="row mt-1">
-                                        <div class="col-6">
-                                            <small class="text-muted">{{ control.shift|title if control.shift else 'N/A' }}</small>
-                                        </div>
-                                        <div class="col-6 text-end">
-                                            <span class="badge bg-{{ 'success' if control.compliance_status == 'compliant' else 'danger' }}">
-                                                {{ control.compliance_status|title }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
+        <table class="table table-bordered control-table">
+            <thead>
+                <tr class="table-secondary">
+                    <th class="fw-bold">HUMIDITE TREMIE GENERALE</th>
+                    <th>Contrôleur: {{ current_user.username }}</th>
+                    <th>Heure: {{ report_data.clay_controls[0].measurement_time_1.strftime('%H:%M') if report_data.clay_controls[0].measurement_time_1 else 'N/A' }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-light">
+                    <td class="fw-bold">% Humidité</td>
+                    <td class="fw-bold">Spécifications</td>
+                    <td class="fw-bold">N° F.N.C.</td>
+                </tr>
+                <tr>
+                    <td>{{ "%.2f"|format(report_data.clay_controls[0].humidity_before_prep) if report_data.clay_controls[0].humidity_before_prep else 'N/A' }}%</td>
+                    <td>2,5% ≤ %H ≤ 4,1%</td>
+                    <td class="text-center">
+                        {% if report_data.clay_controls[0].compliance_status != 'compliant' %}
+                            <span class="badge bg-danger">NC</span>
+                        {% else %}
+                            <span class="text-success">✓</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-                    <!-- Press Control -->
-                    <div class="col-lg-6 mb-3">
-                        <div class="card border-0 bg-light">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="mb-1"><i class="bi bi-hammer text-info"></i> Press Control</h6>
-                                        <small class="text-muted">{{ report_data.press_controls|length }} measurements</small>
-                                    </div>
-                                    <div class="text-end">
-                                        {% set press_rate = (report_data.stats.press.compliant / report_data.stats.press.total * 100) if report_data.stats.press.total > 0 else 0 %}
-                                        <div class="text-{{ 'success' if press_rate >= 95 else 'warning' if press_rate >= 80 else 'danger' }} h5">
-                                            {{ "%.1f"|format(press_rate) }}%
-                                        </div>
-                                        <small class="text-muted">{{ report_data.stats.press.compliant }}/{{ report_data.stats.press.total }}</small>
-                                    </div>
-                                </div>
-                                {% if report_data.press_controls %}
-                                <div class="mt-2">
-                                    <small><strong>Format Distribution:</strong></small>
-                                    {% set format_counts = {} %}
-                                    {% for control in report_data.press_controls %}
-                                        {% if control.format_type %}
-                                            {% set _ = format_counts.update({control.format_type: format_counts.get(control.format_type, 0) + 1}) %}
-                                        {% endif %}
-                                    {% endfor %}
-                                    {% for format_type, count in format_counts.items() %}
-                                    <span class="badge bg-secondary me-1">{{ format_type }}: {{ count }}</span>
-                                    {% endfor %}
-                                </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
+<!-- HUMIDITE APRES TAMISAGE -->
+<div class="row mb-4">
+    <div class="col-12">
+        <table class="table table-bordered control-table">
+            <thead>
+                <tr class="table-secondary">
+                    <th class="fw-bold">HUMIDITE APRES TAMISAGE</th>
+                    <th>Contrôleur: {{ current_user.username }}</th>
+                    <th>Heure: {{ report_data.clay_controls[0].measurement_time_1.strftime('%H:%M') if report_data.clay_controls[0].measurement_time_1 else 'N/A' }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-light">
+                    <td class="fw-bold">% Humidité</td>
+                    <td class="fw-bold">Spécifications</td>
+                    <td class="fw-bold">N° F.N.C.</td>
+                </tr>
+                <tr>
+                    <td>{{ "%.2f"|format(report_data.clay_controls[0].humidity_after_sieving) if report_data.clay_controls[0].humidity_after_sieving else 'N/A' }}%</td>
+                    <td>2% ≤ H ≤ 3,5%</td>
+                    <td class="text-center">
+                        {% if report_data.clay_controls[0].compliance_status != 'compliant' %}
+                            <span class="badge bg-danger">NC</span>
+                        {% else %}
+                            <span class="text-success">✓</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-                    <!-- Dryer Control -->
-                    <div class="col-lg-6 mb-3">
-                        <div class="card border-0 bg-light">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="mb-1"><i class="bi bi-thermometer-sun text-orange"></i> Dryer Control (Séchoir)</h6>
-                                        <small class="text-muted">{{ report_data.dryer_controls|length }} measurements</small>
-                                    </div>
-                                    <div class="text-end">
-                                        {% set dryer_rate = (report_data.stats.dryer.compliant / report_data.stats.dryer.total * 100) if report_data.stats.dryer.total > 0 else 0 %}
-                                        <div class="text-{{ 'success' if dryer_rate >= 95 else 'warning' if dryer_rate >= 80 else 'danger' }} h5">
-                                            {{ "%.1f"|format(dryer_rate) }}%
-                                        </div>
-                                        <small class="text-muted">{{ report_data.stats.dryer.compliant }}/{{ report_data.stats.dryer.total }}</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<!-- HUMIDITE SILOS -->
+<div class="row mb-4">
+    <div class="col-12">
+        <table class="table table-bordered control-table">
+            <thead>
+                <tr class="table-secondary">
+                    <th class="fw-bold">HUMIDITE SILOS</th>
+                    <th colspan="2">Contrôleur: {{ current_user.username }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-light">
+                    <td class="fw-bold">Heure</td>
+                    <td class="fw-bold">N° Silo</td>
+                    <td class="fw-bold">% humidité</td>
+                    <td class="fw-bold">Spécifications</td>
+                    <td class="fw-bold">N° F.N.C.</td>
+                </tr>
+                {% for control in report_data.clay_controls[:4] %}
+                <tr>
+                    <td>{{ control.measurement_time_1.strftime('%H:%M') if control.measurement_time_1 else 'N/A' }}</td>
+                    <td>Silo {{ loop.index }}</td>
+                    <td>{{ "%.1f"|format(control.humidity_after_prep) if control.humidity_after_prep else 'N/A' }}%</td>
+                    <td>5,3% ≤ H ≤ 6,3%</td>
+                    <td class="text-center">
+                        {% if control.compliance_status != 'compliant' %}
+                            <span class="badge bg-danger">NC</span>
+                        {% else %}
+                            <span class="text-success">✓</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr class="table-light">
+                    <td colspan="5" class="fw-bold text-center">Humidité Moyenne</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
 
-                    <!-- Kiln Controls -->
-                    <div class="col-lg-6 mb-3">
-                        <div class="card border-0 bg-light">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="mb-1"><i class="bi bi-fire text-danger"></i> Kiln Controls</h6>
-                                        <small class="text-muted">Biscuit: {{ report_data.biscuit_kiln_controls|length }} | Email: {{ report_data.email_kiln_controls|length }}</small>
-                                    </div>
-                                    <div class="text-end">
-                                        {% set biscuit_rate = (report_data.stats.biscuit_kiln.compliant / report_data.stats.biscuit_kiln.total * 100) if report_data.stats.biscuit_kiln.total > 0 else 0 %}
-                                        {% set email_rate = (report_data.stats.email_kiln.compliant / report_data.stats.email_kiln.total * 100) if report_data.stats.email_kiln.total > 0 else 0 %}
-                                        <div class="small">
-                                            <span class="text-{{ 'success' if biscuit_rate >= 95 else 'warning' if biscuit_rate >= 80 else 'danger' }}">
-                                                B: {{ "%.1f"|format(biscuit_rate) }}%
-                                            </span> | 
-                                            <span class="text-{{ 'success' if email_rate >= 95 else 'warning' if email_rate >= 80 else 'danger' }}">
-                                                E: {{ "%.1f"|format(email_rate) }}%
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- HUMIDITE ARGILE PRESSE -->
+{% if report_data.press_controls %}
+<div class="row mb-4">
+    <div class="col-12">
+        <table class="table table-bordered control-table">
+            <thead>
+                <tr class="table-secondary">
+                    <th class="fw-bold">HUMIDITE ARGILE PRESSE</th>
+                    <th>Contrôleur: {{ current_user.username }}</th>
+                    <th>Heure: {{ report_data.press_controls[0].measurement_time.strftime('%H:%M') if report_data.press_controls[0].measurement_time else 'N/A' }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-light">
+                    <td class="fw-bold">N° Silo</td>
+                    <td class="fw-bold">% Humidité</td>
+                    <td class="fw-bold">Spécifications</td>
+                    <td class="fw-bold">N° F.N.C.</td>
+                </tr>
+                <tr>
+                    <td>{{ report_data.press_controls[0].format_type or 'N/A' }}</td>
+                    <td>{{ "%.1f"|format(report_data.press_controls[0].thickness) if report_data.press_controls[0].thickness else 'N/A' }}%</td>
+                    <td>5,2 ≤ % Humidité ≤ 6%</td>
+                    <td class="text-center">
+                        {% if report_data.press_controls[0].compliance_status != 'compliant' %}
+                            <span class="badge bg-danger">NC</span>
+                        {% else %}
+                            <span class="text-success">✓</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<!-- HUMIDITE RESIDUELLE SECHOIR -->
+{% if report_data.dryer_controls %}
+<div class="row mb-4">
+    <div class="col-12">
+        <table class="table table-bordered control-table">
+            <thead>
+                <tr class="table-secondary">
+                    <th class="fw-bold">HUMIDITE RESIDUELLE SECHOIR</th>
+                    <th>Contrôleur: {{ current_user.username }}</th>
+                    <th>Heure: {{ report_data.dryer_controls[0].measurement_time.strftime('%H:%M') if report_data.dryer_controls[0].measurement_time else 'N/A' }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-light">
+                    <td class="fw-bold">% Humidité</td>
+                    <td class="fw-bold">Spécifications</td>
+                    <td class="fw-bold">N° F.N.C.</td>
+                </tr>
+                <tr>
+                    <td>{{ "%.2f"|format(report_data.dryer_controls[0].residual_humidity) if report_data.dryer_controls[0].residual_humidity else 'N/A' }}%</td>
+                    <td>0,1%≤ % HRM ≤1,5%</td>
+                    <td class="text-center">
+                        {% if report_data.dryer_controls[0].compliance_status != 'compliant' %}
+                            <span class="badge bg-danger">NC</span>
+                        {% else %}
+                            <span class="text-success">✓</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<!-- SIGNATURE SECTION -->
+<div class="row mb-4">
+    <div class="col-12">
+        <table class="table table-borderless">
+            <tbody>
+                <tr>
+                    <td class="text-start"><strong>Visa Contrôleur</strong></td>
+                    <td class="text-end"><strong>Visa Service Laboratoire</strong></td>
+                </tr>
+                <tr>
+                    <td style="height: 60px; border-bottom: 1px solid #000; width: 50%;"></td>
+                    <td style="height: 60px; border-bottom: 1px solid #000; width: 50%;"></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
@@ -375,25 +437,67 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
+.control-table {
+    border: 2px solid #000 !important;
+    margin-bottom: 1rem;
+}
+
+.control-table th,
+.control-table td {
+    border: 1px solid #000 !important;
+    padding: 8px !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+.control-table .table-secondary {
+    background-color: #e9ecef !important;
+    font-weight: bold !important;
+}
+
+.control-table .table-light {
+    background-color: #f8f9fa !important;
+}
+
+.report-card {
+    border: 2px solid #000 !important;
+    box-shadow: none !important;
+}
+
+.border-bottom-2 {
+    border-bottom: 2px solid #000 !important;
+}
+
+.border-2 {
+    border: 2px solid #000 !important;
+}
+
 @media print {
     .btn, .d-print-none {
         display: none !important;
     }
     .card {
-        border: 1px solid #dee2e6 !important;
+        border: 2px solid #000 !important;
         box-shadow: none !important;
     }
     .card-header {
         background-color: #f8f9fa !important;
         color: #000 !important;
     }
-    .bg-primary {
-        background-color: #0d6efd !important;
-        color: white !important;
+    .control-table {
+        border: 2px solid #000 !important;
+        break-inside: avoid;
     }
-    .bg-danger {
-        background-color: #dc3545 !important;
-        color: white !important;
+    .control-table th,
+    .control-table td {
+        border: 1px solid #000 !important;
+        padding: 4px !important;
+    }
+    body {
+        font-size: 12px !important;
+    }
+    h4, h5 {
+        font-size: 14px !important;
     }
 }
 </style>
