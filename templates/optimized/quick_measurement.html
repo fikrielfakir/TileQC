@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}Mesure Rapide{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <h1 class="h3 mb-4">
+                <i class="bi bi-plus-circle"></i> Mesure Rapide
+            </h1>
+
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" id="quick-measurement-form">
+                        <div class="mb-3">
+                            <label for="parameter_id" class="form-label">Paramètre à Contrôler</label>
+                            <select name="parameter_id" id="parameter_id" class="form-select" required>
+                                <option value="">Sélectionner un paramètre...</option>
+                                {% for parameter in parameters %}
+                                <option value="{{ parameter.id }}" 
+                                        data-type="{{ parameter.control_type }}"
+                                        data-unit="{{ parameter.unit or '' }}"
+                                        data-min="{{ parameter.min_value or '' }}"
+                                        data-max="{{ parameter.max_value or '' }}"
+                                        data-spec="{{ parameter.specification }}">
+                                    {{ parameter.stage.name }} - {{ parameter.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div id="parameter-info" class="alert alert-info d-none">
+                            <strong>Spécification:</strong> <span id="spec-text"></span><br>
+                            <strong>Type:</strong> <span id="type-text"></span>
+                        </div>
+
+                        <!-- Numeric Value Input -->
+                        <div id="numeric-input" class="mb-3 d-none">
+                            <label for="value" class="form-label">Valeur Mesurée</label>
+                            <div class="input-group">
+                                <input type="number" name="value" id="value" class="form-control" step="0.001">
+                                <span class="input-group-text" id="unit-display"></span>
+                            </div>
+                            <div id="value-feedback" class="form-text"></div>
+                        </div>
+
+                        <!-- Visual Defects Input -->
+                        <div id="visual-input" class="mb-3 d-none">
+                            <label class="form-label">Défauts Visuels (%)</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="defect_grains" class="form-label">Grains</label>
+                                    <input type="number" name="defect_grains" id="defect_grains" class="form-control" min="0" max="100" step="0.1">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="defect_cracks" class="form-label">Fissures</label>
+                                    <input type="number" name="defect_cracks" id="defect_cracks" class="form-control" min="0" max="100" step="0.1">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="defect_cleaning" class="form-label">Nettoyage</label>
+                                    <input type="number" name="defect_cleaning" id="defect_cleaning" class="form-control" min="0" max="100" step="0.1">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="defect_foliage" class="form-label">Feuillage</label>
+                                    <input type="number" name="defect_foliage" id="defect_foliage" class="form-control" min="0" max="100" step="0.1">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="defect_chipping" class="form-label">Écornage</label>
+                                    <input type="number" name="defect_chipping" id="defect_chipping" class="form-control" min="0" max="100" step="0.1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Boolean Input -->
+                        <div id="boolean-input" class="mb-3 d-none">
+                            <div class="form-check">
+                                <input type="checkbox" name="value" id="boolean_value" class="form-check-input" value="true">
+                                <label for="boolean_value" class="form-check-label">Condition remplie</label>
+                            </div>
+                        </div>
+
+                        <!-- Additional Fields -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="format" class="form-label">Format (optionnel)</label>
+                                <select name="format" id="format" class="form-select">
+                                    <option value="">Sélectionner...</option>
+                                    <option value="20x20">20x20</option>
+                                    <option value="25x40">25x40</option>
+                                    <option value="25x50">25x50</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="line_number" class="form-label">Ligne (optionnel)</label>
+                                <input type="number" name="line_number" id="line_number" class="form-control" min="1">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="oven_number" class="form-label">Four (optionnel)</label>
+                                <input type="number" name="oven_number" id="oven_number" class="form-control" min="1">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="sample_size" class="form-label">Taille Échantillon</label>
+                                <input type="number" name="sample_size" id="sample_size" class="form-control" value="1" min="1">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="observations" class="form-label">Observations (optionnel)</label>
+                            <textarea name="observations" id="observations" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('optimized.dashboard') }}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Retour
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Enregistrer Mesure
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const parameterSelect = document.getElementById('parameter_id');
+    const parameterInfo = document.getElementById('parameter-info');
+    const numericInput = document.getElementById('numeric-input');
+    const visualInput = document.getElementById('visual-input');
+    const booleanInput = document.getElementById('boolean-input');
+    const valueInput = document.getElementById('value');
+    const unitDisplay = document.getElementById('unit-display');
+    const specText = document.getElementById('spec-text');
+    const typeText = document.getElementById('type-text');
+    const valueFeedback = document.getElementById('value-feedback');
+
+    parameterSelect.addEventListener('change', function() {
+        const option = this.selectedOptions[0];
+        if (!option.value) {
+            parameterInfo.classList.add('d-none');
+            numericInput.classList.add('d-none');
+            visualInput.classList.add('d-none');
+            booleanInput.classList.add('d-none');
+            return;
+        }
+
+        const type = option.dataset.type;
+        const unit = option.dataset.unit;
+        const spec = option.dataset.spec;
+        const min = option.dataset.min;
+        const max = option.dataset.max;
+
+        // Show parameter info
+        parameterInfo.classList.remove('d-none');
+        specText.textContent = spec;
+        typeText.textContent = type === 'numeric' ? 'Numérique' : 
+                              type === 'visual' ? 'Visuel' : 
+                              type === 'boolean' ? 'Booléen' : 'Catégoriel';
+
+        // Show appropriate input
+        numericInput.classList.add('d-none');
+        visualInput.classList.add('d-none');
+        booleanInput.classList.add('d-none');
+
+        if (type === 'numeric') {
+            numericInput.classList.remove('d-none');
+            unitDisplay.textContent = unit;
+            valueInput.setAttribute('min', min);
+            valueInput.setAttribute('max', max);
+        } else if (type === 'visual') {
+            visualInput.classList.remove('d-none');
+        } else if (type === 'boolean') {
+            booleanInput.classList.remove('d-none');
+        }
+    });
+
+    // Real-time validation for numeric values
+    valueInput.addEventListener('input', function() {
+        const option = parameterSelect.selectedOptions[0];
+        const min = parseFloat(option.dataset.min);
+        const max = parseFloat(option.dataset.max);
+        const value = parseFloat(this.value);
+
+        if (isNaN(value)) {
+            valueFeedback.textContent = '';
+            return;
+        }
+
+        if (!isNaN(min) && value < min) {
+            valueFeedback.textContent = `Valeur en dessous du minimum (${min})`;
+            valueFeedback.className = 'form-text text-danger';
+        } else if (!isNaN(max) && value > max) {
+            valueFeedback.textContent = `Valeur au-dessus du maximum (${max})`;
+            valueFeedback.className = 'form-text text-danger';
+        } else {
+            valueFeedback.textContent = 'Valeur dans les spécifications';
+            valueFeedback.className = 'form-text text-success';
+        }
+    });
+
+    // Pre-select parameter if provided in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const parameterId = urlParams.get('parameter_id');
+    if (parameterId) {
+        parameterSelect.value = parameterId;
+        parameterSelect.dispatchEvent(new Event('change'));
+    }
+});
+</script>
+{% endblock %}

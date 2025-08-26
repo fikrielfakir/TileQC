@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Optimisé{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="h3 mb-4">
+                <i class="bi bi-speedometer2"></i> Dashboard Optimisé - Équipe {{ current_shift }}
+            </h1>
+        </div>
+    </div>
+
+    <!-- Schedule Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h5 class="card-title mb-1">Total Contrôles</h5>
+                            <h3 class="mb-0">{{ schedule_summary.total }}</h3>
+                        </div>
+                        <i class="bi bi-list-check fs-1 opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h5 class="card-title mb-1">Complétés</h5>
+                            <h3 class="mb-0">{{ schedule_summary.by_status.completed }}</h3>
+                        </div>
+                        <i class="bi bi-check-circle fs-1 opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h5 class="card-title mb-1">En Attente</h5>
+                            <h3 class="mb-0">{{ schedule_summary.by_status.pending }}</h3>
+                        </div>
+                        <i class="bi bi-clock fs-1 opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h5 class="card-title mb-1">En Retard</h5>
+                            <h3 class="mb-0">{{ schedule_summary.by_status.overdue }}</h3>
+                        </div>
+                        <i class="bi bi-exclamation-triangle fs-1 opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Actions Rapides</h5>
+                </div>
+                <div class="card-body">
+                    <div class="btn-group" role="group">
+                        <a href="{{ url_for('optimized.quick_measurement') }}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Mesure Rapide
+                        </a>
+                        <a href="{{ url_for('optimized.bulk_measurement') }}" class="btn btn-info">
+                            <i class="bi bi-collection"></i> Mesures Multiples
+                        </a>
+                        <a href="{{ url_for('optimized.scheduled_controls') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-calendar-check"></i> Planning du Jour
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending Controls -->
+    {% if pending_controls %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Contrôles Programmés - Votre Équipe</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Heure</th>
+                                    <th>Paramètre</th>
+                                    <th>Étape</th>
+                                    <th>Spécification</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for control in pending_controls %}
+                                <tr>
+                                    <td>{{ control.scheduled_time.strftime('%H:%M') }}</td>
+                                    <td>{{ control.parameter.name }}</td>
+                                    <td>{{ control.parameter.stage.name }}</td>
+                                    <td>{{ control.parameter.specification }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-success quick-measure-btn" 
+                                                data-parameter-id="{{ control.parameter.id }}">
+                                            <i class="bi bi-check-circle"></i> Mesurer
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Recent Measurements -->
+    {% if recent_measurements %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Vos Dernières Mesures</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Date/Heure</th>
+                                    <th>Paramètre</th>
+                                    <th>Valeur</th>
+                                    <th>Conformité</th>
+                                    <th>NC</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for measurement in recent_measurements %}
+                                <tr>
+                                    <td>{{ measurement.measurement_date.strftime('%d/%m') }} {{ measurement.measurement_time.strftime('%H:%M') }}</td>
+                                    <td>{{ measurement.parameter.name }}</td>
+                                    <td>
+                                        {% if measurement.numeric_value %}
+                                            {{ measurement.numeric_value }} {{ measurement.parameter.unit or '' }}
+                                        {% elif measurement.boolean_value is not none %}
+                                            {{ 'Oui' if measurement.boolean_value else 'Non' }}
+                                        {% else %}
+                                            {{ measurement.text_value or 'Contrôle visuel' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if measurement.is_conforming %}
+                                            <span class="badge bg-success">Conforme</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Non-conforme</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ measurement.nc_number or '-' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Quick measure buttons
+    document.querySelectorAll('.quick-measure-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const parameterId = this.dataset.parameterId;
+            window.location.href = `/optimized/quick-measurement?parameter_id=${parameterId}`;
+        });
+    });
+});
+</script>
+{% endblock %}

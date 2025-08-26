@@ -364,3 +364,124 @@ def calculate_enamel_compliance(mapper, connection, target):
 def calculate_digital_compliance(mapper, connection, target):
     from utils.validators import validate_digital_decoration
     target.compliance_status = validate_digital_decoration(target)
+
+# New Optimized Models for Automated Scheduling System
+
+class ControlStage(db.Model):
+    __tablename__ = 'control_stages'
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(20), unique=True, nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text)
+    order_sequence = db.Column(db.Integer)
+    active = db.Column(db.Boolean, default=True)
+    
+    parameters = db.relationship('ControlParameter', backref='stage', lazy=True)
+    
+    def __repr__(self):
+        return f'<ControlStage {self.code}: {self.name}>'
+
+class ControlParameter(db.Model):
+    __tablename__ = 'control_parameters'
+    id = db.Column(db.Integer, primary_key=True)
+    stage_id = db.Column(db.Integer, db.ForeignKey('control_stages.id'), nullable=False)
+    code = db.Column(db.String(50), unique=True, nullable=False)
+    name = db.Column(db.String(200), nullable=False)
+    specification = db.Column(db.Text, nullable=False)
+    unit = db.Column(db.String(20))
+    frequency_per_day = db.Column(db.Integer)
+    frequency_description = db.Column(db.String(50))
+    method_reference = db.Column(db.String(50))
+    form_reference = db.Column(db.String(50))
+    min_value = db.Column(db.Numeric(10,3))
+    max_value = db.Column(db.Numeric(10,3))
+    target_value = db.Column(db.Numeric(10,3))
+    control_type = db.Column(db.Enum('numeric', 'visual', 'categorical', 'boolean', name='control_types'))
+    defect_categories = db.Column(db.JSON)
+    formats = db.Column(db.JSON)
+    active = db.Column(db.Boolean, default=True)
+    
+    measurements = db.relationship('OptimizedMeasurement', backref='parameter', lazy=True)
+    
+    def check_conformity(self, value):
+        """Check if a measured value is within specifications"""
+        if self.control_type == 'numeric' and value is not None:
+            if self.min_value is not None and float(value) < float(self.min_value):
+                return False
+            if self.max_value is not None and float(value) > float(self.max_value):
+                return False
+            return True
+        return None
+    
+    def __repr__(self):
+        return f'<ControlParameter {self.code}: {self.name}>'
+
+class OptimizedMeasurement(db.Model):
+    __tablename__ = 'optimized_measurements'
+    id = db.Column(db.Integer, primary_key=True)
+    parameter_id = db.Column(db.Integer, db.ForeignKey('control_parameters.id'), nullable=False)
+    operator_name = db.Column(db.String(100), nullable=False)
+    measurement_date = db.Column(db.Date, nullable=False)
+    measurement_time = db.Column(db.Time, nullable=False)
+    shift = db.Column(db.Enum('06H-14H', '14H-22H', '22H-06H', name='shift_types'))
+    format = db.Column(db.String(20))
+    line_number = db.Column(db.Integer)
+    oven_number = db.Column(db.Integer)
+    press_number = db.Column(db.Integer)
+    
+    # Values
+    numeric_value = db.Column(db.Numeric(10,3))
+    text_value = db.Column(db.Text)
+    boolean_value = db.Column(db.Boolean)
+    json_values = db.Column(db.JSON)
+    
+    # Status
+    is_conforming = db.Column(db.Boolean)
+    deviation_percentage = db.Column(db.Numeric(5,2))
+    
+    # References
+    sample_size = db.Column(db.Integer, default=1)
+    nc_number = db.Column(db.String(50))
+    observations = db.Column(db.Text)
+    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    def __repr__(self):
+        return f'<OptimizedMeasurement {self.id}: {self.parameter.code if self.parameter else "Unknown"} - {self.measurement_date}>'
+
+class ScheduledControl(db.Model):
+    __tablename__ = 'scheduled_controls'
+    id = db.Column(db.Integer, primary_key=True)
+    parameter_id = db.Column(db.Integer, db.ForeignKey('control_parameters.id'), nullable=False)
+    scheduled_date = db.Column(db.Date, nullable=False)
+    scheduled_time = db.Column(db.Time, nullable=False)
+    shift = db.Column(db.Enum('06H-14H', '14H-22H', '22H-06H', name='shift_types_scheduled'))
+    status = db.Column(db.Enum('pending', 'completed', 'skipped', 'overdue', name='control_status'), default='pending')
+    assigned_operator = db.Column(db.String(100))
+    completed_at = db.Column(db.DateTime)
+    measurement_id = db.Column(db.Integer, db.ForeignKey('optimized_measurements.id'))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    parameter = db.relationship('ControlParameter', backref='scheduled_controls')
+    measurement = db.relationship('OptimizedMeasurement', backref='scheduled_control')
+    
+    def __repr__(self):
+        return f'<ScheduledControl {self.id}: {self.parameter.code if self.parameter else "Unknown"} - {self.scheduled_date} - {self.status}>'
+
+class ControlSheet(db.Model):
+    __tablename__ = 'control_sheets'
+    id = db.Column(db.Integer, primary_key=True)
+    sheet_type = db.Column(db.Enum('daily', 'weekly', 'shift', 'stage', name='sheet_types'))
+    reference_date = db.Column(db.Date, nullable=False)
+    shift = db.Column(db.String(10))
+    stage_id = db.Column(db.Integer, db.ForeignKey('control_stages.id'))
+    generated_by = db.Column(db.String(100))
+    generated_at = db.Column(db.DateTime, default=datetime.utcnow)
+    file_path = db.Column(db.String(500))
+    status = db.Column(db.Enum('draft', 'final', 'archived', name='sheet_status'), default='draft')
+    
+    stage = db.relationship('ControlStage', backref='control_sheets')
+    
+    def __repr__(self):
+        return f'<ControlSheet {self.id}: {self.sheet_type} - {self.reference_date}>'

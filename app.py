@@ -68,6 +68,10 @@ with app.app_context():
     # Create all tables
     db.create_all()
     
+    # Initialize automation service
+    from services.automation_service import automation_service
+    automation_service.init_app(app)
+    
     # Create default admin user if not exists
     from models import User
     from werkzeug.security import generate_password_hash
@@ -108,6 +112,7 @@ from routes.enamel import enamel_bp
 from routes.tests import tests_bp
 from routes.reports import reports_bp
 from routes.specifications import spec_bp
+from routes.optimized_measurements import optimized_bp
 
 app.register_blueprint(main_bp)
 app.register_blueprint(auth_bp, url_prefix='/auth')
@@ -119,3 +124,4 @@ app.register_blueprint(enamel_bp, url_prefix='/enamel')
 app.register_blueprint(tests_bp, url_prefix='/tests')
 app.register_blueprint(reports_bp, url_prefix='/reports')
 app.register_blueprint(spec_bp, url_prefix='/specifications')
+app.register_blueprint(optimized_bp, url_prefix='/optimized')

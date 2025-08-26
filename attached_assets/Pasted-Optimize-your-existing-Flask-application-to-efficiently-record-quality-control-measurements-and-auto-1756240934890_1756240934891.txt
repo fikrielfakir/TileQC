@@ -1,0 +1,627 @@
+Optimize your existing Flask application to efficiently record quality control measurements and automatically generate control sheets based on the scheduled frequencies from the ceramic manufacturing control plan.
+1. Database Schema Optimization
+Create/Update these tables in your local database:
+sql-- Control Stages Table
+CREATE TABLE control_stages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    code VARCHAR(20) UNIQUE NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    order_sequence INTEGER,
+    active BOOLEAN DEFAULT TRUE
+);
+
+-- Control Parameters Table
+CREATE TABLE control_parameters (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    stage_id INTEGER REFERENCES control_stages(id),
+    code VARCHAR(50) UNIQUE NOT NULL,
+    name VARCHAR(200) NOT NULL,
+    specification TEXT NOT NULL,
+    unit VARCHAR(20),
+    frequency_per_day INTEGER,
+    frequency_description VARCHAR(50),
+    method_reference VARCHAR(50),
+    form_reference VARCHAR(50),
+    min_value DECIMAL(10,3),
+    max_value DECIMAL(10,3),
+    target_value DECIMAL(10,3),
+    control_type ENUM('numeric', 'visual', 'categorical', 'boolean'),
+    defect_categories JSON,
+    formats JSON,
+    active BOOLEAN DEFAULT TRUE
+);
+
+-- Measurements Table
+CREATE TABLE measurements (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    parameter_id INTEGER REFERENCES control_parameters(id),
+    operator_name VARCHAR(100) NOT NULL,
+    measurement_date DATE NOT NULL,
+    measurement_time TIME NOT NULL,
+    shift ENUM('06H-14H', '14H-22H', '22H-06H'),
+    format VARCHAR(20),
+    line_number INTEGER,
+    oven_number INTEGER,
+    press_number INTEGER,
+    
+    -- Measurement Values
+    numeric_value DECIMAL(10,3),
+    text_value TEXT,
+    boolean_value BOOLEAN,
+    json_values JSON, -- For complex measurements like visual defects
+    
+    -- Status
+    is_conforming BOOLEAN,
+    deviation_percentage DECIMAL(5,2),
+    
+    -- References
+    sample_size INTEGER DEFAULT 1,
+    nc_number VARCHAR(50), -- Non-conformity number
+    observations TEXT,
+    
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Scheduled Controls Table
+CREATE TABLE scheduled_controls (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    parameter_id INTEGER REFERENCES control_parameters(id),
+    scheduled_date DATE NOT NULL,
+    scheduled_time TIME NOT NULL,
+    shift ENUM('06H-14H', '14H-22H', '22H-06H'),
+    status ENUM('pending', 'completed', 'skipped', 'overdue') DEFAULT 'pending',
+    assigned_operator VARCHAR(100),
+    completed_at TIMESTAMP NULL,
+    measurement_id INTEGER REFERENCES measurements(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Control Sheets Table
+CREATE TABLE control_sheets (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sheet_type ENUM('daily', 'weekly', 'shift', 'stage'),
+    reference_date DATE NOT NULL,
+    shift VARCHAR(10),
+    stage_id INTEGER REFERENCES control_stages(id),
+    generated_by VARCHAR(100),
+    generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    file_path VARCHAR(500),
+    status ENUM('draft', 'final', 'archived') DEFAULT 'draft'
+);
+2. Flask Backend Optimization
+A. Create Models (models.py)
+pythonfrom flask_sqlalchemy import SQLAlchemy
+from datetime import datetime, date, time
+import json
+
+db = SQLAlchemy()
+
+class ControlStage(db.Model):
+    __tablename__ = 'control_stages'
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(20), unique=True, nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text)
+    order_sequence = db.Column(db.Integer)
+    active = db.Column(db.Boolean, default=True)
+    
+    parameters = db.relationship('ControlParameter', backref='stage', lazy=True)
+
+class ControlParameter(db.Model):
+    __tablename__ = 'control_parameters'
+    id = db.Column(db.Integer, primary_key=True)
+    stage_id = db.Column(db.Integer, db.ForeignKey('control_stages.id'), nullable=False)
+    code = db.Column(db.String(50), unique=True, nullable=False)
+    name = db.Column(db.String(200), nullable=False)
+    specification = db.Column(db.Text, nullable=False)
+    unit = db.Column(db.String(20))
+    frequency_per_day = db.Column(db.Integer)
+    frequency_description = db.Column(db.String(50))
+    method_reference = db.Column(db.String(50))
+    form_reference = db.Column(db.String(50))
+    min_value = db.Column(db.Numeric(10,3))
+    max_value = db.Column(db.Numeric(10,3))
+    target_value = db.Column(db.Numeric(10,3))
+    control_type = db.Column(db.Enum('numeric', 'visual', 'categorical', 'boolean'))
+    defect_categories = db.Column(db.JSON)
+    formats = db.Column(db.JSON)
+    active = db.Column(db.Boolean, default=True)
+    
+    measurements = db.relationship('Measurement', backref='parameter', lazy=True)
+    
+    def check_conformity(self, value):
+        """Check if a measured value is within specifications"""
+        if self.control_type == 'numeric' and value is not None:
+            if self.min_value is not None and value < float(self.min_value):
+                return False
+            if self.max_value is not None and value > float(self.max_value):
+                return False
+            return True
+        return None
+
+class Measurement(db.Model):
+    __tablename__ = 'measurements'
+    id = db.Column(db.Integer, primary_key=True)
+    parameter_id = db.Column(db.Integer, db.ForeignKey('control_parameters.id'), nullable=False)
+    operator_name = db.Column(db.String(100), nullable=False)
+    measurement_date = db.Column(db.Date, nullable=False)
+    measurement_time = db.Column(db.Time, nullable=False)
+    shift = db.Column(db.Enum('06H-14H', '14H-22H', '22H-06H'))
+    format = db.Column(db.String(20))
+    line_number = db.Column(db.Integer)
+    oven_number = db.Column(db.Integer)
+    press_number = db.Column(db.Integer)
+    
+    # Values
+    numeric_value = db.Column(db.Numeric(10,3))
+    text_value = db.Column(db.Text)
+    boolean_value = db.Column(db.Boolean)
+    json_values = db.Column(db.JSON)
+    
+    # Status
+    is_conforming = db.Column(db.Boolean)
+    deviation_percentage = db.Column(db.Numeric(5,2))
+    
+    # References
+    sample_size = db.Column(db.Integer, default=1)
+    nc_number = db.Column(db.String(50))
+    observations = db.Column(db.Text)
+    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class ScheduledControl(db.Model):
+    __tablename__ = 'scheduled_controls'
+    id = db.Column(db.Integer, primary_key=True)
+    parameter_id = db.Column(db.Integer, db.ForeignKey('control_parameters.id'), nullable=False)
+    scheduled_date = db.Column(db.Date, nullable=False)
+    scheduled_time = db.Column(db.Time, nullable=False)
+    shift = db.Column(db.Enum('06H-14H', '14H-22H', '22H-06H'))
+    status = db.Column(db.Enum('pending', 'completed', 'skipped', 'overdue'), default='pending')
+    assigned_operator = db.Column(db.String(100))
+    completed_at = db.Column(db.DateTime)
+    measurement_id = db.Column(db.Integer, db.ForeignKey('measurements.id'))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    parameter = db.relationship('ControlParameter', backref='scheduled_controls')
+    measurement = db.relationship('Measurement', backref='scheduled_control')
+B. Create Services (services.py)
+pythonfrom models import db, ControlParameter, Measurement, ScheduledControl
+from datetime import datetime, date, timedelta, time
+import json
+
+class MeasurementService:
+    
+    @staticmethod
+    def record_measurement(parameter_id, operator_name, measurement_data):
+        """Optimized method to record a measurement"""
+        try:
+            parameter = ControlParameter.query.get(parameter_id)
+            if not parameter:
+                raise ValueError("Parameter not found")
+            
+            # Determine shift based on current time
+            current_time = datetime.now().time()
+            shift = MeasurementService._determine_shift(current_time)
+            
+            # Create measurement record
+            measurement = Measurement(
+                parameter_id=parameter_id,
+                operator_name=operator_name,
+                measurement_date=measurement_data.get('date', date.today()),
+                measurement_time=measurement_data.get('time', datetime.now().time()),
+                shift=shift,
+                format=measurement_data.get('format'),
+                line_number=measurement_data.get('line_number'),
+                oven_number=measurement_data.get('oven_number'),
+                press_number=measurement_data.get('press_number'),
+                sample_size=measurement_data.get('sample_size', 1),
+                observations=measurement_data.get('observations')
+            )
+            
+            # Handle different measurement types
+            if parameter.control_type == 'numeric':
+                value = float(measurement_data.get('value', 0))
+                measurement.numeric_value = value
+                measurement.is_conforming = parameter.check_conformity(value)
+                
+                # Calculate deviation percentage
+                if parameter.target_value:
+                    deviation = ((value - float(parameter.target_value)) / float(parameter.target_value)) * 100
+                    measurement.deviation_percentage = round(deviation, 2)
+                    
+            elif parameter.control_type == 'visual':
+                defects = measurement_data.get('defects', {})
+                measurement.json_values = defects
+                
+                # Check if all defects are within limits
+                is_conforming = True
+                for defect_name, percentage in defects.items():
+                    # Parse specification to get limits (assuming format like "≤ 15%")
+                    if percentage > 15:  # This should be parsed from specifications
+                        is_conforming = False
+                        break
+                measurement.is_conforming = is_conforming
+                
+            elif parameter.control_type == 'boolean':
+                measurement.boolean_value = measurement_data.get('value', False)
+                measurement.is_conforming = measurement.boolean_value
+                
+            elif parameter.control_type == 'categorical':
+                measurement.text_value = measurement_data.get('value')
+                measurement.is_conforming = measurement_data.get('is_conforming', True)
+            
+            # Generate NC number if non-conforming
+            if not measurement.is_conforming:
+                measurement.nc_number = MeasurementService._generate_nc_number()
+            
+            db.session.add(measurement)
+            
+            # Update scheduled control if exists
+            scheduled = ScheduledControl.query.filter_by(
+                parameter_id=parameter_id,
+                scheduled_date=measurement.measurement_date,
+                status='pending'
+            ).first()
+            
+            if scheduled:
+                scheduled.status = 'completed'
+                scheduled.completed_at = datetime.now()
+                scheduled.measurement_id = measurement.id
+            
+            db.session.commit()
+            
+            return {
+                'success': True,
+                'measurement_id': measurement.id,
+                'is_conforming': measurement.is_conforming,
+                'nc_number': measurement.nc_number
+            }
+            
+        except Exception as e:
+            db.session.rollback()
+            return {'success': False, 'error': str(e)}
+    
+    @staticmethod
+    def _determine_shift(current_time):
+        """Determine shift based on time"""
+        if time(6, 0) <= current_time < time(14, 0):
+            return '06H-14H'
+        elif time(14, 0) <= current_time < time(22, 0):
+            return '14H-22H'
+        else:
+            return '22H-06H'
+    
+    @staticmethod
+    def _generate_nc_number():
+        """Generate non-conformity number"""
+        today = date.today()
+        count = Measurement.query.filter(
+            Measurement.measurement_date == today,
+            Measurement.nc_number.isnot(None)
+        ).count() + 1
+        return f"NC-{today.strftime('%Y%m%d')}-{count:03d}"
+
+class SchedulingService:
+    
+    @staticmethod
+    def generate_daily_schedule(target_date=None):
+        """Generate scheduled controls for a specific date based on frequencies"""
+        if not target_date:
+            target_date = date.today()
+        
+        # Clear existing schedule for the date
+        ScheduledControl.query.filter_by(scheduled_date=target_date).delete()
+        
+        parameters = ControlParameter.query.filter_by(active=True).all()
+        
+        for parameter in parameters:
+            frequency = parameter.frequency_per_day or 1
+            
+            if 'jour' in parameter.frequency_description.lower():
+                # Daily controls
+                if frequency == 1:
+                    # Schedule once per day at optimal time
+                    scheduled_times = [time(10, 0)]  # 10:00 AM
+                elif frequency == 4:
+                    # 4 times per day for silos
+                    scheduled_times = [time(8, 0), time(12, 0), time(16, 0), time(20, 0)]
+                elif frequency == 6:
+                    # 6 times per day for press/oven controls
+                    scheduled_times = [time(6, 0), time(10, 0), time(14, 0), 
+                                     time(18, 0), time(22, 0), time(2, 0)]
+                elif frequency == 12:
+                    # 12 times per day for enamel controls
+                    scheduled_times = [time(h, 0) for h in range(6, 24, 2)] + [time(0, 0), time(2, 0), time(4, 0)]
+                else:
+                    scheduled_times = [time(10, 0)]
+                    
+                for scheduled_time in scheduled_times:
+                    shift = MeasurementService._determine_shift(scheduled_time)
+                    
+                    scheduled_control = ScheduledControl(
+                        parameter_id=parameter.id,
+                        scheduled_date=target_date,
+                        scheduled_time=scheduled_time,
+                        shift=shift,
+                        status='pending'
+                    )
+                    db.session.add(scheduled_control)
+            
+            elif 'semaine' in parameter.frequency_description.lower():
+                # Weekly controls - schedule only on Mondays
+                if target_date.weekday() == 0:  # Monday
+                    scheduled_control = ScheduledControl(
+                        parameter_id=parameter.id,
+                        scheduled_date=target_date,
+                        scheduled_time=time(9, 0),
+                        shift='06H-14H',
+                        status='pending'
+                    )
+                    db.session.add(scheduled_control)
+        
+        db.session.commit()
+        
+        return ScheduledControl.query.filter_by(scheduled_date=target_date).count()
+    
+    @staticmethod
+    def get_pending_controls(target_date=None, shift=None):
+        """Get pending controls for a date/shift"""
+        if not target_date:
+            target_date = date.today()
+        
+        query = ScheduledControl.query.filter_by(
+            scheduled_date=target_date,
+            status='pending'
+        ).join(ControlParameter)
+        
+        if shift:
+            query = query.filter_by(shift=shift)
+        
+        return query.order_by(ScheduledControl.scheduled_time).all()
+    
+    @staticmethod
+    def mark_overdue_controls():
+        """Mark overdue controls"""
+        current_datetime = datetime.now()
+        overdue_controls = ScheduledControl.query.filter(
+            ScheduledControl.status == 'pending',
+            db.func.datetime(ScheduledControl.scheduled_date, ScheduledControl.scheduled_time) < current_datetime
+        ).all()
+        
+        for control in overdue_controls:
+            control.status = 'overdue'
+        
+        db.session.commit()
+        return len(overdue_controls)
+
+class ReportService:
+    
+    @staticmethod
+    def generate_control_sheet(sheet_type='daily', reference_date=None, stage_id=None):
+        """Generate control sheet based on measurements"""
+        if not reference_date:
+            reference_date = date.today()
+        
+        # Implementation for generating Excel/PDF control sheets
+        # This would use libraries like openpyxl or reportlab
+        pass
+C. Create API Routes (routes.py)
+pythonfrom flask import Blueprint, request, jsonify, send_file
+from services import MeasurementService, SchedulingService, ReportService
+from models import ControlParameter, Measurement, ScheduledControl
+from datetime import datetime, date
+
+api = Blueprint('api', __name__)
+
+@api.route('/measurements', methods=['POST'])
+def record_measurement():
+    """Optimized endpoint to record measurements"""
+    try:
+        data = request.get_json()
+        
+        required_fields = ['parameter_id', 'operator_name']
+        if not all(field in data for field in required_fields):
+            return jsonify({'error': 'Missing required fields'}), 400
+        
+        result = MeasurementService.record_measurement(
+            parameter_id=data['parameter_id'],
+            operator_name=data['operator_name'],
+            measurement_data=data
+        )
+        
+        if result['success']:
+            return jsonify(result), 201
+        else:
+            return jsonify(result), 400
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@api.route('/measurements/bulk', methods=['POST'])
+def record_bulk_measurements():
+    """Record multiple measurements at once"""
+    try:
+        data = request.get_json()
+        measurements = data.get('measurements', [])
+        
+        results = []
+        for measurement_data in measurements:
+            result = MeasurementService.record_measurement(
+                parameter_id=measurement_data['parameter_id'],
+                operator_name=measurement_data['operator_name'],
+                measurement_data=measurement_data
+            )
+            results.append(result)
+        
+        return jsonify({'results': results}), 201
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@api.route('/schedule/generate/<date_str>')
+def generate_schedule(date_str):
+    """Generate daily schedule for a specific date"""
+    try:
+        target_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        count = SchedulingService.generate_daily_schedule(target_date)
+        
+        return jsonify({
+            'success': True,
+            'date': date_str,
+            'scheduled_controls': count
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@api.route('/schedule/pending')
+def get_pending_controls():
+    """Get pending controls for today or specific date"""
+    try:
+        date_str = request.args.get('date')
+        shift = request.args.get('shift')
+        
+        target_date = None
+        if date_str:
+            target_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        
+        pending_controls = SchedulingService.get_pending_controls(target_date, shift)
+        
+        result = []
+        for control in pending_controls:
+            result.append({
+                'id': control.id,
+                'parameter': {
+                    'id': control.parameter.id,
+                    'name': control.parameter.name,
+                    'stage': control.parameter.stage.name,
+                    'specification': control.parameter.specification,
+                    'unit': control.parameter.unit,
+                    'control_type': control.parameter.control_type
+                },
+                'scheduled_time': control.scheduled_time.strftime('%H:%M'),
+                'shift': control.shift,
+                'status': control.status
+            })
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@api.route('/reports/control-sheet')
+def generate_control_sheet():
+    """Generate control sheet"""
+    try:
+        sheet_type = request.args.get('type', 'daily')
+        date_str = request.args.get('date')
+        stage_id = request.args.get('stage_id', type=int)
+        
+        reference_date = None
+        if date_str:
+            reference_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        
+        file_path = ReportService.generate_control_sheet(
+            sheet_type=sheet_type,
+            reference_date=reference_date,
+            stage_id=stage_id
+        )
+        
+        return send_file(file_path, as_attachment=True)
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+D. Create Automated Scheduler (scheduler.py)
+pythonfrom apscheduler.schedulers.background import BackgroundScheduler
+from services import SchedulingService
+from datetime import date, timedelta
+import atexit
+
+def create_scheduler(app):
+    """Create and configure the background scheduler"""
+    scheduler = BackgroundScheduler()
+    
+    # Generate daily schedule at midnight
+    scheduler.add_job(
+        func=generate_next_day_schedule,
+        trigger="cron",
+        hour=0,
+        minute=1,
+        id='generate_daily_schedule'
+    )
+    
+    # Mark overdue controls every hour
+    scheduler.add_job(
+        func=SchedulingService.mark_overdue_controls,
+        trigger="cron",
+        minute=0,
+        id='mark_overdue_controls'
+    )
+    
+    # Generate weekly schedules on Sundays
+    scheduler.add_job(
+        func=generate_weekly_schedule,
+        trigger="cron",
+        day_of_week='sun',
+        hour=23,
+        minute=59,
+        id='generate_weekly_schedule'
+    )
+    
+    with app.app_context():
+        scheduler.start()
+    
+    # Shut down the scheduler when exiting the app
+    atexit.register(lambda: scheduler.shutdown())
+    
+    return scheduler
+
+def generate_next_day_schedule():
+    """Generate schedule for the next day"""
+    tomorrow = date.today() + timedelta(days=1)
+    SchedulingService.generate_daily_schedule(tomorrow)
+
+def generate_weekly_schedule():
+    """Generate schedule for the next week"""
+    next_week = date.today() + timedelta(days=7)
+    for i in range(7):
+        schedule_date = next_week + timedelta(days=i)
+        SchedulingService.generate_daily_schedule(schedule_date)
+3. Frontend Optimization
+Create measurement recording interface with:
+html<!-- Quick measurement form -->
+<form id="quick-measurement-form">
+    <select id="parameter-select" required>
+        <option value="">Select Control Parameter</option>
+        <!-- Dynamically populated -->
+    </select>
+    
+    <input type="text" id="operator-name" placeholder="Operator Name" required>
+    
+    <div id="measurement-inputs">
+        <!-- Dynamic inputs based on parameter type -->
+    </div>
+    
+    <button type="submit">Record Measurement</button>
+</form>
+
+<!-- Bulk measurement interface -->
+<div id="bulk-measurement-interface">
+    <table id="bulk-measurements-table">
+        <thead>
+            <tr>
+                <th>Parameter</th>
+                <th>Value</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="pending-controls">
+            <!-- Populated with scheduled controls -->
+        </tbody>
+    </table>
+</div>
+4. Usage Instru
