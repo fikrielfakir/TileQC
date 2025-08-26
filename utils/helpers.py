@@ -179,36 +179,24 @@ def get_defect_analysis():
 
 def export_daily_report(report_date):
     """Export daily report data for specified date"""
+    # Import models here to avoid circular imports
+    from models import (ClayControl, PressControl, DryerControl, BiscuitKilnControl, 
+                       EmailKilnControl, EnamelControl, DimensionalTest, 
+                       DigitalDecoration, ExternalTest)
+    
     report_data = {
         'date': report_date.strftime('%Y-%m-%d'),
         'stats': get_dashboard_stats(report_date),
-        'clay_controls': [],
-        'press_controls': [],
-        'dryer_controls': [],
-        'biscuit_kiln_controls': [],
-        'email_kiln_controls': [],
-        'enamel_controls': [],
-        'dimensional_tests': [],
-        'digital_decorations': [],
-        'external_tests': []
+        'clay_controls': ClayControl.query.filter(ClayControl.date == report_date).all(),
+        'press_controls': PressControl.query.filter(PressControl.date == report_date).all(),
+        'dryer_controls': DryerControl.query.filter(DryerControl.date == report_date).all(),
+        'biscuit_kiln_controls': BiscuitKilnControl.query.filter(BiscuitKilnControl.date == report_date).all(),
+        'email_kiln_controls': EmailKilnControl.query.filter(EmailKilnControl.date == report_date).all(),
+        'enamel_controls': EnamelControl.query.filter(EnamelControl.date == report_date).all(),
+        'dimensional_tests': DimensionalTest.query.filter(DimensionalTest.date == report_date).all(),
+        'digital_decorations': DigitalDecoration.query.filter(DigitalDecoration.date == report_date).all(),
+        'external_tests': ExternalTest.query.filter(ExternalTest.date == report_date).all()
     }
-    
-    # Get all controls for the date
-    clay_controls = ClayControl.query.filter(ClayControl.date == report_date).all()
-    for control in clay_controls:
-        report_data['clay_controls'].append({
-            'id': control.id,
-            'shift': control.shift,
-            'humidity_before_prep': control.humidity_before_prep,
-            'humidity_after_sieving': control.humidity_after_sieving,
-            'humidity_after_prep': control.humidity_after_prep,
-            'granulometry_refusal': control.granulometry_refusal,
-            'calcium_carbonate': control.calcium_carbonate,
-            'compliance_status': control.compliance_status,
-            'controller': control.controller.full_name if control.controller else 'Unknown'
-        })
-    
-    # Similar for other control types...
     
     return report_data
 
