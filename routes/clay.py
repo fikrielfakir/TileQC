@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
-from forms import ClayControlForm, HumidityBeforePrepForm, HumidityAfterSievingForm, HumidityAfterPrepForm, GranulometryForm, CalciumCarbonateForm, R2F1LaboForm
+from forms import ClayControlForm, HumidityBeforePrepForm, HumidityAfterSievingForm, HumidityAfterPrepForm, GranulometryForm, CalciumCarbonateForm
 from models import ClayControl
 from app import db
 from datetime import date
@@ -241,84 +241,3 @@ def calcium_carbonate():
     
     return render_template('clay/calcium_carbonate.html', form=form)
 
-@clay_bp.route('/r2-f1-labo', methods=['GET', 'POST'])
-@login_required
-def r2_f1_labo_form():
-    form = R2F1LaboForm()
-    
-    if request.method == 'GET':
-        # Auto-fill form with recent measurements from today
-        today = date.today()
-        
-        # Find most recent measurements for each humidity type from today
-        humidity_before_prep_record = ClayControl.query.filter(
-            ClayControl.date == today,
-            ClayControl.humidity_before_prep.isnot(None)
-        ).order_by(ClayControl.id.desc()).first()
-        
-        humidity_after_sieving_record = ClayControl.query.filter(
-            ClayControl.date == today,
-            ClayControl.humidity_after_sieving.isnot(None)
-        ).order_by(ClayControl.id.desc()).first()
-        
-        humidity_after_prep_record = ClayControl.query.filter(
-            ClayControl.date == today,
-            ClayControl.humidity_after_prep.isnot(None)
-        ).order_by(ClayControl.id.desc()).first()
-        
-        # Pre-fill form with found measurements
-        if humidity_before_prep_record:
-            form.humidity_before_prep.data = humidity_before_prep_record.humidity_before_prep
-            form.measurement_time_1.data = humidity_before_prep_record.measurement_time_1
-        
-        if humidity_after_sieving_record:
-            form.humidity_after_sieving.data = humidity_after_sieving_record.humidity_after_sieving
-            form.measurement_time_2.data = humidity_after_sieving_record.measurement_time_2
-        
-        if humidity_after_prep_record:
-            form.humidity_after_prep.data = humidity_after_prep_record.humidity_after_prep
-    
-    if form.validate_on_submit():
-        # Create a comprehensive clay control record from the R2-F1-LABO form
-        clay_control = ClayControl()
-        clay_control.date = form.date.data
-        clay_control.measurement_time_1 = form.measurement_time_1.data
-        clay_control.measurement_time_2 = form.measurement_time_2.data
-        clay_control.humidity_before_prep = form.humidity_before_prep.data
-        clay_control.humidity_after_sieving = form.humidity_after_sieving.data
-        clay_control.humidity_after_prep = form.humidity_after_prep.data
-        clay_control.notes = form.notes.data
-        clay_control.controller_id = current_user.id
-        clay_control.compliance_status = 'compliant'  # Default for R2-F1-LABO
-        
-        db.session.add(clay_control)
-        db.session.commit()
-        
-        flash('Fiche R2-F1-LABO enregistrée avec succès', 'success')
-        return redirect(url_for('clay.clay_controls'))
-    
-    return render_template('clay/r2_f1_labo_form.html', form=form)
-
-@clay_bp.route('/print-r2-f1-labo/<int:id>')
-@login_required
-def print_r2_f1_labo(id):
-    clay_control = ClayControl.query.get_or_404(id)
-    
-    # Check if the record has the required humidity measurements for R2-F1-LABO
-    if not (clay_control.humidity_before_prep and 
-            clay_control.humidity_after_sieving and 
-            clay_control.humidity_after_prep):
-        flash('Ce contrôle ne contient pas toutes les mesures requises pour la fiche R2-F1-LABO', 'error')
-        return redirect(url_for('clay.clay_controls'))
-    
-    # Create a form pre-filled with the data
-    form = R2F1LaboForm()
-    form.date.data = clay_control.date
-    form.humidity_before_prep.data = clay_control.humidity_before_prep
-    form.humidity_after_sieving.data = clay_control.humidity_after_sieving
-    form.humidity_after_prep.data = clay_control.humidity_after_prep
-    form.measurement_time_1.data = clay_control.measurement_time_1
-    form.measurement_time_2.data = clay_control.measurement_time_2
-    form.notes.data = clay_control.notes
-    
-    return render_template('clay/r2_f1_labo_print.html', form=form, control=clay_control)

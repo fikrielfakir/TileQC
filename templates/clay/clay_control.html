@@ -15,7 +15,6 @@
                     <i class="bi bi-plus-lg"></i> Ajouter Contrôle Argile
                 </button>
                 <ul class="dropdown-menu">
-                    <li><h6 class="dropdown-header">R2-F1-LABO - Contrôles d'Humidité</h6></li>
                     <li><a class="dropdown-item" href="{{ url_for('clay.humidity_before_prep') }}">
                         <i class="bi bi-droplet text-warning"></i> Humidité Trémie Générale
                     </a></li>
@@ -34,9 +33,6 @@
                         <i class="bi bi-graph-up text-success"></i> % Chaux (CaCO₃)
                     </a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="{{ url_for('clay.r2_f1_labo_form') }}">
-                        <i class="bi bi-file-earmark-text text-primary"></i> Fiche R2-F1-LABO Complète
-                    </a></li>
                     <li><a class="dropdown-item" href="{{ url_for('clay.add_clay_control') }}">
                         <i class="bi bi-list-ul text-info"></i> Formulaire Simplifié
                     </a></li>
@@ -56,10 +52,10 @@
                 <h6 class="mb-0"><i class="bi bi-list-check text-info"></i> Sous-Contrôles Argile</h6>
             </div>
             <div class="card-body">
-                <!-- R2-F1-LABO - Contrôles d'Humidité -->
+                <!-- Contrôles d'Humidité -->
                 <div class="row mb-4">
                     <div class="col-12">
-                        <h6 class="text-primary"><i class="bi bi-droplet"></i> Fiche Rapport: R2-F1-LABO - Contrôles d'Humidité</h6>
+                        <h6 class="text-primary"><i class="bi bi-droplet"></i> Contrôles d'Humidité</h6>
                         <p class="text-muted small">Moyens : Balance Et Etuve/Séchoir</p>
                     </div>
                 </div>
@@ -161,7 +157,7 @@
                     </div>
                     
                     <h6 class="text-primary border-bottom pb-2 mb-3">
-                        <i class="bi bi-droplet"></i> R2-F1-LABO - Contrôles d'Humidité
+                        <i class="bi bi-droplet"></i> Contrôles d'Humidité
                         <small class="text-muted">(Balance Et Etuve/Séchoir)</small>
                     </h6>
                     
@@ -378,12 +374,6 @@
                                            class="btn btn-outline-primary">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        {% if control.humidity_before_prep and control.humidity_after_sieving and control.humidity_after_prep %}
-                                        <a href="{{ url_for('clay.print_r2_f1_labo', id=control.id) }}" 
-                                           class="btn btn-outline-info" title="Imprimer Fiche R2-F1-LABO">
-                                            <i class="bi bi-printer"></i>
-                                        </a>
-                                        {% endif %}
                                         {% if current_user.role in ['admin', 'quality_manager'] %}
                                         <form method="POST" action="{{ url_for('clay.delete_clay_control', id=control.id) }}" 
                                               style="display: inline;" onsubmit="return confirm('Are you sure?')">
