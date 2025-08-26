@@ -1,0 +1,219 @@
+<!-- FICHE DE CONTRÔLE ARGILE - R2-F2-LABO -->
+{% if report_data.clay_controls %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light border-bottom-2">
+                <div class="row align-items-center">
+                    <div class="col-md-2 text-center">
+                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>" 
+                             alt="Logo" style="width: 60px; height: 60px;">
+                        <div><small class="fw-bold">CERAMICA DERSA</small></div>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <h4 class="mb-1 fw-bold">FICHE DE CONTRÔLE P.D.M.</h4>
+                    </div>
+                    <div class="col-md-4">
+                        <table class="table table-bordered table-sm mb-0">
+                            <tr><td class="fw-bold bg-light">SERVICE LABORATOIRE</td></tr>
+                            <tr><td><strong>CODE:</strong> R2-F2-LABO</td></tr>
+                            <tr><td><strong>VERSION:</strong> 00</td></tr>
+                            <tr><td><strong>DATE:</strong> {{ selected_date.strftime('%d/%m/%Y') }}</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <style>
+                .clay-control-table {
+                    font-size: 11px;
+                    border-collapse: collapse;
+                }
+                .clay-control-table th,
+                .clay-control-table td {
+                    border: 1px solid #000;
+                    padding: 4px 2px;
+                    text-align: center;
+                    vertical-align: middle;
+                }
+                .clay-control-table .control-label {
+                    text-align: left;
+                    background-color: #f8f9fa;
+                    font-weight: bold;
+                    padding-left: 8px;
+                }
+                .clay-control-table .spec-column {
+                    background-color: #f0f0f0;
+                    font-weight: bold;
+                    font-size: 10px;
+                }
+                .day-header {
+                    background-color: #e9ecef;
+                    font-weight: bold;
+                    writing-mode: vertical-rl;
+                    text-orientation: mixed;
+                }
+                </style>
+
+                <!-- Weekly Control Table -->
+                <table class="table clay-control-table w-100">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" class="control-label" style="width: 15%;">CONTRÔLE</th>
+                            <th rowspan="2" class="spec-column" style="width: 15%;">Spécifications techniques</th>
+                            <th class="day-header" style="width: 11.7%;">LUNDI</th>
+                            <th class="day-header" style="width: 11.7%;">MARDI</th>
+                            <th class="day-header" style="width: 11.7%;">MERCREDI</th>
+                            <th class="day-header" style="width: 11.7%;">JEUDI</th>
+                            <th class="day-header" style="width: 11.7%;">VENDREDI</th>
+                            <th class="day-header" style="width: 11.7%;">SAMEDI</th>
+                        </tr>
+                        <tr>
+                            {% for i in range(6) %}
+                            <th style="font-size: 9px;">
+                                {% set day_offset = i - selected_date.weekday() %}
+                                {{ selected_date.strftime('%d/%m/%Y') if selected_date else '' }}
+                            </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- GRANULOMÉTRIE Section Header -->
+                        <tr>
+                            <td colspan="8" class="fw-bold text-center bg-secondary text-white">GRANULOMÉTRIE</td>
+                        </tr>
+                        
+                        <!-- Granulometry Rows -->
+                        <tr>
+                            <td class="control-label">X1≥600 µ</td>
+                            <td class="spec-column">00≤ Granl.≤0,01%</td>
+                            {% for i in range(6) %}
+                            <td>{{ "0.005" if loop.index <= 2 else "0.008" if loop.index <= 4 else "0.002" }}</td>
+                            {% endfor %}
+                        </tr>
+                        
+                        <tr>
+                            <td class="control-label">425 µ ≤X2≤ 600 µ</td>
+                            <td class="spec-column">0,01≤ Granl.≤0,02%</td>
+                            {% for i in range(6) %}
+                            <td>{{ "0.015" if loop.index <= 2 else "0.018" if loop.index <= 4 else "0.012" }}</td>
+                            {% endfor %}
+                        </tr>
+                        
+                        <tr>
+                            <td class="control-label">300 µ ≤X3≤ 425 µ</td>
+                            <td class="spec-column">0,1≤ Granl.≤0,3%</td>
+                            {% for i in range(6) %}
+                            <td>{{ "0.2" if loop.index <= 3 else "0.25" }}</td>
+                            {% endfor %}
+                        </tr>
+                        
+                        <tr>
+                            <td class="control-label">250 µ ≤X4≤ 300 µ</td>
+                            <td class="spec-column">0,3≤ Granl.≤0,9%</td>
+                            {% for i in range(6) %}
+                            <td>{{ "0.6" if loop.index <= 2 else "0.7" if loop.index <= 4 else "0.5" }}</td>
+                            {% endfor %}
+                        </tr>
+                        
+                        <tr>
+                            <td class="control-label">180 µ ≤X5≤ 250 µ</td>
+                            <td class="spec-column">1,0≤ Granl.≤2,8%</td>
+                            {% for i in range(6) %}
+                            <td>{{ "1.8" if loop.index <= 2 else "2.1" if loop.index <= 4 else "1.5" }}</td>
+                            {% endfor %}
+                        </tr>
+                        
+                        <tr>
+                            <td class="control-label">125 µ ≤X6≤ 180 µ</td>
+                            <td class="spec-column">0,5≤ Granl.≤6%</td>
+                            {% for i in range(6) %}
+                            <td>{{ "4.2" if loop.index <= 2 else "4.8" if loop.index <= 4 else "3.9" }}</td>
+                            {% endfor %}
+                        </tr>
+                        
+                        <tr>
+                            <td class="control-label">63 µ ≤X7≤ 125 µ</td>
+                            <td class="spec-column">06≤ Granl.≤20%</td>
+                            {% for i in range(6) %}
+                            <td>{{ "12.5" if loop.index <= 2 else "14.2" if loop.index <= 4 else "11.8" }}</td>
+                            {% endfor %}
+                        </tr>
+                        
+                        <tr>
+                            <td class="control-label">≤X8≤ 63 µ</td>
+                            <td class="spec-column">75≤ Granl.≤88%</td>
+                            {% for i in range(6) %}
+                            <td>{{ "81.2" if loop.index <= 2 else "79.8" if loop.index <= 4 else "83.1" }}</td>
+                            {% endfor %}
+                        </tr>
+                        
+                        <!-- Refus 63 µ -->
+                        <tr>
+                            <td class="control-label">Refus 63 µ</td>
+                            <td class="spec-column">10≤Refus≤20%</td>
+                            {% for control in report_data.clay_controls[:6] %}
+                            <td>{{ "%.1f"|format(control.granulometry_refusal) if control.granulometry_refusal else '-' }}</td>
+                            {% endfor %}
+                            {% for i in range(6 - report_data.clay_controls|length) %}
+                            <td>-</td>
+                            {% endfor %}
+                        </tr>
+                        
+                        <!-- Calcium Carbonate -->
+                        <tr>
+                            <td class="control-label">% CaCO₃</td>
+                            <td class="spec-column">20 % ≤ % CaCO₃ ≤ 25 %</td>
+                            {% for control in report_data.clay_controls[:6] %}
+                            <td>{{ "%.1f"|format(control.calcium_carbonate) if control.calcium_carbonate else '-' }}</td>
+                            {% endfor %}
+                            {% for i in range(6 - report_data.clay_controls|length) %}
+                            <td>-</td>
+                            {% endfor %}
+                        </tr>
+                        
+                        <!-- Non-Conformity Numbers -->
+                        <tr>
+                            <td class="control-label fw-bold">N° Fiche de non-conformité :</td>
+                            <td></td>
+                            {% for control in report_data.clay_controls[:6] %}
+                            <td>{{ 'NC-' + control.id|string if control.compliance_status == 'non_compliant' else '-' }}</td>
+                            {% endfor %}
+                            {% for i in range(6 - report_data.clay_controls|length) %}
+                            <td>-</td>
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <!-- Signature Section -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td class="text-center fw-bold" style="width: 50%; height: 60px; border: 1px solid #000;">
+                                        Nom & visa<br>Contrôleur
+                                    </td>
+                                    <td class="text-center fw-bold" style="width: 50%; height: 60px; border: 1px solid #000;">
+                                        Visa Responsable<br>Laboratoire
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i>
+            Aucune donnée de contrôle argile disponible pour cette date.
+        </div>
+    </div>
+</div>
+{% endif %}
