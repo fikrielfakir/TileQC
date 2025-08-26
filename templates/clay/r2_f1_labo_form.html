@@ -314,8 +314,8 @@ input[type="text"], input[type="time"], input[type="number"] {
             <div class="section-content">
                 <div class="row">
                     <div class="cell">% Humidité<br>{{ form.humidity_before_prep(class="form-control-plaintext") }}</div>
-                    <div class="cell">Contrôleur : <input type="text" class="dotted-line-small" value="{{ current_user.username }}" readonly></div>
-                    <div class="cell">Heure : {{ form.measurement_time_1(class="dotted-line-small") }}</div>
+                    <div class="cell">Contrôleur : {{ form.measurement_time_1(class="dotted-line-small", placeholder="........................") }}</div>
+                    <div class="cell">Heure : {{ form.measurement_time_1(class="dotted-line-small", placeholder=".......H.......") }}</div>
                 </div>
                 <div class="row">
                     <div class="cell"></div>
@@ -336,8 +336,8 @@ input[type="text"], input[type="time"], input[type="number"] {
             <div class="section-content">
                 <div class="row">
                     <div class="cell">% Humidité<br>{{ form.humidity_after_sieving(class="form-control-plaintext") }}</div>
-                    <div class="cell">Contrôleur : <input type="text" class="dotted-line-small" value="{{ current_user.username }}" readonly></div>
-                    <div class="cell">Heure : {{ form.measurement_time_2(class="dotted-line-small") }}</div>
+                    <div class="cell">Contrôleur : {{ form.measurement_time_2(class="dotted-line-small", placeholder="........................") }}</div>
+                    <div class="cell">Heure : {{ form.measurement_time_2(class="dotted-line-small", placeholder=".......H.......") }}</div>
                 </div>
                 <div class="row">
                     <div class="cell"></div>
@@ -360,33 +360,33 @@ input[type="text"], input[type="time"], input[type="number"] {
                     <div class="cell">Heure</div>
                     <div class="cell">N° Silo</div>
                     <div class="cell">% humidité</div>
-                    <div class="cell">Contrôleur : <input type="text" class="dotted-line-small" value="{{ current_user.username }}" readonly></div>
+                    <div class="cell">Contrôleur : {{ form.measurement_time_1(class="dotted-line-small", placeholder="........................") }}</div>
                     <div class="cell">N° F.N.C.</div>
                 </div>
                 <div class="silo-rows">
                     <div class="row">
-                        <div class="cell">{{ form.silo_time_1(class="dotted-line-small", placeholder="..H..") }}</div>
+                        <div class="cell">{{ form.silo_time_1(class="dotted-line-small", placeholder=".......H.......") }}</div>
                         <div class="cell">{{ form.silo_number_1(class="dotted-line-small") }}</div>
                         <div class="cell">{{ form.silo_humidity_1(class="dotted-line-small") }}</div>
                         <div class="cell silo-specification">5,3 % ≤ H ≤ 6,3 %</div>
                         <div class="cell"></div>
                     </div>
                     <div class="row">
-                        <div class="cell">{{ form.silo_time_2(class="dotted-line-small", placeholder="..H..") }}</div>
+                        <div class="cell">{{ form.silo_time_2(class="dotted-line-small", placeholder=".......H.......") }}</div>
                         <div class="cell">{{ form.silo_number_2(class="dotted-line-small") }}</div>
                         <div class="cell">{{ form.silo_humidity_2(class="dotted-line-small") }}</div>
                         <div class="cell"></div>
                         <div class="cell"></div>
                     </div>
                     <div class="row">
-                        <div class="cell">{{ form.silo_time_3(class="dotted-line-small", placeholder="..H..") }}</div>
+                        <div class="cell">{{ form.silo_time_3(class="dotted-line-small", placeholder=".......H.......") }}</div>
                         <div class="cell">{{ form.silo_number_3(class="dotted-line-small") }}</div>
                         <div class="cell">{{ form.silo_humidity_3(class="dotted-line-small") }}</div>
                         <div class="cell"></div>
                         <div class="cell"></div>
                     </div>
                     <div class="row">
-                        <div class="cell">{{ form.silo_time_4(class="dotted-line-small", placeholder="..H..") }}</div>
+                        <div class="cell">{{ form.silo_time_4(class="dotted-line-small", placeholder=".......H.......") }}</div>
                         <div class="cell">{{ form.silo_number_4(class="dotted-line-small") }}</div>
                         <div class="cell">{{ form.silo_humidity_4(class="dotted-line-small") }}</div>
                         <div class="cell"></div>
@@ -394,7 +394,7 @@ input[type="text"], input[type="time"], input[type="number"] {
                     </div>
                 </div>
                 <div class="row">
-                    <div class="cell colspan-5">Humidité Moyenne: {{ form.humidity_after_prep(class="dotted-line-small") }}</div>
+                    <div class="cell colspan-5">Humidité Moyenne</div>
                 </div>
             </div>
         </div>
@@ -406,8 +406,8 @@ input[type="text"], input[type="time"], input[type="number"] {
                 <div class="row">
                     <div class="cell">N° Silo<br>{{ form.press_silo_number(class="dotted-line-small") }}</div>
                     <div class="cell">% Humidité<br>{{ form.press_humidity(class="dotted-line-small") }}</div>
-                    <div class="cell">Contrôleur : <input type="text" class="dotted-line-small" value="{{ current_user.username }}" readonly></div>
-                    <div class="cell">Heure : {{ form.press_time(class="dotted-line-small") }}</div>
+                    <div class="cell">Contrôleur : {{ form.measurement_time_1(class="dotted-line-small", placeholder="........................") }}</div>
+                    <div class="cell">Heure : {{ form.press_time(class="dotted-line-small", placeholder=".......H.......") }}</div>
                 </div>
                 <div class="row">
                     <div class="cell"></div>
@@ -430,8 +430,8 @@ input[type="text"], input[type="time"], input[type="number"] {
             <div class="section-content">
                 <div class="row">
                     <div class="cell">% Humidité<br>{{ form.residual_humidity(class="dotted-line-small") }}</div>
-                    <div class="cell">Contrôleur : <input type="text" class="dotted-line-small" value="{{ current_user.username }}" readonly></div>
-                    <div class="cell">Heure : {{ form.dryer_time(class="dotted-line-small") }}</div>
+                    <div class="cell">Contrôleur : {{ form.measurement_time_1(class="dotted-line-small", placeholder="........................") }}</div>
+                    <div class="cell">Heure : {{ form.dryer_time(class="dotted-line-small", placeholder=".......H.......") }}</div>
                 </div>
                 <div class="row">
                     <div class="cell"></div>
