@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
-from forms import ClayControlForm, HumidityBeforePrepForm, HumidityAfterSievingForm, HumidityAfterPrepForm, GranulometryForm, CalciumCarbonateForm
+from forms import ClayControlForm, HumidityBeforePrepForm, HumidityAfterSievingForm, HumidityAfterPrepForm, GranulometryForm, CalciumCarbonateForm, CombinedHumidityForm, CombinedAnalysisForm
 from models import ClayControl
 from app import db
 from datetime import date
@@ -240,4 +240,95 @@ def calcium_carbonate():
         return redirect(url_for('clay.clay_controls'))
     
     return render_template('clay/calcium_carbonate.html', form=form)
+
+# Combined forms routes as requested by user
+@clay_bp.route('/combined-humidity', methods=['GET', 'POST'])
+@login_required
+def combined_humidity():
+    form = CombinedHumidityForm()
+    
+    if form.validate_on_submit():
+        clay_control = ClayControl()
+        clay_control.date = form.date.data
+        clay_control.shift = form.shift.data
+        clay_control.measurement_time_1 = form.measurement_time_1.data
+        clay_control.measurement_time_2 = form.measurement_time_2.data
+        clay_control.humidity_before_prep = form.humidity_before_prep.data
+        clay_control.humidity_after_sieving = form.humidity_after_sieving.data
+        clay_control.humidity_after_prep = form.humidity_after_prep.data
+        clay_control.notes = form.notes.data
+        clay_control.controller_id = current_user.id
+        
+        # Check compliance for all humidity values
+        compliance_issues = []
+        overall_compliance = 'compliant'
+        
+        if form.humidity_before_prep.data:
+            if form.humidity_before_prep.data < 2.5 or form.humidity_before_prep.data > 4.1:
+                compliance_issues.append(f'Trémie générale ({form.humidity_before_prep.data}%) - Spéc: 2.5%-4.1%')
+                overall_compliance = 'non_compliant'
+                
+        if form.humidity_after_sieving.data:
+            if form.humidity_after_sieving.data < 2.0 or form.humidity_after_sieving.data > 3.5:
+                compliance_issues.append(f'Après tamisage ({form.humidity_after_sieving.data}%) - Spéc: 2%-3.5%')
+                overall_compliance = 'non_compliant'
+                
+        if form.humidity_after_prep.data:
+            if form.humidity_after_prep.data < 5.3 or form.humidity_after_prep.data > 6.3:
+                compliance_issues.append(f'Niveau silo ({form.humidity_after_prep.data}%) - Spéc: 5.3%-6.3%')
+                overall_compliance = 'non_compliant'
+        
+        clay_control.compliance_status = overall_compliance
+        
+        db.session.add(clay_control)
+        db.session.commit()
+        
+        if compliance_issues:
+            flash(f'⚠️ Valeurs hors spécification: {", ".join(compliance_issues)} - F.N.C. requis', 'warning')
+        
+        flash('Contrôles d\'humidité enregistrés avec succès', 'success')
+        return redirect(url_for('clay.clay_controls'))
+    
+    return render_template('clay/combined_humidity.html', form=form)
+
+@clay_bp.route('/combined-analysis', methods=['GET', 'POST'])
+@login_required
+def combined_analysis():
+    form = CombinedAnalysisForm()
+    
+    if form.validate_on_submit():
+        clay_control = ClayControl()
+        clay_control.date = form.date.data
+        clay_control.shift = form.shift.data
+        clay_control.granulometry_refusal = form.granulometry_refusal.data
+        clay_control.calcium_carbonate = form.calcium_carbonate.data
+        clay_control.notes = form.notes.data
+        clay_control.controller_id = current_user.id
+        
+        # Check compliance for both analysis values
+        compliance_issues = []
+        overall_compliance = 'compliant'
+        
+        if form.granulometry_refusal.data:
+            if form.granulometry_refusal.data < 10 or form.granulometry_refusal.data > 20:
+                compliance_issues.append(f'Granulométrie ({form.granulometry_refusal.data}%) - Spéc: 10%-20%')
+                overall_compliance = 'non_compliant'
+                
+        if form.calcium_carbonate.data:
+            if form.calcium_carbonate.data < 15 or form.calcium_carbonate.data > 25:
+                compliance_issues.append(f'CaCO₃ ({form.calcium_carbonate.data}%) - Spéc: 15%-25%')
+                overall_compliance = 'non_compliant'
+        
+        clay_control.compliance_status = overall_compliance
+        
+        db.session.add(clay_control)
+        db.session.commit()
+        
+        if compliance_issues:
+            flash(f'⚠️ Valeurs hors spécification: {", ".join(compliance_issues)} - F.N.C. requis', 'warning')
+        
+        flash('Analyses enregistrées avec succès', 'success')
+        return redirect(url_for('clay.clay_controls'))
+    
+    return render_template('clay/combined_analysis.html', form=form)
 

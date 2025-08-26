@@ -56,6 +56,39 @@ class CalciumCarbonateForm(FlaskForm):
     calcium_carbonate = FloatField('% Chaux CaCO₃ (%)', validators=[DataRequired(), NumberRange(min=0, max=100, message="Valeur entre 0% et 100%")])
     notes = TextAreaField('Notes')
 
+# Combined forms as requested by user
+class CombinedHumidityForm(FlaskForm):
+    date = DateField('Date', default=date.today, validators=[DataRequired()])
+    shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
+    
+    # Humidité Trémie Générale (avant préparation)
+    measurement_time_1 = TimeField('Temps de Mesure 1', validators=[Optional()])
+    humidity_before_prep = FloatField('Humidité Trémie Générale (%)', validators=[Optional(), NumberRange(min=0, max=100, message="Valeur entre 0% et 100%")])
+    
+    # Humidité Après Tamisage
+    measurement_time_2 = TimeField('Temps de Mesure 2', validators=[Optional()])
+    humidity_after_sieving = FloatField('Humidité Après Tamisage (%)', validators=[Optional(), NumberRange(min=0, max=100, message="Valeur entre 0% et 100%")])
+    
+    # Humidité Niveau Silo (après préparation)
+    measurement_time_3 = TimeField('Temps de Mesure 3', validators=[Optional()])
+    humidity_after_prep = FloatField('Humidité Niveau Silo (%)', validators=[Optional(), NumberRange(min=0, max=100, message="Valeur entre 0% et 100%")])
+    
+    notes = TextAreaField('Notes')
+
+class CombinedAnalysisForm(FlaskForm):
+    date = DateField('Date', default=date.today, validators=[DataRequired()])
+    shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])
+    
+    # Granulométrie après tamis CaCO3
+    granulometry_time = TimeField('Temps de Mesure Granulométrie', validators=[Optional()])
+    granulometry_refusal = FloatField('Granulométrie Refus (%)', validators=[Optional(), NumberRange(min=0, max=100, message="Valeur entre 0% et 100%")])
+    
+    # Carbonate de Calcium CaCO3
+    calcium_time = TimeField('Temps de Mesure CaCO₃', validators=[Optional()])
+    calcium_carbonate = FloatField('Carbonate de Calcium (%)', validators=[Optional(), NumberRange(min=0, max=100, message="Valeur entre 0% et 100%")])
+    
+    notes = TextAreaField('Notes')
+
 class PressControlForm(FlaskForm):
     date = DateField('Date', default=date.today, validators=[DataRequired()])
     shift = SelectField('Équipe', choices=[('morning', 'Matin'), ('afternoon', 'Après-midi'), ('night', 'Nuit')])

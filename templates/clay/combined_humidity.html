@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block title %}Contrôles d'Humidité - Céramique QC{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-droplet text-warning"></i> Contrôles d'Humidité
+            </h1>
+            <a href="{{ url_for('clay.clay_controls') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Retour
+            </a>
+        </div>
+        <p class="text-muted">Contrôles d'humidité argile - Trémie générale, Tamisage, et Niveau silo</p>
+    </div>
+</div>
+
+<!-- Specification Cards -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card border-warning">
+            <div class="card-header bg-warning bg-opacity-10">
+                <h6 class="mb-0 text-warning">
+                    <i class="bi bi-droplet"></i> Trémie Générale
+                </h6>
+            </div>
+            <div class="card-body">
+                <p><strong>Spéc:</strong> <span class="fw-bold text-warning">2.5% ≤ H ≤ 4.1%</span></p>
+                <p class="mb-0"><small>Balance Et Etuve/Séchoir</small></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-info">
+            <div class="card-header bg-info bg-opacity-10">
+                <h6 class="mb-0 text-info">
+                    <i class="bi bi-droplet"></i> Après Tamisage
+                </h6>
+            </div>
+            <div class="card-body">
+                <p><strong>Spéc:</strong> <span class="fw-bold text-info">2% ≤ H ≤ 3.5%</span></p>
+                <p class="mb-0"><small>Balance Et Etuve/Séchoir</small></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-success">
+            <div class="card-header bg-success bg-opacity-10">
+                <h6 class="mb-0 text-success">
+                    <i class="bi bi-droplet"></i> Niveau Silo
+                </h6>
+            </div>
+            <div class="card-body">
+                <p><strong>Spéc:</strong> <span class="fw-bold text-success">5.3% ≤ H ≤ 6.3%</span></p>
+                <p class="mb-0"><small>R2-MA-LABO-01</small></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Form -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-plus-lg"></i> Enregistrer Contrôles d'Humidité
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" id="combinedHumidityForm">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.date.label(class="form-label") }}
+                            {{ form.date(class="form-control") }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.shift.label(class="form-label") }}
+                            {{ form.shift(class="form-control") }}
+                        </div>
+                    </div>
+                    
+                    <!-- Humidité Trémie Générale -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-warning bg-opacity-10">
+                            <h6 class="mb-0 text-warning">1. Humidité Trémie Générale (avant préparation)</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form.measurement_time_1.label(class="form-label") }}
+                                    {{ form.measurement_time_1(class="form-control") }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form.humidity_before_prep.label(class="form-label") }}
+                                    <div class="input-group">
+                                        {{ form.humidity_before_prep(class="form-control", **{"data-min": "2.5", "data-max": "4.1"}) }}
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <small class="text-muted">Spéc: 2.5% ≤ H ≤ 4.1%</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Humidité Après Tamisage -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-info bg-opacity-10">
+                            <h6 class="mb-0 text-info">2. Humidité Après Tamisage</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form.measurement_time_2.label(class="form-label") }}
+                                    {{ form.measurement_time_2(class="form-control") }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form.humidity_after_sieving.label(class="form-label") }}
+                                    <div class="input-group">
+                                        {{ form.humidity_after_sieving(class="form-control", **{"data-min": "2.0", "data-max": "3.5"}) }}
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <small class="text-muted">Spéc: 2% ≤ H ≤ 3.5%</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Humidité Niveau Silo -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-success bg-opacity-10">
+                            <h6 class="mb-0 text-success">3. Humidité Niveau Silo (après préparation)</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form.measurement_time_3.label(class="form-label") }}
+                                    {{ form.measurement_time_3(class="form-control") }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form.humidity_after_prep.label(class="form-label") }}
+                                    <div class="input-group">
+                                        {{ form.humidity_after_prep(class="form-control", **{"data-min": "5.3", "data-max": "6.3"}) }}
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <small class="text-muted">Spéc: 5.3% ≤ H ≤ 6.3% (R2-MA-LABO-01)</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.notes.label(class="form-label") }}
+                        {{ form.notes(class="form-control", rows="3") }}
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg"></i> Enregistrer Contrôles
+                        </button>
+                        <a href="{{ url_for('clay.clay_controls') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Annuler
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="bi bi-lightbulb text-warning"></i> Instructions</h6>
+            </div>
+            <div class="card-body">
+                <h6>Mesures Quotidiennes:</h6>
+                <ul class="list-unstyled">
+                    <li><i class="bi bi-check text-success"></i> Humidité trémie générale (1x/jour)</li>
+                    <li><i class="bi bi-check text-success"></i> Humidité niveau silo (4x/jour)</li>
+                </ul>
+                
+                <h6 class="mt-3">Mesures Hebdomadaires:</h6>
+                <ul class="list-unstyled">
+                    <li><i class="bi bi-check text-success"></i> Humidité après tamisage</li>
+                </ul>
+                
+                <div class="alert alert-info mt-3">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>Note:</strong> Toutes les mesures sont validées automatiquement selon les spécifications.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add real-time validation for humidity fields
+    const humidityFields = document.querySelectorAll('input[data-min][data-max]');
+    
+    humidityFields.forEach(field => {
+        field.addEventListener('input', function() {
+            const value = parseFloat(this.value);
+            const min = parseFloat(this.dataset.min);
+            const max = parseFloat(this.dataset.max);
+            
+            if (value && (value < min || value > max)) {
+                this.classList.add('is-invalid');
+                this.classList.remove('is-valid');
+            } else if (value) {
+                this.classList.add('is-valid');
+                this.classList.remove('is-invalid');
+            } else {
+                this.classList.remove('is-valid', 'is-invalid');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
