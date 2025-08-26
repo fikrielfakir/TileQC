@@ -1,9 +1,11 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, send_file
 from flask_login import login_required, current_user
 from forms import ClayControlForm, HumidityBeforePrepForm, HumidityAfterSievingForm, HumidityAfterPrepForm, GranulometryForm, CalciumCarbonateForm, CombinedHumidityForm, CombinedAnalysisForm
 from models import ClayControl
 from app import db
 from datetime import date
+from excel_export import ExcelExporter
+import os
 
 clay_bp = Blueprint('clay', __name__)
 
@@ -286,6 +288,28 @@ def combined_humidity():
         if compliance_issues:
             flash(f'⚠️ Valeurs hors spécification: {", ".join(compliance_issues)} - F.N.C. requis', 'warning')
         
+        # Check if export to Excel was requested
+        if request.form.get('export_excel'):
+            try:
+                exporter = ExcelExporter()
+                export_data = {
+                    'date': form.date.data,
+                    'shift': form.shift.data,
+                    'controller': current_user.username,
+                    'humidity_before_prep': form.humidity_before_prep.data,
+                    'humidity_after_sieving': form.humidity_after_sieving.data,
+                    'humidity_after_prep': form.humidity_after_prep.data,
+                    'measurement_time_1': form.measurement_time_1.data,
+                    'measurement_time_2': form.measurement_time_2.data,
+                    'measurement_time_3': form.measurement_time_3.data,
+                    'notes': form.notes.data
+                }
+                file_path, filename = exporter.export_humidity_data(export_data)
+                flash(f'✅ Données exportées vers Excel: {filename}', 'success')
+                return send_file(file_path, as_attachment=True, download_name=filename)
+            except Exception as e:
+                flash(f'❌ Erreur lors de l\'export Excel: {str(e)}', 'error')
+        
         flash('Contrôles d\'humidité enregistrés avec succès', 'success')
         return redirect(url_for('clay.clay_controls'))
     
@@ -326,6 +350,26 @@ def combined_analysis():
         
         if compliance_issues:
             flash(f'⚠️ Valeurs hors spécification: {", ".join(compliance_issues)} - F.N.C. requis', 'warning')
+        
+        # Check if export to Excel was requested
+        if request.form.get('export_excel'):
+            try:
+                exporter = ExcelExporter()
+                export_data = {
+                    'date': form.date.data,
+                    'shift': form.shift.data,
+                    'controller': current_user.username,
+                    'granulometry_refusal': form.granulometry_refusal.data,
+                    'calcium_carbonate': form.calcium_carbonate.data,
+                    'granulometry_time': form.granulometry_time.data,
+                    'calcium_time': form.calcium_time.data,
+                    'notes': form.notes.data
+                }
+                file_path, filename = exporter.export_analysis_data(export_data)
+                flash(f'✅ Données exportées vers Excel: {filename}', 'success')
+                return send_file(file_path, as_attachment=True, download_name=filename)
+            except Exception as e:
+                flash(f'❌ Erreur lors de l\'export Excel: {str(e)}', 'error')
         
         flash('Analyses enregistrées avec succès', 'success')
         return redirect(url_for('clay.clay_controls'))
