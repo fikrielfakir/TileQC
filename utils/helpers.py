@@ -184,10 +184,60 @@ def export_daily_report(report_date):
                        EmailKilnControl, EnamelControl, DimensionalTest, 
                        DigitalDecoration, ExternalTest)
     
+    # For clay controls, get the full week of data (Monday to Saturday)
+    # Find the Monday of the week containing report_date
+    days_since_monday = report_date.weekday()  # 0=Monday, 6=Sunday
+    week_start = report_date - timedelta(days=days_since_monday)
+    week_end = week_start + timedelta(days=5)  # Saturday (6 days from Monday)
+    
+    # Generate week dates for template display
+    week_dates = []
+    for i in range(6):  # Monday through Saturday
+        week_dates.append((week_start + timedelta(days=i)).strftime('%d/%m/%Y'))
+    
+    # Get clay controls for the full week to display granulometry and calcium carbonate data
+    clay_controls_week = ClayControl.query.filter(
+        ClayControl.date.between(week_start, week_end)
+    ).order_by(ClayControl.date).all()
+    
+    # Organize clay controls by date for easier template access
+    clay_by_date = {}
+    for control in clay_controls_week:
+        date_key = control.date.strftime('%Y-%m-%d')
+        if date_key not in clay_by_date:
+            clay_by_date[date_key] = []
+        clay_by_date[date_key].append(control)
+    
+    # Create daily arrays for granulometry and calcium carbonate data (6 days)
+    granulometry_week = []
+    calcium_carbonate_week = []
+    for i in range(6):
+        day_date = (week_start + timedelta(days=i)).strftime('%Y-%m-%d')
+        day_controls = clay_by_date.get(day_date, [])
+        
+        # Find controls with granulometry_refusal or calcium_carbonate data
+        granulo_value = None
+        calcium_value = None
+        for control in day_controls:
+            if control.granulometry_refusal is not None:
+                granulo_value = control.granulometry_refusal
+            if control.calcium_carbonate is not None:
+                calcium_value = control.calcium_carbonate
+        
+        granulometry_week.append(granulo_value)
+        calcium_carbonate_week.append(calcium_value)
+    
     report_data = {
         'date': report_date.strftime('%Y-%m-%d'),
+        'week_start': week_start,
+        'week_end': week_end,
+        'week_dates': week_dates,
+        'granulometry_week': granulometry_week,
+        'calcium_carbonate_week': calcium_carbonate_week,
         'stats': get_dashboard_stats(report_date),
         'clay_controls': ClayControl.query.filter(ClayControl.date == report_date).all(),
+        'clay_controls_week': clay_controls_week,
+        'clay_by_date': clay_by_date,
         'press_controls': PressControl.query.filter(PressControl.date == report_date).all(),
         'dryer_controls': DryerControl.query.filter(DryerControl.date == report_date).all(),
         'biscuit_kiln_controls': BiscuitKilnControl.query.filter(BiscuitKilnControl.date == report_date).all(),

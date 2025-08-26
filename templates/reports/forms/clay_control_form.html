@@ -69,12 +69,17 @@
                             <th class="day-header" style="width: 11.7%;">SAMEDI</th>
                         </tr>
                         <tr>
+                            {% if report_data.week_dates %}
+                            {% for week_date in report_data.week_dates %}
+                            <th style="font-size: 9px;">{{ week_date }}</th>
+                            {% endfor %}
+                            {% else %}
                             {% for i in range(6) %}
                             <th style="font-size: 9px;">
-                                {% set day_offset = i - selected_date.weekday() %}
                                 {{ selected_date.strftime('%d/%m/%Y') if selected_date else '' }}
                             </th>
                             {% endfor %}
+                            {% endif %}
                         </tr>
                     </thead>
                     <tbody>
@@ -136,24 +141,36 @@
                         <tr>
                             <td class="control-label">Refus 63 µ</td>
                             <td class="spec-column">10≤Refus≤20%</td>
+                            {% if report_data.granulometry_week %}
+                            {% for granulo_value in report_data.granulometry_week %}
+                            <td>{{ "%.1f"|format(granulo_value) if granulo_value is not none else '-' }}</td>
+                            {% endfor %}
+                            {% else %}
                             {% for control in report_data.clay_controls[:6] %}
                             <td>{{ "%.1f"|format(control.granulometry_refusal) if control.granulometry_refusal else '-' }}</td>
                             {% endfor %}
                             {% for i in range(6 - report_data.clay_controls|length) %}
                             <td>-</td>
                             {% endfor %}
+                            {% endif %}
                         </tr>
                         
                         <!-- Calcium Carbonate -->
                         <tr>
                             <td class="control-label">% CaCO₃</td>
-                            <td class="spec-column">20 % ≤ % CaCO₃ ≤ 25 %</td>
+                            <td class="spec-column">15 % ≤ % CaCO₃ ≤ 25 %</td>
+                            {% if report_data.calcium_carbonate_week %}
+                            {% for calcium_value in report_data.calcium_carbonate_week %}
+                            <td>{{ "%.1f"|format(calcium_value) if calcium_value is not none else '-' }}</td>
+                            {% endfor %}
+                            {% else %}
                             {% for control in report_data.clay_controls[:6] %}
                             <td>{{ "%.1f"|format(control.calcium_carbonate) if control.calcium_carbonate else '-' }}</td>
                             {% endfor %}
                             {% for i in range(6 - report_data.clay_controls|length) %}
                             <td>-</td>
                             {% endfor %}
+                            {% endif %}
                         </tr>
                         
                         <!-- Non-Conformity Numbers -->
