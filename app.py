@@ -21,11 +21,18 @@ app.secret_key = os.environ.get("SESSION_SECRET", "ceramic-qc-secret-key-change-
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # Configure the database
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///ceramic_qc.db")
+database_url = os.environ.get("DATABASE_URL", "sqlite:///instance/ceramic_qc.db")
+app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_recycle": 300,
     "pool_pre_ping": True,
 }
+
+# Ensure SQLite uses UTF-8 encoding
+if database_url.startswith('sqlite:'):
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"]["connect_args"] = {
+        "check_same_thread": False
+    }
 
 # Initialize extensions
 db.init_app(app)

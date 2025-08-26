@@ -156,7 +156,7 @@ class EmailKilnControl(db.Model):
     # Surface quality testing
     surface_quality_area = db.Column(db.Float)  # m² (min 1m²)
     surface_quality_tiles = db.Column(db.Integer)  # number (min 30 tiles)
-    defect_free_percentage = db.Column(db.Float)  # % (≥95%)
+    defect_free_percentage = db.Column(db.Float)  # % (>=95%)
     
     # Metadata
     controller_id = db.Column(db.Integer, db.ForeignKey('user.id'))

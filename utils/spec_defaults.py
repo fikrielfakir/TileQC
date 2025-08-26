@@ -54,9 +54,9 @@ def initialize_default_specifications(control_type=None):
         
         'email_kiln': [
             {'parameter_name': 'thermal_shock', 'max_value': 5.0, 'target_value': 2.5, 'unit': '%', 'description': 'Maximum thermal shock defects'},
-            {'parameter_name': 'rupture_resistance_thick', 'min_value': 600, 'unit': 'N', 'description': 'Rupture resistance for thickness ≥7.5mm'},
+            {'parameter_name': 'rupture_resistance_thick', 'min_value': 600, 'unit': 'N', 'description': 'Rupture resistance for thickness >=7.5mm'},
             {'parameter_name': 'rupture_resistance_thin', 'min_value': 200, 'unit': 'N', 'description': 'Rupture resistance for thickness <7.5mm'},
-            {'parameter_name': 'rupture_module_thick', 'min_value': 12, 'unit': 'N/mm²', 'description': 'Rupture module for thickness ≥7.5mm'},
+            {'parameter_name': 'rupture_module_thick', 'min_value': 12, 'unit': 'N/mm²', 'description': 'Rupture module for thickness >=7.5mm'},
             {'parameter_name': 'rupture_module_thin', 'min_value': 15, 'unit': 'N/mm²', 'description': 'Rupture module for thickness <7.5mm'},
             {'parameter_name': 'length_deviation', 'min_value': -0.5, 'max_value': 0.5, 'target_value': 0, 'unit': '%', 'description': 'Length deviation tolerance'},
             {'parameter_name': 'width_deviation', 'min_value': -0.5, 'max_value': 0.5, 'target_value': 0, 'unit': '%', 'description': 'Width deviation tolerance'},

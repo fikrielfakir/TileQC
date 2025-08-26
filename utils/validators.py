@@ -148,7 +148,7 @@ def validate_email_kiln_control(email_control):
         thickness_category = 'thick' if email_control.thickness_for_resistance >= 7.5 else 'thin'
         spec = Specification.get_spec('email_kiln', f'rupture_resistance_{thickness_category}')
         if spec and not _check_value_against_spec(email_control.rupture_resistance, spec):
-            issues.append(f"Rupture resistance below spec (≥{spec.min_value} {spec.unit} for thickness {'≥7.5mm' if thickness_category == 'thick' else '<7.5mm'})")
+            issues.append(f"Rupture resistance below spec (>={spec.min_value} {spec.unit} for thickness {'>=7.5mm' if thickness_category == 'thick' else '<7.5mm'})")
     
     if (email_control.rupture_module is not None and 
         email_control.thickness_for_resistance is not None):
@@ -156,7 +156,7 @@ def validate_email_kiln_control(email_control):
         thickness_category = 'thick' if email_control.thickness_for_resistance >= 7.5 else 'thin'
         spec = Specification.get_spec('email_kiln', f'rupture_module_{thickness_category}')
         if spec and not _check_value_against_spec(email_control.rupture_module, spec):
-            issues.append(f"Rupture module below spec (≥{spec.min_value} {spec.unit} for thickness {'≥7.5mm' if thickness_category == 'thick' else '<7.5mm'})")
+            issues.append(f"Rupture module below spec (>={spec.min_value} {spec.unit} for thickness {'>=7.5mm' if thickness_category == 'thick' else '<7.5mm'})")
     
     return "compliant" if not issues else "non_compliant"
 
