@@ -101,6 +101,7 @@ from routes.enamel import enamel_bp
 from routes.tests import tests_bp
 from routes.reports import reports_bp
 from routes.specifications import spec_bp
+from routes.control_sheet import control_sheet_bp
 
 app.register_blueprint(main_bp)
 app.register_blueprint(auth_bp, url_prefix='/auth')
@@ -112,3 +113,4 @@ app.register_blueprint(enamel_bp, url_prefix='/enamel')
 app.register_blueprint(tests_bp, url_prefix='/tests')
 app.register_blueprint(reports_bp, url_prefix='/reports')
 app.register_blueprint(spec_bp, url_prefix='/specifications')
+app.register_blueprint(control_sheet_bp, url_prefix='/control_sheet')
