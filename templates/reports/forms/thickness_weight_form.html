@@ -80,20 +80,23 @@
                     <table class="table thickness-weight-table w-100">
                         <thead>
                             <tr>
-                                <th rowspan="3" class="section-header" style="width: 15%;">SPÉCIFICATIONS TECHNIQUES :</th>
-                                <th class="spec-header" style="width: 14%;">25x40 6,8 ≤Épaisseur mm≤7,4</th>
-                                <th class="spec-header" style="width: 14%;">20x20 6,2≤Épaisseur mm≤7,2</th>
-                                <th class="spec-header" style="width: 14%;">25x50 7,1≤Épaisseur mm≤7,7</th>
-                                <th rowspan="3" class="spec-header" style="width: 14%;">N° F.N.C.</th>
-                                <th rowspan="3" class="spec-header" style="width: 14%;">N° F.N.C.</th>
-                                <th rowspan="3" class="spec-header" style="width: 15%;">N° F.N.C.</th>
+                                <th rowspan="3" class="section-header" style="width: 8%;">SPÉCIFICATIONS TECHNIQUES :</th>
+                                <th class="spec-header" style="width: 16%;">25x40 6,8 ≤épaisseur mm≤7,4</th>
+                                <th class="spec-header" style="width: 16%;">20x20 6,2≤épaisseur mm≤7,2</th>
+                                <th class="spec-header" style="width: 16%;">25x50 7,1 ≤épaisseur mm≤7,7</th>
+                                <th class="spec-header" style="width: 11%;">SORTIE 4</th>
+                                <th class="spec-header" style="width: 11%;">SORTIE 5</th>
                             </tr>
                             <tr>
                                 <th class="spec-header">SORTIE 1</th>
                                 <th class="spec-header">SORTIE 2</th>
                                 <th class="spec-header">SORTIE 3</th>
+                                <th class="spec-header">SORTIE 4</th>
+                                <th class="spec-header">SORTIE 5</th>
                             </tr>
                             <tr>
+                                <th class="spec-header">A B C D</th>
+                                <th class="spec-header">A B C D</th>
                                 <th class="spec-header">A B C D</th>
                                 <th class="spec-header">A B C D</th>
                                 <th class="spec-header">A B C D</th>
@@ -106,39 +109,79 @@
                                 <tr>
                                     <td class="format-cell">
                                         {% if control.measurement_time %}
-                                        {{ control.measurement_time.strftime('%H:%M') }}
+                                        {{ control.measurement_time.strftime('%H H') }}
                                         {% else %}
-                                        {{ control.shift or 'N/A' }}
+                                        {{ ['07 H', '11 H', '16 H', '20 H', '00 H', '04 H'][loop.index0] }}
                                         {% endif %}
                                     </td>
-                                    <!-- 25x40 Format -->
-                                    <td>
-                                        {% if control.format_type == '25x40' and control.thickness %}
-                                        {{ "%.1f"|format(control.thickness) }}
-                                        {% endif %}
+                                    <!-- SORTIE 1: 25x40 Format -->
+                                    <td style="width: 16%;">
+                                        <div class="row g-0">
+                                            <div class="col-3 border-end" style="font-size: 8px;">
+                                                {% if control.format_type == '25x40' and control.thickness %}
+                                                {{ "%.1f"|format(control.thickness) }}
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-3 border-end" style="font-size: 8px;"></div>
+                                            <div class="col-3 border-end" style="font-size: 8px;"></div>
+                                            <div class="col-3" style="font-size: 8px;"></div>
+                                        </div>
                                     </td>
-                                    <!-- 20x20 Format -->
-                                    <td>
-                                        {% if control.format_type == '20x20' and control.thickness %}
-                                        {{ "%.1f"|format(control.thickness) }}
-                                        {% endif %}
+                                    <!-- SORTIE 2: 20x20 Format -->
+                                    <td style="width: 16%;">
+                                        <div class="row g-0">
+                                            <div class="col-3 border-end" style="font-size: 8px;">
+                                                {% if control.format_type == '20x20' and control.thickness %}
+                                                {{ "%.1f"|format(control.thickness) }}
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-3 border-end" style="font-size: 8px;"></div>
+                                            <div class="col-3 border-end" style="font-size: 8px;"></div>
+                                            <div class="col-3" style="font-size: 8px;"></div>
+                                        </div>
                                     </td>
-                                    <!-- 25x50 Format -->
-                                    <td>
-                                        {% if control.format_type == '25x50' and control.thickness %}
-                                        {{ "%.1f"|format(control.thickness) }}
-                                        {% endif %}
+                                    <!-- SORTIE 3: 25x50 Format -->
+                                    <td style="width: 16%;">
+                                        <div class="row g-0">
+                                            <div class="col-3 border-end" style="font-size: 8px;">
+                                                {% if control.format_type == '25x50' and control.thickness %}
+                                                {{ "%.1f"|format(control.thickness) }}
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-3 border-end" style="font-size: 8px;"></div>
+                                            <div class="col-3 border-end" style="font-size: 8px;"></div>
+                                            <div class="col-3" style="font-size: 8px;"></div>
+                                        </div>
                                     </td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <!-- SORTIE 4 -->
+                                    <td style="width: 11%;">
+                                        <div class="row g-0">
+                                            <div class="col-3 border-end" style="font-size: 8px;"></div>
+                                            <div class="col-3 border-end" style="font-size: 8px;"></div>
+                                            <div class="col-3 border-end" style="font-size: 8px;"></div>
+                                            <div class="col-3" style="font-size: 8px;"></div>
+                                        </div>
+                                    </td>
+                                    <!-- SORTIE 5 -->
+                                    <td style="width: 11%;">
+                                        <div class="row g-0">
+                                            <div class="col-3 border-end" style="font-size: 8px;"></div>
+                                            <div class="col-3 border-end" style="font-size: 8px;"></div>
+                                            <div class="col-3 border-end" style="font-size: 8px;"></div>
+                                            <div class="col-3" style="font-size: 8px;"></div>
+                                        </div>
+                                    </td>
                                 </tr>
                                 {% endfor %}
                                 <!-- Fill remaining rows if less than 6 controls -->
                                 {% for i in range(6 - report_data.press_controls|length) %}
                                 <tr>
-                                    <td class="format-cell">-</td>
-                                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                                    <td class="format-cell">{{ ['07 H', '11 H', '16 H', '20 H', '00 H', '04 H'][report_data.press_controls|length + i] }}</td>
+                                    <td><div class="row g-0"><div class="col-3 border-end"></div><div class="col-3 border-end"></div><div class="col-3 border-end"></div><div class="col-3"></div></div></td>
+                                    <td><div class="row g-0"><div class="col-3 border-end"></div><div class="col-3 border-end"></div><div class="col-3 border-end"></div><div class="col-3"></div></div></td>
+                                    <td><div class="row g-0"><div class="col-3 border-end"></div><div class="col-3 border-end"></div><div class="col-3 border-end"></div><div class="col-3"></div></div></td>
+                                    <td><div class="row g-0"><div class="col-3 border-end"></div><div class="col-3 border-end"></div><div class="col-3 border-end"></div><div class="col-3"></div></div></td>
+                                    <td><div class="row g-0"><div class="col-3 border-end"></div><div class="col-3 border-end"></div><div class="col-3 border-end"></div><div class="col-3"></div></div></td>
                                 </tr>
                                 {% endfor %}
                             {% else %}
@@ -146,7 +189,11 @@
                                 {% for i in range(6) %}
                                 <tr>
                                     <td class="format-cell">{{ ['07 H', '11 H', '16 H', '20 H', '00 H', '04 H'][i] }}</td>
-                                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                                    <td><div class="row g-0"><div class="col-3 border-end"></div><div class="col-3 border-end"></div><div class="col-3 border-end"></div><div class="col-3"></div></div></td>
+                                    <td><div class="row g-0"><div class="col-3 border-end"></div><div class="col-3 border-end"></div><div class="col-3 border-end"></div><div class="col-3"></div></div></td>
+                                    <td><div class="row g-0"><div class="col-3 border-end"></div><div class="col-3 border-end"></div><div class="col-3 border-end"></div><div class="col-3"></div></div></td>
+                                    <td><div class="row g-0"><div class="col-3 border-end"></div><div class="col-3 border-end"></div><div class="col-3 border-end"></div><div class="col-3"></div></div></td>
+                                    <td><div class="row g-0"><div class="col-3 border-end"></div><div class="col-3 border-end"></div><div class="col-3 border-end"></div><div class="col-3"></div></div></td>
                                 </tr>
                                 {% endfor %}
                             {% endif %}
@@ -173,7 +220,7 @@
                         <thead>
                             <tr>
                                 <th rowspan="3" class="section-header" style="width: 15%;">CONTRÔLE DE POIDS g</th>
-                                <th class="spec-header" colspan="5">Spécifications techniques : Poids ( 20x20 : 480g≤P≤580g ) • ( 25x40 : 1150g≤P≤1500g ) • ( 25x50 : 1800g≤P≤2000g)</th>
+                                <th class="spec-header" colspan="5">Spécifications techniques : Poids ( 20x20 : 480g≤P≤580g ) - ( 25x40 : 1350g≤P≤1500g ) - ( 25x50 : 1800g≤P≤2000g)</th>
                             </tr>
                             <tr>
                                 <th class="spec-header">POIDS SORTIE 1</th>
