@@ -1,0 +1,266 @@
+<!-- FICHE CONTRÔLE D'ÉPAISSEUR & POIDS DU CARREAU - R2-F3-LABO -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light border-bottom-2">
+                <div class="row align-items-center">
+                    <div class="col-md-2 text-center">
+                        <img src="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;text y='.9em' font-size='90'&gt;⚙️&lt;/text&gt;&lt;/svg&gt;" alt="Logo" style="width: 60px; height: 60px;">
+                        <div><small class="fw-bold">CERAMICA DERSA</small></div>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <h4 class="mb-1 fw-bold">FICHE CONTRÔLE</h4>
+                        <h4 class="mb-1 fw-bold">D'ÉPAISSEUR & POIDS DU CARREAU</h4>
+                    </div>
+                    <div class="col-md-4">
+                        <table class="table table-bordered table-sm mb-0">
+                            <tr><td class="fw-bold bg-light">SERVICE LABORATOIRE</td></tr>
+                            <tr><td><strong>CODE:</strong> R2-F3-LABO</td></tr>
+                            <tr><td><strong>VERSION:</strong> 00</td></tr>
+                            <tr><td><strong>DATE:</strong> {{ selected_date.strftime('%d/%m/%Y') if selected_date else '' }}</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <style>
+                .thickness-weight-table {
+                    font-size: 10px;
+                    border-collapse: collapse;
+                    border: 2px solid #000;
+                }
+                .thickness-weight-table th,
+                .thickness-weight-table td {
+                    border: 1px solid #000;
+                    padding: 3px 2px;
+                    text-align: center;
+                    vertical-align: middle;
+                }
+                .thickness-weight-table .section-header {
+                    background-color: #f8f9fa;
+                    font-weight: bold;
+                    text-align: left;
+                    padding-left: 5px;
+                }
+                .thickness-weight-table .spec-header {
+                    background-color: #e9ecef;
+                    font-weight: bold;
+                    font-size: 9px;
+                }
+                .thickness-weight-table .time-cell {
+                    background-color: #f8f9fa;
+                    font-weight: bold;
+                    writing-mode: vertical-rl;
+                    text-orientation: mixed;
+                    width: 25px;
+                }
+                .thickness-weight-table .format-cell {
+                    background-color: #f0f0f0;
+                    font-weight: bold;
+                    text-align: left;
+                    padding-left: 8px;
+                }
+                </style>
+
+                <!-- Date and Press Information -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Date :</strong> {{ selected_date.strftime('%d/%m/%Y') if selected_date else '' }}
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <strong>Presse :</strong> 
+                        <span class="mx-2">1 ☐</span>
+                        <span class="mx-2">2 ☐</span>
+                        <span class="mx-2">3 ☐</span>
+                    </div>
+                </div>
+
+                <!-- CONTRÔLE D'ÉPAISSEUR Section -->
+                <div class="table-responsive mb-4">
+                    <table class="table thickness-weight-table w-100">
+                        <thead>
+                            <tr>
+                                <th rowspan="3" class="section-header" style="width: 15%;">SPÉCIFICATIONS TECHNIQUES :</th>
+                                <th class="spec-header" style="width: 14%;">25x40 6,8 ≤Épaisseur mm≤7,4</th>
+                                <th class="spec-header" style="width: 14%;">20x20 6,2≤Épaisseur mm≤7,2</th>
+                                <th class="spec-header" style="width: 14%;">25x50 7,1≤Épaisseur mm≤7,7</th>
+                                <th rowspan="3" class="spec-header" style="width: 14%;">N° F.N.C.</th>
+                                <th rowspan="3" class="spec-header" style="width: 14%;">N° F.N.C.</th>
+                                <th rowspan="3" class="spec-header" style="width: 15%;">N° F.N.C.</th>
+                            </tr>
+                            <tr>
+                                <th class="spec-header">SORTIE 1</th>
+                                <th class="spec-header">SORTIE 2</th>
+                                <th class="spec-header">SORTIE 3</th>
+                            </tr>
+                            <tr>
+                                <th class="spec-header">A B C D</th>
+                                <th class="spec-header">A B C D</th>
+                                <th class="spec-header">A B C D</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set time_slots = ['07 H', '11 H', '16 H', '20 H', '00 H', '04 H'] %}
+                            {% for time_slot in time_slots %}
+                            <tr>
+                                <td class="format-cell">{{ time_slot }}</td>
+                                <!-- 25x40 Format -->
+                                <td>
+                                    {% set found = false %}
+                                    {% if report_data.press_controls %}
+                                    {% for control in report_data.press_controls %}
+                                    {% if control.format_type == '25x40' and control.thickness and not found %}
+                                    {% if control.measurement_time %}
+                                        {% set control_hour = control.measurement_time.strftime('%H') %}
+                                        {% set time_hour = time_slot.split(' ')[0] %}
+                                        {% if control_hour == time_hour %}
+                                        {{ "%.1f"|format(control.thickness) }}
+                                        {% set found = true %}
+                                        {% endif %}
+                                    {% endif %}
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% endif %}
+                                </td>
+                                <!-- 20x20 Format -->
+                                <td>
+                                    {% set found = false %}
+                                    {% if report_data.press_controls %}
+                                    {% for control in report_data.press_controls %}
+                                    {% if control.format_type == '20x20' and control.thickness and not found %}
+                                    {% if control.measurement_time %}
+                                        {% set control_hour = control.measurement_time.strftime('%H') %}
+                                        {% set time_hour = time_slot.split(' ')[0] %}
+                                        {% if control_hour == time_hour %}
+                                        {{ "%.1f"|format(control.thickness) }}
+                                        {% set found = true %}
+                                        {% endif %}
+                                    {% endif %}
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% endif %}
+                                </td>
+                                <!-- 25x50 Format -->
+                                <td>
+                                    {% set found = false %}
+                                    {% if report_data.press_controls %}
+                                    {% for control in report_data.press_controls %}
+                                    {% if control.format_type == '25x50' and control.thickness and not found %}
+                                    {% if control.measurement_time %}
+                                        {% set control_hour = control.measurement_time.strftime('%H') %}
+                                        {% set time_hour = time_slot.split(' ')[0] %}
+                                        {% if control_hour == time_hour %}
+                                        {{ "%.1f"|format(control.thickness) }}
+                                        {% set found = true %}
+                                        {% endif %}
+                                    {% endif %}
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% endif %}
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Non-Conformity Section for Thickness -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center p-2 border">
+                            <span><strong>N° FICHE NON CONFORMITÉ D' ÉPAISSEUR :</strong> ....................................</span>
+                            <div>
+                                <span class="me-3">Conforme ☐</span>
+                                <span>Non Conforme ☐</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTRÔLE DE POIDS Section -->
+                <div class="table-responsive mb-4">
+                    <table class="table thickness-weight-table w-100">
+                        <thead>
+                            <tr>
+                                <th rowspan="3" class="section-header" style="width: 15%;">CONTRÔLE DE POIDS g</th>
+                                <th class="spec-header" colspan="5">Spécifications techniques : Poids ( 20x20 : 480g≤P≤580g ) • ( 25x40 : 1150g≤P≤1500g ) • ( 25x50 : 1800g≤P≤2000g)</th>
+                            </tr>
+                            <tr>
+                                <th class="spec-header">POIDS SORTIE 1</th>
+                                <th class="spec-header">POIDS SORTIE 2</th>
+                                <th class="spec-header">POIDS SORTIE 3</th>
+                                <th class="spec-header">POIDS SORTIE 4</th>
+                                <th class="spec-header">POIDS SORTIE 5</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for time_slot in time_slots %}
+                            <tr>
+                                <td class="format-cell">{{ time_slot }}</td>
+                                <!-- Weight measurements for each output -->
+                                {% for output in range(5) %}
+                                <td>
+                                    {% set found = false %}
+                                    {% if report_data.press_controls %}
+                                    {% for control in report_data.press_controls %}
+                                    {% if control.wet_weight and not found %}
+                                    {% if control.measurement_time %}
+                                        {% set control_hour = control.measurement_time.strftime('%H') %}
+                                        {% set time_hour = time_slot.split(' ')[0] %}
+                                        {% if control_hour == time_hour %}
+                                        {% if output == 0 %}{{ "%.0f"|format(control.wet_weight) }}{% endif %}
+                                        {% set found = true %}
+                                        {% endif %}
+                                    {% endif %}
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% endif %}
+                                </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Non-Conformity Section for Weight -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center p-2 border">
+                            <span><strong>N° FICHE NON CONFORMITÉ DU POIDS :</strong> ....................................</span>
+                            <div>
+                                <span class="me-3">Conforme ☐</span>
+                                <span>Non Conforme ☐</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SIGNATURE SECTION -->
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td class="text-start"><strong>VISA CONTRÔLEUR</strong></td>
+                                    <td class="text-center"><strong>VISA CONTRÔLEUR</strong></td>
+                                    <td class="text-center"><strong>VISA CONTRÔLEUR</strong></td>
+                                    <td class="text-end"><strong>VISA R. LABO</strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="height: 60px; border-bottom: 2px solid #000; width: 25%;"></td>
+                                    <td style="height: 60px; border-bottom: 2px solid #000; width: 25%;"></td>
+                                    <td style="height: 60px; border-bottom: 2px solid #000; width: 25%;"></td>
+                                    <td style="height: 60px; border-bottom: 2px solid #000; width: 25%;"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -91,6 +91,9 @@
     <div id="clayContent" style="display: none;">
         {% include 'reports/forms/clay_control_form.html' %}
     </div>
+    <div id="thicknessContent" style="display: none;">
+        {% include 'reports/forms/thickness_weight_form.html' %}
+    </div>
     <div id="otherContent" style="display: none;">
         <!-- Placeholder for other forms -->
     </div>
@@ -296,10 +299,12 @@ function loadReportContent(reportType) {
     // Hide all content sections
     const humidityContent = document.getElementById('humidityContent');
     const clayContent = document.getElementById('clayContent');
+    const thicknessContent = document.getElementById('thicknessContent');
     const otherContent = document.getElementById('otherContent');
     
     humidityContent.style.display = 'none';
     clayContent.style.display = 'none';
+    thicknessContent.style.display = 'none';
     otherContent.style.display = 'none';
     
     if (reportType === 'humidity') {
@@ -308,6 +313,9 @@ function loadReportContent(reportType) {
     } else if (reportType === 'clay') {
         // Show clay control form (P.D.M. table)
         clayContent.style.display = 'block';
+    } else if (reportType === 'thickness') {
+        // Show thickness and weight control form
+        thicknessContent.style.display = 'block';
     } else {
         // Show placeholder for other forms
         otherContent.innerHTML = `

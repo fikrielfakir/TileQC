@@ -62,6 +62,9 @@ class PressControl(db.Model):
     defect_foliage = db.Column(db.Float, default=0)  # ≤1%
     defect_chipping = db.Column(db.Float, default=0)  # ≤1%
     
+    # Clay humidity for press (from R2-F3 template)
+    clay_humidity = db.Column(db.Float)  # 5.2-6.0%
+    
     # Metadata
     controller_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     compliance_status = db.Column(db.String(20))
