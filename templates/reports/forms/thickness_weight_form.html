@@ -100,69 +100,56 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% set time_slots = ['07 H', '11 H', '16 H', '20 H', '00 H', '04 H'] %}
-                            {% for time_slot in time_slots %}
-                            <tr>
-                                <td class="format-cell">{{ time_slot }}</td>
-                                <!-- 25x40 Format -->
-                                <td>
-                                    {% set found = false %}
-                                    {% if report_data.press_controls %}
-                                    {% for control in report_data.press_controls %}
-                                    {% if control.format_type == '25x40' and control.thickness and not found %}
-                                    {% if control.measurement_time %}
-                                        {% set control_hour = control.measurement_time.strftime('%H') %}
-                                        {% set time_hour = time_slot.split(' ')[0] %}
-                                        {% if control_hour == time_hour %}
-                                        {{ "%.1f"|format(control.thickness) }}
-                                        {% set found = true %}
+                            <!-- Display actual data from available press controls -->
+                            {% if report_data.press_controls %}
+                                {% for control in report_data.press_controls[:6] %}
+                                <tr>
+                                    <td class="format-cell">
+                                        {% if control.measurement_time %}
+                                        {{ control.measurement_time.strftime('%H:%M') }}
+                                        {% else %}
+                                        {{ control.shift or 'N/A' }}
                                         {% endif %}
-                                    {% endif %}
-                                    {% endif %}
-                                    {% endfor %}
-                                    {% endif %}
-                                </td>
-                                <!-- 20x20 Format -->
-                                <td>
-                                    {% set found = false %}
-                                    {% if report_data.press_controls %}
-                                    {% for control in report_data.press_controls %}
-                                    {% if control.format_type == '20x20' and control.thickness and not found %}
-                                    {% if control.measurement_time %}
-                                        {% set control_hour = control.measurement_time.strftime('%H') %}
-                                        {% set time_hour = time_slot.split(' ')[0] %}
-                                        {% if control_hour == time_hour %}
+                                    </td>
+                                    <!-- 25x40 Format -->
+                                    <td>
+                                        {% if control.format_type == '25x40' and control.thickness %}
                                         {{ "%.1f"|format(control.thickness) }}
-                                        {% set found = true %}
                                         {% endif %}
-                                    {% endif %}
-                                    {% endif %}
-                                    {% endfor %}
-                                    {% endif %}
-                                </td>
-                                <!-- 25x50 Format -->
-                                <td>
-                                    {% set found = false %}
-                                    {% if report_data.press_controls %}
-                                    {% for control in report_data.press_controls %}
-                                    {% if control.format_type == '25x50' and control.thickness and not found %}
-                                    {% if control.measurement_time %}
-                                        {% set control_hour = control.measurement_time.strftime('%H') %}
-                                        {% set time_hour = time_slot.split(' ')[0] %}
-                                        {% if control_hour == time_hour %}
+                                    </td>
+                                    <!-- 20x20 Format -->
+                                    <td>
+                                        {% if control.format_type == '20x20' and control.thickness %}
                                         {{ "%.1f"|format(control.thickness) }}
-                                        {% set found = true %}
                                         {% endif %}
-                                    {% endif %}
-                                    {% endif %}
-                                    {% endfor %}
-                                    {% endif %}
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            {% endfor %}
+                                    </td>
+                                    <!-- 25x50 Format -->
+                                    <td>
+                                        {% if control.format_type == '25x50' and control.thickness %}
+                                        {{ "%.1f"|format(control.thickness) }}
+                                        {% endif %}
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                {% endfor %}
+                                <!-- Fill remaining rows if less than 6 controls -->
+                                {% for i in range(6 - report_data.press_controls|length) %}
+                                <tr>
+                                    <td class="format-cell">-</td>
+                                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <!-- Show empty rows if no data -->
+                                {% for i in range(6) %}
+                                <tr>
+                                    <td class="format-cell">{{ ['07 H', '11 H', '16 H', '20 H', '00 H', '04 H'][i] }}</td>
+                                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                                </tr>
+                                {% endfor %}
+                            {% endif %}
                         </tbody>
                     </table>
                 </div>
@@ -197,31 +184,53 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for time_slot in time_slots %}
-                            <tr>
-                                <td class="format-cell">{{ time_slot }}</td>
-                                <!-- Weight measurements for each output -->
-                                {% for output in range(5) %}
-                                <td>
-                                    {% set found = false %}
-                                    {% if report_data.press_controls %}
-                                    {% for control in report_data.press_controls %}
-                                    {% if control.wet_weight and not found %}
-                                    {% if control.measurement_time %}
-                                        {% set control_hour = control.measurement_time.strftime('%H') %}
-                                        {% set time_hour = time_slot.split(' ')[0] %}
-                                        {% if control_hour == time_hour %}
-                                        {% if output == 0 %}{{ "%.0f"|format(control.wet_weight) }}{% endif %}
-                                        {% set found = true %}
+                            <!-- Display actual weight data from available press controls -->
+                            {% if report_data.press_controls %}
+                                {% for control in report_data.press_controls[:6] %}
+                                <tr>
+                                    <td class="format-cell">
+                                        {% if control.measurement_time %}
+                                        {{ control.measurement_time.strftime('%H:%M') }}
+                                        {% else %}
+                                        {{ control.shift or 'N/A' }}
                                         {% endif %}
-                                    {% endif %}
-                                    {% endif %}
-                                    {% endfor %}
-                                    {% endif %}
-                                </td>
+                                    </td>
+                                    <!-- Weight measurements for each output -->
+                                    <td>
+                                        {% if control.wet_weight %}
+                                        {{ "%.0f"|format(control.wet_weight) }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if control.weight_output_1 %}
+                                        {{ "%.0f"|format(control.weight_output_1) }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if control.weight_output_2 %}
+                                        {{ "%.0f"|format(control.weight_output_2) }}
+                                        {% endif %}
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
                                 {% endfor %}
-                            </tr>
-                            {% endfor %}
+                                <!-- Fill remaining rows if less than 6 controls -->
+                                {% for i in range(6 - report_data.press_controls|length) %}
+                                <tr>
+                                    <td class="format-cell">-</td>
+                                    <td></td><td></td><td></td><td></td><td></td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <!-- Show empty rows if no data -->
+                                {% for i in range(6) %}
+                                <tr>
+                                    <td class="format-cell">{{ ['07 H', '11 H', '16 H', '20 H', '00 H', '04 H'][i] }}</td>
+                                    <td></td><td></td><td></td><td></td><td></td>
+                                </tr>
+                                {% endfor %}
+                            {% endif %}
                         </tbody>
                     </table>
                 </div>
