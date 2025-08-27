@@ -205,10 +205,50 @@
                 <div class="row mb-3">
                     <div class="col-12">
                         <div class="d-flex justify-content-between align-items-center p-2 border">
-                            <span><strong>N° FICHE NON CONFORMITÉ D' ÉPAISSEUR :</strong> ....................................</span>
+                            <span><strong>N° FICHE NON CONFORMITÉ D' ÉPAISSEUR :</strong> 
+                                {% if report_data.press_controls %}
+                                    {% set thickness_non_compliant = [] %}
+                                    {% for control in report_data.press_controls %}
+                                        {% if control.thickness and control.format_type %}
+                                            {% set is_compliant = true %}
+                                            {% if control.format_type == '20x20' and not (6.2 <= control.thickness <= 7.2) %}
+                                                {% set _ = thickness_non_compliant.append(control.id) %}
+                                            {% elif control.format_type == '25x40' and not (6.8 <= control.thickness <= 7.4) %}
+                                                {% set _ = thickness_non_compliant.append(control.id) %}
+                                            {% elif control.format_type == '25x50' and not (7.1 <= control.thickness <= 7.7) %}
+                                                {% set _ = thickness_non_compliant.append(control.id) %}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if thickness_non_compliant %}
+                                        NC-EP-{{ selected_date.strftime('%Y%m%d') }}-{{ thickness_non_compliant|length }}
+                                    {% else %}
+                                        ----
+                                    {% endif %}
+                                {% else %}
+                                    ----
+                                {% endif %}
+                            </span>
                             <div>
-                                <span class="me-3">Conforme ☐</span>
-                                <span>Non Conforme ☐</span>
+                                {% if report_data.press_controls %}
+                                    {% set thickness_compliant = true %}
+                                    {% for control in report_data.press_controls %}
+                                        {% if control.thickness and control.format_type %}
+                                            {% if control.format_type == '20x20' and not (6.2 <= control.thickness <= 7.2) %}
+                                                {% set thickness_compliant = false %}
+                                            {% elif control.format_type == '25x40' and not (6.8 <= control.thickness <= 7.4) %}
+                                                {% set thickness_compliant = false %}
+                                            {% elif control.format_type == '25x50' and not (7.1 <= control.thickness <= 7.7) %}
+                                                {% set thickness_compliant = false %}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    <span class="me-3">Conforme {% if thickness_compliant %}☑{% else %}☐{% endif %}</span>
+                                    <span>Non Conforme {% if not thickness_compliant %}☑{% else %}☐{% endif %}</span>
+                                {% else %}
+                                    <span class="me-3">Conforme ☐</span>
+                                    <span>Non Conforme ☐</span>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -286,10 +326,49 @@
                 <div class="row mb-4">
                     <div class="col-12">
                         <div class="d-flex justify-content-between align-items-center p-2 border">
-                            <span><strong>N° FICHE NON CONFORMITÉ DU POIDS :</strong> ....................................</span>
+                            <span><strong>N° FICHE NON CONFORMITÉ DU POIDS :</strong> 
+                                {% if report_data.press_controls %}
+                                    {% set weight_non_compliant = [] %}
+                                    {% for control in report_data.press_controls %}
+                                        {% if control.wet_weight and control.format_type %}
+                                            {% if control.format_type == '20x20' and not (480 <= control.wet_weight <= 580) %}
+                                                {% set _ = weight_non_compliant.append(control.id) %}
+                                            {% elif control.format_type == '25x40' and not (1350 <= control.wet_weight <= 1500) %}
+                                                {% set _ = weight_non_compliant.append(control.id) %}
+                                            {% elif control.format_type == '25x50' and not (1800 <= control.wet_weight <= 2000) %}
+                                                {% set _ = weight_non_compliant.append(control.id) %}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if weight_non_compliant %}
+                                        NC-PO-{{ selected_date.strftime('%Y%m%d') }}-{{ weight_non_compliant|length }}
+                                    {% else %}
+                                        ----
+                                    {% endif %}
+                                {% else %}
+                                    ----
+                                {% endif %}
+                            </span>
                             <div>
-                                <span class="me-3">Conforme ☐</span>
-                                <span>Non Conforme ☐</span>
+                                {% if report_data.press_controls %}
+                                    {% set weight_compliant = true %}
+                                    {% for control in report_data.press_controls %}
+                                        {% if control.wet_weight and control.format_type %}
+                                            {% if control.format_type == '20x20' and not (480 <= control.wet_weight <= 580) %}
+                                                {% set weight_compliant = false %}
+                                            {% elif control.format_type == '25x40' and not (1350 <= control.wet_weight <= 1500) %}
+                                                {% set weight_compliant = false %}
+                                            {% elif control.format_type == '25x50' and not (1800 <= control.wet_weight <= 2000) %}
+                                                {% set weight_compliant = false %}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    <span class="me-3">Conforme {% if weight_compliant %}☑{% else %}☐{% endif %}</span>
+                                    <span>Non Conforme {% if not weight_compliant %}☑{% else %}☐{% endif %}</span>
+                                {% else %}
+                                    <span class="me-3">Conforme ☐</span>
+                                    <span>Non Conforme ☐</span>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
